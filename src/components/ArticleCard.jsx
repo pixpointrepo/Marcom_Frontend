@@ -3,30 +3,35 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ArticleCard = ({ article, index, isSearchScreen }) => {
+const ArticleCard = ({ article, index, isHomeScreen }) => {
   const navigate = useNavigate();
-
+ 
   return (
     <div
       key={article.id}
-      className={`bg-white p-2 rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition ${
-        isSearchScreen || index === 0 ? "md:col-span-2 border border-gray-300" : "bg-gray-100"
+      className={`bg-white p-2 border  rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition ${
+        isHomeScreen && index === 0 ? "md:col-span-2 " : "bg-[#EAEAEA]"
       }`}
-      onClick={() =>
+      onClick={() =>{
         navigate(
           `/${article.categoryUrl}/${article.title
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "-")}`
         )
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth', 
+        });
+      }
       }
     >
       <img
         src={article.thumbnail}
         alt={article.title}
-        className={`${isSearchScreen || index === 0 ? "h-64" : "h-48"} w-full object-cover`}
+        className={`${isHomeScreen && index === 0 ? "h-64" : "h-48"} w-full object-cover`}
       />
       <div className="p-4">
-        <h3 className={`${isSearchScreen || index === 0 ? "text-2xl" : "text-lg"} font-semibold hover:text-blue-500`}>
+        <h3 className={`${isHomeScreen && index === 0 ? "text-2xl" : "text-lg"} font-semibold hover:text-blue-500`}>
           {article.title}
         </h3>
         <p className="text-sm text-gray-600 mt-2 line-clamp-2">{article.summary}</p>

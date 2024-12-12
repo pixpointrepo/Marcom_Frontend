@@ -24,7 +24,7 @@ const ArticleDetailScreen = () => {
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6 ">
       <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
       <p className="text-sm text-gray-500">
         {article.date} · {article.readTime} · {article.author}
@@ -44,13 +44,19 @@ const ArticleDetailScreen = () => {
             {relatedArticles.map((related) => (
               <div
                 key={related.id}
-                className="bg-white p-2 rounded-md cursor-pointer hover:shadow-lg transition"
-                onClick={() =>
+                className="bg-white border p-2 rounded-md cursor-pointer hover:shadow-lg transition"
+                onClick={() =>{
                     navigate(
                       `/${category}/${related.title
                         .toLowerCase()
                         .replace(/[^a-z0-9]+/g, "-")}`
                     )
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth', 
+                    });
+                  }
+                    
                   }
               >
                 <img

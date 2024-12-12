@@ -37,15 +37,15 @@ const SearchResultsScreen = () => {
 
   return (
     <div>
-      <h1 className='m-4'>Search Results for: {searchTitle}</h1>
+      <h1 className=' items-center justify-center m-4'>Search Results for: {searchTitle}</h1>
       {filteredArticles.length > 0 ? (
-        <div>
+        <div >
           {filteredArticles.map((article, index) => (
-            <ArticleCard article={article} index={index} isSearchScreen={false}/>
+            <ArticleCard article={article} index={index} />
           ))}
         </div>
       ) : (
-        <p>No articles found for {searchTitle}</p>
+        <p className='mt-20  text-center'>No articles found for {searchTitle}</p>
       )}
     </div>
   );

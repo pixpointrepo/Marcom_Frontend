@@ -1,9 +1,10 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "../components/navbar";
 import Footer from "../components/Footer";
 import allArticles from "../data/articles";
 
 const Layout = () => {
+  const navigate = useNavigate();
   return (
     <>
     <Navbar/>
@@ -41,6 +42,17 @@ const Layout = () => {
                 <li
                   key={story.id}
                   className="flex items-start gap-4 hover:text-blue-500 cursor-pointer"
+                  onClick={() => {
+                    navigate(
+                      `/${story.categoryUrl}/${story.title
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")}`
+                    );
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth', 
+                    });
+                  }}
                 >
                   <img
                     src={story.thumbnail}

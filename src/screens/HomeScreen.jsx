@@ -18,7 +18,7 @@ const HomeScreen = () => {
           <div key={idx} className="space-y-4">
             {/* category title */}
             {
-              category === 'Overview'? 
+              category === 'Overview'?  
               null:
                 <div className="flex items-center">
                   <h2 className="text-2xl text-left font-semibold text-blue-500">{category}</h2>
@@ -29,7 +29,7 @@ const HomeScreen = () => {
             {/* Display the articles in that category */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {articles.map((article, index) => (
-                <ArticleCard article={article} index={index} categoryUrl={urlSlug} isSearchScreen={false}/>
+                <ArticleCard article={article} index={index} isHomeScreen={true}  />
               ))}
             </div>
           </div>

@@ -251,7 +251,7 @@ const Navbar = () => {
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={handleChange}
-                  className="border text-black border-gray-300 rounded-md px-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border mr-2 text-black border-gray-300  px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button className="bg-blue-600 text-xs text-white px-4 py-2 rounded-md hover:bg-blue-700">
                   Subscribe
