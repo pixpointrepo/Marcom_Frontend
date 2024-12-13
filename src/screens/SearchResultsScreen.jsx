@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { useLocation } from 'react-router-dom';
-import allArticles from '../data/articles';
+import allNewsArticles from '../data/articles';
 
 import { useState, useEffect } from 'react';
 import ArticleCard from '../components/ArticleCard';
@@ -21,8 +21,8 @@ const SearchResultsScreen = () => {
     }
 
     // Filter articles based on search query
-    const allArticlesArray = Object.values(allArticles).flatMap((data) => data.articles);
-    const filtered = allArticlesArray.filter((article) =>
+    const allNewsArticlesArray = Object.values(allNewsArticles).flatMap((data) => data.articles);
+    const filtered = allNewsArticlesArray.filter((article) =>
       article.title.toLowerCase().includes(searchTitle.toLowerCase()) ||
       article.summary.toLowerCase().includes(searchTitle.toLowerCase())
     );

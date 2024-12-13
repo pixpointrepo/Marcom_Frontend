@@ -1,14 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
-import allArticles from "../data/articles";
+import allNewsArticles from "../data/articles";
 
-const ArticleDetailScreen = () => {
+const NewsDetailScreen = () => {
   const { category, articleTitle } = useParams();
   const navigate = useNavigate();
   // Flatten all articles into a single array
-  const allArticlesArray = Object.values(allArticles).flatMap((data) => data.articles);
+  const allNewsArticlesArray = Object.values(allNewsArticles).flatMap((data) => data.articles);
 
   // Find the article matching the title
-  const article = allArticlesArray.find(
+  const article = allNewsArticlesArray.find(
     (a) =>
       a.title.toLowerCase().replace(/[^a-z0-9]+/g, "-") === articleTitle &&
       a.category.toLowerCase().replace(/ /g, "-") === category
@@ -19,7 +19,7 @@ const ArticleDetailScreen = () => {
   }
 
   // Filter other articles in the same category
-  const relatedArticles = allArticlesArray.filter(
+  const relatedArticles = allNewsArticlesArray.filter(
     (a) => a.category === article.category && a.id !== article.id
   );
 
@@ -79,4 +79,4 @@ const ArticleDetailScreen = () => {
   );
 };
 
-export default ArticleDetailScreen;
+export default NewsDetailScreen;

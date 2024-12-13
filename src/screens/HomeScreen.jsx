@@ -1,8 +1,7 @@
 /* eslint-disable */
 
 import React from 'react'
-import allArticles from '../data/articles';
-import latestStories from '../data/latest_stories';
+import allNewsArticles from '../data/articles';
 import { useNavigate } from "react-router-dom";
 import ArticleCard from '../components/ArticleCard';
 
@@ -10,9 +9,9 @@ const HomeScreen = () => {
   const navigate = useNavigate();
     return (
       <>
-      {Object.keys(allArticles).map((categoryKey, idx) => {
-        const categoryData = allArticles[categoryKey];
-        const { category, urlSlug,  articles } = categoryData;  // Destructure category and articles
+      {Object.keys(allNewsArticles).map((categoryKey, idx) => {
+        const categoryData = allNewsArticles[categoryKey];
+        const { category,  articles } = categoryData;  // Destructure category and articles
 
         return (
           <div key={idx} className="space-y-4">

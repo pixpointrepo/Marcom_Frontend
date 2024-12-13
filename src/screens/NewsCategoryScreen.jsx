@@ -1,10 +1,10 @@
 /* eslint-disable */
 
 import { useState, useEffect } from "react";
-import allArticles from "../data/articles";
+import allNewsArticles from "../data/articles";
 import { useNavigate, useParams, useSearchParams  } from "react-router-dom";
 
-const CategoryScreen = () => {
+const NewsCategoryScreen = () => {
   const navigate = useNavigate();
   const { categoryName } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,7 +14,7 @@ const CategoryScreen = () => {
   const [currentPage, setCurrentPage] = useState(initialPage);
 
   // Find the category using the categoryName from the URL slug
-  const categoryData = Object.values(allArticles).find(
+  const categoryData = Object.values(allNewsArticles).find(
     (data) => data.urlSlug === categoryName
   );
 
@@ -116,4 +116,4 @@ const CategoryScreen = () => {
   );
 };
 
-export default CategoryScreen;
+export default NewsCategoryScreen;

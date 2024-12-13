@@ -8,12 +8,13 @@ import './App.css'
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './screens/Layout';
-import Navbar from './components/navbar';
+import Navbar from './components/Navbar';
 import HomeSection from './screens/HomeScreen';
 import Footer from './components/Footer';
-import ArticleDetailScreen from './screens/ArticleDetailScreen';
-import CategoryScreen from './screens/CategoryScreen';
+import NewsDetailScreen from './screens/NewsDetailScreen';
+import NewsCategoryScreen from './screens/NewsCategoryScreen';
 import SearchResultsScreen from './screens/SearchResultsScreen';
+import ContactUsScreen from './screens/ContactUsScreen';
 
 
 function App() {
@@ -27,21 +28,14 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* Nested Routes */}
           <Route index element={<HomeSection />} />
-          <Route path=":category/:articleTitle" element={<ArticleDetailScreen />} />
-          <Route path=":categoryName" element={<CategoryScreen />} />
+          <Route path=":category/:articleTitle" element={<NewsDetailScreen />} />
+          <Route path="/news/:categoryName" element={<NewsCategoryScreen />} />
           <Route path="search" element={<SearchResultsScreen />} /> 
+          <Route path="/contact-us" element={<ContactUsScreen />} />
         </Route>
       </Routes>
   </BrowserRouter>
     
-    // <BrowserRouter>
-    //   <Routes>
-        
-    //     <Route path="/" element={<MainPage />} />
-    //     <Route path="/:categoryName" element={<CategoryScreen />} />
-    //     <Route path="/:category/:articleTitle" element={<ArticleDetailScreen />} />
-    //   </Routes>
-    // </BrowserRouter>
   )
 }
 

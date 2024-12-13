@@ -1,6 +1,6 @@
 
 
-const allArticles = {
+const allNewsArticles = {
   overViewArticles:{
     category: 'Overview',
     urlSlug: 'overview',
@@ -167,5 +167,5 @@ const allArticles = {
   }
 }
 
-export default allArticles;
+export default allNewsArticles;
   
