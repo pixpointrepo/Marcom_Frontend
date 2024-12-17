@@ -24,7 +24,8 @@ const SearchResultsScreen = () => {
     const allNewsArticlesArray = Object.values(allNewsArticles).flatMap((data) => data.articles);
     const filtered = allNewsArticlesArray.filter((article) =>
       article.title.toLowerCase().includes(searchTitle.toLowerCase()) ||
-      article.summary.toLowerCase().includes(searchTitle.toLowerCase())
+      article.summary.toLowerCase().includes(searchTitle.toLowerCase()) ||
+      article.tags.some(tag => tag.toLowerCase().includes(searchTitle.toLowerCase()))
     );
 
     setFilteredArticles(filtered);
@@ -37,7 +38,7 @@ const SearchResultsScreen = () => {
 
   return (
     <div>
-      <h1 className=' items-center justify-center m-4'>Search Results for: {searchTitle}</h1>
+      <h1 className=' items-center justify-center m-4'>Search Results for: '{searchTitle}'</h1>
       {filteredArticles.length > 0 ? (
         <div >
           {filteredArticles.map((article, index) => (
@@ -45,7 +46,7 @@ const SearchResultsScreen = () => {
           ))}
         </div>
       ) : (
-        <p className='mt-20  text-center'>No articles found for {searchTitle}</p>
+        <p className='mt-20  text-center'>No articles found for '{searchTitle}'</p>
       )}
     </div>
   );

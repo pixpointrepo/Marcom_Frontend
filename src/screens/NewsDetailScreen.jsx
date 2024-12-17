@@ -24,7 +24,20 @@ const NewsDetailScreen = () => {
   );
 
   return (
-    <div className="p-6 ">
+    <div className="px-4 md:p-6 ">
+
+      {/* Article Tags */}
+      <div className="flex gap-3 mb-2">
+        {
+          article.tags.map((tag)=>(
+            <div key={tag} className="py-0.5 px-2 bg-amber-300 rounded-md text-sm">
+              <h2>{tag}</h2>
+            </div>
+          ))
+        }
+      </div>
+
+      {/* main article content */}
       <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
       <p className="text-sm text-gray-500">
         {article.date} · {article.readTime} · {article.author}

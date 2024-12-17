@@ -8,10 +8,10 @@ const Layout = () => {
   return (
     <>
     <Navbar/>
-    <div className="container mx-auto py-6 px-2">
+    <div className="container mt-4 md:mt-20 mx-auto py-4 px-2">
       <div className="flex flex-col md:flex-row gap-2">
         {/* Left Sidebar or Ads */}
-        <div className="bg-gray-100 w-32 mx-2"></div>
+        <div className="hidden md:block bg-gray-100 w-32 mx-2"></div>
 
         {/* Main Section */}
         <div className="flex-1 space-y-8">
@@ -69,7 +69,7 @@ const Layout = () => {
   
 
           {/* Newsletter Form */}
-          <div className="sticky top-2 bg-white shadow-md rounded-md p-8">
+          <div className=" bg-white shadow-md rounded-md p-8 sticky top-4 -z-10">
             <h2 className="text-2xl font-semibold mb-4 text-left">Subscribe to our Newsletter!</h2>
             <form className="flex flex-col items-center">
               <input
@@ -95,7 +95,7 @@ const Layout = () => {
         </div>
 
         {/* Right Sidebar or Ads */}
-        <div className="bg-gray-100 w-32 mx-2"></div>
+        <div className="hidden md:block bg-gray-100 w-32 mx-2"></div>
       </div>
     </div>
     <Footer/>

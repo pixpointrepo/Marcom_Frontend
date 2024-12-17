@@ -15,6 +15,12 @@ import NewsDetailScreen from './screens/NewsDetailScreen';
 import NewsCategoryScreen from './screens/NewsCategoryScreen';
 import SearchResultsScreen from './screens/SearchResultsScreen';
 import ContactUsScreen from './screens/ContactUsScreen';
+import EventsDashboardScreen from './screens/EventsDashboardScreen';
+import WebinarScreen from './screens/WebinarScreen';
+import AuthorScreen from './screens/AuthorScreen';
+import AllAuthorsScreen from './screens/AllAuthorsScreen';
+import RoundTableScreen from './screens/RoundTableScreen';
+
 
 
 function App() {
@@ -32,6 +38,12 @@ function App() {
           <Route path="/news/:categoryName" element={<NewsCategoryScreen />} />
           <Route path="search" element={<SearchResultsScreen />} /> 
           <Route path="/contact-us" element={<ContactUsScreen />} />
+          <Route path="/events/dashboard" element={<EventsDashboardScreen />} />
+          <Route path="/events/webinar" element={<WebinarScreen />} />
+          <Route path="/authors" element={<AllAuthorsScreen />} />
+          <Route path="/authors/:authorName" element={<AuthorScreen />} />
+          <Route path="/events/roundtable/pixpoint" element={<RoundTableScreen />} />
+          
         </Route>
       </Routes>
   </BrowserRouter>

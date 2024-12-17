@@ -89,18 +89,15 @@ const menuItems = [
         label: "Roundtable",
         path: "/events/roundtable",
         items: [
-          { label: "Future Finance", path: "/events/roundtable/future-finance", items: [] },
-          { label: "MGID Roundtable", path: "/events/roundtable/mgid-roundtable", items: [] },
-          { label: "Adobe Creative Minds", path: "/events/roundtable/adobe-creative-minds", items: [] }
+          { label: "Pixpoint Roundtable", path: "/events/roundtable/pixpoint", items: [] },
+         
         ]
       },
       {
         label: "Webinar",
         path: "/events/webinar",
         items: [
-          { label: "Gen AI-Masterclass", path: "/events/webinar/gen-ai-masterclass", items: [] },
-          { label: "Communicon", path: "/events/webinar/communicon", items: [] },
-          { label: "Marketing Through Leaders", path: "/events/webinar/marketing-through-leaders", items: [] }
+          
         ]
       }
     ]

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 // DropdownItem Component to handle nested items
 const DropdownItem = ({ label, items }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const navigate  = useNavigate();
   
     return (
       <li
@@ -16,7 +17,7 @@ const DropdownItem = ({ label, items }) => {
         onMouseLeave={() => setIsOpen(false)}
       >
         <div className="flex justify-between items-center px-4 py-2 hover:bg-gray-200 cursor-pointer">
-          <span className="block transition-transform transform duration-300 hover:translate-x-1">
+          <span  className="block transition-transform transform duration-300 hover:translate-x-1">
             {label}
           </span>
           {items && (
@@ -39,11 +40,11 @@ const DropdownItem = ({ label, items }) => {
         {isOpen && items && (
           <ul className="absolute left-full top-0 mt-0 bg-white text-left text-black shadow-lg overflow-visible z-50" style={{ minWidth: "10rem" }}>
             {items.map((item, idx) => (
-              item.items ? (
+              item.items.length>0 ? (
                 <DropdownItem key={idx} label={item.label} items={item.items} />
               ) : (
-                <li key={idx} className="px-4 py-2 hover:bg-gray-200">
-                  <span className="block cursor-pointer transition-transform transform duration-300 hover:translate-x-1">
+                <li onClick={() => navigate(item.path)} key={idx} className="px-4 py-2 hover:bg-gray-200">
+                  <span  className="block cursor-pointer transition-transform transform duration-300 hover:translate-x-1">
                     {item.label}
                   </span>
                 </li>
@@ -87,7 +88,7 @@ const DropdownItem = ({ label, items }) => {
           <ul className="absolute left-0 top-full bg-white text-black shadow-lg overflow-visible z-50 w-auto whitespace-nowrap">
             {items.map((item, index) =>
               item.items.length > 0 ? (
-                <DropdownItem key={index} label={item.label} items={item.items} />
+                <DropdownItem key={index} label={item.label} items={item.items}  />
               ) : (
                 <li
                   key={index}
@@ -107,6 +108,7 @@ const DropdownItem = ({ label, items }) => {
   };
 
 const DesktopMenuBar = () => {
+  const navigate = useNavigate();
   return (
     <ul className="hidden md:flex justify-center w-full text-xs md:text-sm md:space-x-10 bg-blue-900">
     {menuItems.map((menu, index) =>
