@@ -1,11 +1,5 @@
 /* eslint-disable */
 
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './screens/Layout';
 import Navbar from './components/Navbar';
@@ -24,54 +18,43 @@ import AdminLoginPage from './screens/adminscreens/AdminLoginPage';
 import AdminDashBoard from './screens/adminscreens/AdminDashBoard';
 import PostPages from './sections/adminsections/PostPages';
 import DashboardHomePage from './sections/adminsections/DashboardHomePage';
-
-
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute'; // A new component for protected routes
 
 function App() {
-  
-
   return (
+    <AuthProvider> {/* Move AuthProvider to wrap the entire BrowserRouter */}
+      <BrowserRouter>
+        <Routes>
+          {/* Layout Route */}
+          <Route path="/" element={<Layout />}>
+            {/* Public Routes */}
+            <Route index element={<HomeSection />} />
+            <Route path=":category/:articleTitle" element={<NewsDetailScreen />} />
+            <Route path="/news/:categoryName" element={<NewsCategoryScreen />} />
+            <Route path="search" element={<SearchResultsScreen />} />
+            <Route path="/contact-us" element={<ContactUsScreen />} />
+            <Route path="/events/dashboard" element={<EventsDashboardScreen />} />
+            <Route path="/events/webinar" element={<WebinarScreen />} />
+            <Route path="/authors" element={<AllAuthorsScreen />} />
+            <Route path="/authors/:authorName" element={<AuthorScreen />} />
+            <Route path="/events/roundtable/pixpoint" element={<RoundTableScreen />} />
+          </Route>
 
-    <BrowserRouter>
-      <Routes>
-        {/* Layout Route */}
-        <Route path="/" element={<Layout />}>
-          {/* Nested Routes */}
-          <Route index element={<HomeSection />} />
-          <Route path=":category/:articleTitle" element={<NewsDetailScreen />} />
-          <Route path="/news/:categoryName" element={<NewsCategoryScreen />} />
-          <Route path="search" element={<SearchResultsScreen />} /> 
-          <Route path="/contact-us" element={<ContactUsScreen />} />
-          <Route path="/events/dashboard" element={<EventsDashboardScreen />} />
-          <Route path="/events/webinar" element={<WebinarScreen />} />
-          <Route path="/authors" element={<AllAuthorsScreen />} />
-          <Route path="/authors/:authorName" element={<AuthorScreen />} />
-          <Route path="/events/roundtable/pixpoint" element={<RoundTableScreen />} />
+          {/* Admin and Management Route */}
+          <Route path="/pixadmin" element={<AdminLoginPage />} />
           
-        </Route>
-
-        {/* Admin and Mangement Route */}
-        <Route path="/pixadmin" element={<AdminLoginPage/>}/>
-        <Route path="/dashboard" element={<AdminDashBoard/>}>
-        <Route index element={<DashboardHomePage />} />
-        <Route path="/dashboard/posts" element={<PostPages/>}/>
-        
-        </Route>
-      </Routes>
-  </BrowserRouter>
-    
-  )
+          {/* Protected Admin Routes */}
+          <Route path="/dashboard" element={<ProtectedRoute />}>
+            <Route index element={<DashboardHomePage />} />
+            <Route path="/dashboard/posts" element={<PostPages />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
 
-
-const MainPage = () => (
-  <div>
-    
-      <Navbar/>
-      <HomeSection/>
-      <Footer/>
-  </div>
-);
+export default App;
 
 
-export default App

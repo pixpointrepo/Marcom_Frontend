@@ -56,7 +56,7 @@ export default function PostPages() {
     if (image) postData.append("image", image);
 
     try {
-      const response = await fetch("https://webhook.site/c881d196-629b-4e54-8444-4b56bb4314b9", {
+      const response = await fetch("http://localhost:5000/api/articles", {
         method: "POST",
         body: postData,
       });

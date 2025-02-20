@@ -11,9 +11,17 @@ import {
   Settings
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; 
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { logout } = useAuth(); 
+  const handleLogout = () => {
+    logout(); // Clear the authentication token
+    navigate("/pixadmin"); // Navigate to the login page
+  };
 
   return (
     <div className="flex ">
@@ -64,12 +72,12 @@ export default function Sidebar() {
             >
               <Settings size={20} className="mr-2" /> Settings
             </Link>
-            <Link
-              to="/logout"
-              className="mt-6 flex items-center text-red-500 hover:text-red-400"
-            >
-              <LogOut size={20} className="mr-2" /> Logout
-            </Link>
+            <button
+      onClick={handleLogout}
+      className="mt-6 flex items-center text-red-500 hover:text-red-400"
+    >
+      <LogOut size={20} className="mr-2" /> Logout
+    </button>
           </div>
         </div>
       </div>
