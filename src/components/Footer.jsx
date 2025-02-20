@@ -11,10 +11,10 @@ import platformSvgs from './svgs';
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-gray-300 text-sm pt-5 px-5">
-        <div className="flex flex-col" >
+    <footer className=" bg-black text-gray-300 text-sm pt-5 px- 5">
+        <div className="flex flex-col max-w-7xl 3xl:max-w-8xl mx-auto w-full" >
 
-              <div className="max-w-7xl  px-6 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-2">
+              <div className="max-w-7xl  px-6  grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-2">
               
               <div>
                 

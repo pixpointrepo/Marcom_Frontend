@@ -1,0 +1,18 @@
+/* Default min-height */
+.ql-editor {
+    min-height: 200px; /* Adjust this value for larger screens */
+  }
+  
+  /* Adjust for smaller screens (e.g., below 768px) */
+  @media (max-width: 768px) {
+    .ql-editor {
+      min-height: 150px; /* Smaller height for mobile devices */
+    }
+  }
+  
+  /* Adjust for even smaller screens (e.g., below 480px) */
+  @media (max-width: 480px) {
+    .ql-editor {
+      min-height: 120px; /* Even smaller height for very small screens */
+    }
+  }

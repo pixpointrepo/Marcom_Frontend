@@ -67,7 +67,7 @@ const DropdownItem = ({ label, items }) => {
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
       >
-        <div className="flex items-center cursor-pointer px-2 py-2 hover:text-gray-300">
+        <div className="flex items-center cursor-pointer px-2 py-3 hover:text-gray-300">
           {label}
           <svg
             className="w-4 h-4 ml-4 rotate-90"
@@ -117,7 +117,7 @@ const DesktopMenuBar = () => {
       ) : (
         <li
           key={index}
-          className="cursor-pointer px-2 py-2"
+          className="cursor-pointer px-2 py-3"
           onClick={() => navigate(menu.path)}
         >
           {menu.label}

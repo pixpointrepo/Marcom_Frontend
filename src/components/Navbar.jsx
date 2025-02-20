@@ -65,6 +65,7 @@ return (
       <div className="hidden md:flex md:flex-col">
         {/* desktop navbar*/}
         <div className="absolute top-0 left-0 w-full bg-white shadow-md">
+          <div className="w-full max-w-[93rem] mx-auto">
           {/* Logo, Ads, and Search Bar */}
           <div className="flex justify-between items-center px-4 py-3">
             {/* Logo */}
@@ -98,11 +99,11 @@ return (
                 type="submit"
                 className="bg-blue-600 text-xs text-white px-4 py-2 rounded-md hover:bg-blue-700"
               >
-                Subscribe
+                Search
               </button>
             </form>
           </div>
-        </div>
+        </div></div>
 
         {/* Desktop MenuBar */}
         {/* Placeholder (approximately nav's height) to prevent content jump when navbar is fixed */}

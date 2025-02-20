@@ -20,6 +20,10 @@ import WebinarScreen from './screens/WebinarScreen';
 import AuthorScreen from './screens/AuthorScreen';
 import AllAuthorsScreen from './screens/AllAuthorsScreen';
 import RoundTableScreen from './screens/RoundTableScreen';
+import AdminLoginPage from './screens/adminscreens/AdminLoginPage';
+import AdminDashBoard from './screens/adminscreens/AdminDashBoard';
+import PostPages from './sections/adminsections/PostPages';
+import DashboardHomePage from './sections/adminsections/DashboardHomePage';
 
 
 
@@ -44,6 +48,14 @@ function App() {
           <Route path="/authors/:authorName" element={<AuthorScreen />} />
           <Route path="/events/roundtable/pixpoint" element={<RoundTableScreen />} />
           
+        </Route>
+
+        {/* Admin and Mangement Route */}
+        <Route path="/pixadmin" element={<AdminLoginPage/>}/>
+        <Route path="/dashboard" element={<AdminDashBoard/>}>
+        <Route index element={<DashboardHomePage />} />
+        <Route path="/dashboard/posts" element={<PostPages/>}/>
+        
         </Route>
       </Routes>
   </BrowserRouter>
