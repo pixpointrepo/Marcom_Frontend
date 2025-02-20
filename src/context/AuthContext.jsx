@@ -1,29 +1,56 @@
 // src/context/AuthContext.js
 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(true);
+  // const [token, setToken] = useState(localStorage.getItem('token') || null);
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
 
-  const login = (newToken) => {
-    setToken(newToken);
-    localStorage.setItem('token', newToken); // Save token to localStorage
+        // Check if token is expired
+        // the .exp converts the expiry time into seconds and compares it with current timestamp (in milliseconds)
+        if (decoded.exp * 1000 < Date.now()) {
+          console.log("Token expired");
+          localStorage.removeItem("adminToken");
+          setAdmin(null);
+        } else {
+          setAdmin(token);
+        }
+      } catch (error) {
+        console.error("Invalid token");
+        localStorage.removeItem("adminToken");
+        setAdmin(null);
+      }
+    }
+    setLoading(false);
+  }, []);
+
+  const login = (token) => {
+    localStorage.setItem("adminToken", token);
+    setAdmin(token); // Save token to localStorage
+    window.location.href = "/dashboard";
   };
 
   const logout = () => {
-    setToken(null);
-    localStorage.removeItem('token'); // Remove token from localStorage
+  
+    localStorage.removeItem("adminToken");
+    setAdmin(null);
+    window.location.href = "/pixadmin"; // Remove token from localStorage
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ admin, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export default AuthContext;

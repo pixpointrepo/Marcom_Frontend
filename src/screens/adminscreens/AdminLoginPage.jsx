@@ -1,19 +1,22 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Lock, User, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
+import AuthContext from "../../context/AuthContext"
+import { adminLogin } from "../../services/api";
 
+ 
 export default function AdminLoginPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth(); // Get login function from context
+  const { login } = useContext(AuthContext);
 
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -23,33 +26,33 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setError("");
 
-    if (!username || !password) {
+    if (!email || !password) {
       setError("All fields are required.");
       return;
     }
 
-    if (!validateEmail(username)) {
+    if (!validateEmail(email)) {
       setError("Invalid email format.");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: username, password }),
-      });
+      setLoading(true);
+      const response = await adminLogin(email,password);
 
-      const data = await response.json();
-      if (response.ok) {
-        // Store token in context and redirect to dashboard
-        login(data.token); // Assuming the response contains a `token` field
-        navigate("/dashboard");
+      const data = await response.data;
+      if (data.token) {
+        login(data.token);
+        // // navigate to admin home page
+        // navigate('/dashboard');
       } else {
         setError(data.message || "Something went wrong.");
       }
     } catch (error) {
-      setError("Something went wrong.");
+      console.error('Login error: ', error);
+      alert('Login failed: ' + (error.response?.data?.message || 'Unknown error')); 
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -61,14 +64,15 @@ export default function AdminLoginPage() {
           {error && <p className="text-red-600 text-sm mb-4">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <Label htmlFor="username">Username (Email)</Label>
+              <Label htmlFor="email">email (Email)</Label>
               <div className="relative">
                 <User className="absolute left-2 top-2.5 text-gray-500" size={18} />
                 <Input
-                  id="username"
+                  id="email"
                   className="pl-8"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter email address"
                 />
               </div>
             </div>
@@ -83,6 +87,7 @@ export default function AdminLoginPage() {
                   className="pl-8 pr-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                   placeholder="Enter your password"
                 />
                 <button
                   type="button"

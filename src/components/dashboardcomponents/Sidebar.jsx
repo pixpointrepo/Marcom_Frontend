@@ -12,15 +12,16 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext"; 
+import AuthContext from "../../context/AuthContext";
+import { useContext } from "react";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { logout } = useAuth(); 
+  const {logout} = useContext(AuthContext);
   const handleLogout = () => {
     logout(); // Clear the authentication token
-    navigate("/pixadmin"); // Navigate to the login page
+    // navigate("/pixadmin"); // Navigate to the login page
   };
 
   return (
@@ -53,7 +54,7 @@ export default function Sidebar() {
                 label="Dashboard"
               />
               <SidebarItem
-                to="/articles"
+                to="/dashboard/articles"
                 icon={<BookOpenText size={20} />}
                 label="Articles"
               />
@@ -67,7 +68,7 @@ export default function Sidebar() {
           </div>
           <div>
             <Link
-              to="/settings"
+              to="/dashboard/settings"
               className="mt-6 flex items-center text-white hover:text-blue-400"
             >
               <Settings size={20} className="mr-2" /> Settings

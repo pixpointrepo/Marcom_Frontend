@@ -1,20 +1,41 @@
 // src/components/ProtectedRoute.js
+import { useContext, useEffect, useState } from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
+import AdminDashBoard from "../screens/adminscreens/AdminDashBoard"
 
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import AdminDashBoard from '../screens/adminscreens/AdminDashBoard';
+
+ 
 
 const ProtectedRoute = () => {
-  const { token } = useAuth();
+  const { admin, loading, logout } = useContext(AuthContext);
+  const [isValid, setIsValid] = useState(true);
+  const location = useLocation();
 
-  // If the user is not authenticated, redirect to login page
-  if (!token) {
-    return <Navigate to="/pixadmin" />;
-  }
+  useEffect(() => {
+    if (admin) {
+      try {
+        const decoded = jwtDecode(admin);
+        
+        // Check if token is expired
+        if (decoded.exp * 1000 < Date.now()) {
+          console.log("Token expired");
+          logout(); // Clear invalid token
+          setIsValid(false);
+        } else {
+          setIsValid(true);
+        }
+      } catch (error) {
+        console.error("Invalid token");
+        logout();
+        setIsValid(false);
+      }
+    }
+  }, [admin, logout, location]);
+ if (loading) return null; // Prevent rendering before authentication check
 
-  // If authenticated, allow access to the admin pages
-  return <AdminDashBoard />;
+  return admin && isValid ? <AdminDashBoard /> : <Navigate to="/pixadmin" />;
 };
 
 export default ProtectedRoute;

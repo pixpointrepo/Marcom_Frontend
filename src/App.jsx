@@ -20,6 +20,7 @@ import PostPages from './sections/adminsections/PostPages';
 import DashboardHomePage from './sections/adminsections/DashboardHomePage';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute'; // A new component for protected routes
+import ArticlesPage from "./sections/adminsections/ArticlesPage";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute />}>
             <Route index element={<DashboardHomePage />} />
             <Route path="/dashboard/posts" element={<PostPages />} />
+            <Route path="/dashboard/articles" element={<ArticlesPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
