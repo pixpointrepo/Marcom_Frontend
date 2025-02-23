@@ -64,7 +64,8 @@ const ArticlePage = () => {
       {/* Thumbnail */}
       <div className="mb-6">
         <img
-          src={article.thumbnail}
+            src={`http://localhost:5000${article.thumbnail}`}
+  
           alt={article.title}
           className="w-full h-72 object-cover rounded-lg shadow-md"
         />

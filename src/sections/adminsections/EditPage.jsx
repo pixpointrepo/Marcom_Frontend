@@ -28,7 +28,7 @@ export default function EditArticlePage() {
 
   // Fetch article data when the component is mounted or the ID changes
   useEffect(() => {
-    console.log("edit page",articleId)
+    console.log("edit page", articleId);
     const fetchArticle = async () => {
       try {
         const articleData = await fetchArticleById(articleId); // Fetch the article by ID
@@ -41,11 +41,10 @@ export default function EditArticlePage() {
             category: articleData.category,
             tags: articleData.tags.join(", "), // Assuming tags is an array
             mainArticleUrl: articleData.mainArticleUrl,
-            readTime: articleData.readTime,
+            readTime: articleData.readTime.replace(/\D/g, ""), // Extract only the number
           });
           setDescription(articleData.description);
-          // If the image URL is provided, set the image state (or handle as needed)
-          setImage(articleData.thumbnail);
+          setImage(articleData.thumbnail); // Store the image URL directly
         }
       } catch (error) {
         console.error("Error fetching article:", error);
@@ -103,15 +102,17 @@ export default function EditArticlePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!validateForm()) return;
-  
+
     const postData = new FormData();
-    Object.entries(formData).forEach(([key, value]) => postData.append(key, value));
+    Object.entries(formData).forEach(([key, value]) =>
+      postData.append(key, value)
+    );
     postData.append("description", description);
-  
+
     if (image) postData.append("thumbnail", image);
-  
+
     try {
       const response = await uploadArticle(postData);
       if (response && response.message) {
@@ -130,7 +131,9 @@ export default function EditArticlePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-semibold text-gray-900 mb-6">Edit Article</h1>
+      <h1 className="text-3xl font-semibold text-gray-900 mb-6">
+        Edit Article
+      </h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <Label htmlFor="title">Title</Label>
@@ -178,31 +181,40 @@ export default function EditArticlePage() {
         </div>
 
         <div className="mb-4">
-  <Label>Thumbnail</Label>
-  <div
-    {...getRootProps()}
-    className="border-2 border-dashed p-4 text-center cursor-pointer"
-  >
-    <input {...getInputProps()} />
-    {image ? (
-      <div className="relative">
-        <img
-          src={image instanceof File ? URL.createObjectURL(image) : image}
-          alt="Selected"
-          className="max-w-full h-48 object-cover mb-4"
-        />
-        <X
-          size={20}
-          className="absolute top-0 right-0 p-1 bg-white rounded-full cursor-pointer"
-          onClick={() => setImage(null)}
-        />
-      </div>
-    ) : (
-      <p>Drag and drop an image or click to select one</p>
-    )}
-  </div>
-</div>
+          <Label>Thumbnail</Label>
+          <div
+            {...getRootProps()}
+            className="border-2 border-dashed p-4 text-center cursor-pointer"
+          >
+            <input {...getInputProps()} />
+            {console.log(image)}
+            {image ? (
+              <div className="relative">
+                <img
+                  src={
+                    typeof image === "string"
+                      ?  image.startsWith("/")
+                        ? image
+                        : `http://localhost:5000${image}` // Adjust the backend URL if needed
+                      : image instanceof File
+                      ? URL.createObjectURL(image)
+                      : null
+                  }
+                  alt="Selected"
+                  className="max-w-full h-48 object-cover mb-4"
+                />
 
+                <X
+                  size={20}
+                  className="absolute top-0 right-0 p-1 bg-white rounded-full cursor-pointer"
+                  onClick={() => setImage(null)}
+                />
+              </div>
+            ) : (
+              <p>Drag and drop an image or click to select one</p>
+            )}
+          </div>
+        </div>
 
         <div className="mb-4">
           <Label htmlFor="category">Category</Label>

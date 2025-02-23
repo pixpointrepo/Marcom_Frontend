@@ -205,7 +205,7 @@ const ArticlesPage = () => {
                 }`}
               >
                 <img
-                  src={article.thumbnail}
+                 src={`http://localhost:5000${article.thumbnail}`}
                   alt={article.title}
                   className={`bg-red-50 ${
                     viewMode === "tile" ? "w-20" : "w-full h-full"

@@ -73,13 +73,13 @@ export const uploadArticle = async (postData) => {
   };
 
   //fetching all articles
-  export const fetchArticles = async ({ page = 1, category = "", tags = "", date = "",search = "" }) => {
+  export const fetchArticles = async ({ page = 1, category = "", tags = "", date = "",search = "" ,limit = 10}) => {
     console.log("Sending tags:", tags);
     try {
         const response = await axios.get(`${API_URL}/articles`, {
             params: {
                 page,
-                limit: 9, // 9 items per page
+                limit,
                 category,
                 tags,
                 date,
