@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 import Select from "react-select"; // For tags and category filters
+import { Link } from 'react-router-dom'; // Import Link from React Router
+import { useNavigate } from 'react-router-dom';
+
 import {
   SlidersHorizontal,
   TableProperties,
@@ -10,93 +13,57 @@ import {
   FilePenLine,
   X,
 } from "lucide-react";
-import { grid2Classes } from "@mui/material";
-{
-  /* <TableProperties /><TableProperties /><Grid2x2 /> */
-}
-// Dummy data for articles
-const dummyArticles = [
-  {
-    id: 1,
-    title: "Understanding React",
-    description: "A comprehensive guide to React and its features...",
-    category: "React",
-    tags: ["JavaScript", "Frontend"],
-    thumbnail: "https://via.placeholder.com/150",
-    lastModified: "2025-02-18",
-  },
-  {
-    id: 2,
-    title: "Getting Started with Node.js",
-    description:
-      "Node.js is a powerful JavaScript runtime used for backend development...",
-    category: "Node.js",
-    tags: ["Backend", "JavaScript"],
-    thumbnail: "https://via.placeholder.com/150",
-    lastModified: "2025-02-15",
-  },
-  // Add more dummy articles...
-];
-
-const categories = [
-  { value: "React", label: "React" },
-  { value: "Node.js", label: "Node.js" },
-  { value: "Vue", label: "Vue" },
-];
-
-const tags = [
-  { value: "JavaScript", label: "JavaScript" },
-  { value: "Frontend", label: "Frontend" },
-  { value: "Backend", label: "Backend" },
-  { value: "React", label: "React" },
-  { value: "Node.js", label: "Node.js" },
-];
+import useFetchMetadata from "../../components/hooks/useFetchMetadata";
+import useFetchArticles from "../../components/hooks/useFetchArticles";
 
 const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
-  const [filteredArticles, setFilteredArticles] = useState(dummyArticles);
+
+  const [sortOrder, setSortOrder] = useState("latest");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isMobileFilter, setMobileFilter] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [tagsFilter, setTagsFilter] = useState([]);
-  const [sortOrder, setSortOrder] = useState("latest");
-  const [dropdownOpen, setDropdownOpen] = useState(false); // Manage dropdown state
-  const [isMobileFilter, setMobileFilter] = useState(false);
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
 
-  // Filter articles based on selected filters
-  const filterArticles = () => {
-    let filtered = dummyArticles;
+  const {
+    categories,
+    tags,
+    loading: metadataLoading,
+    error: metadataError,
+  } = useFetchMetadata();
 
-    // Filter by category
-    if (categoryFilter) {
-      filtered = filtered.filter(
-        (article) => article.category === categoryFilter.value
-      );
-    }
+  // Use the custom hook to fetch articles
+  const {
+    articles,
+    loading: articlesLoading,
+    error: articlesError,
+  } = useFetchArticles({
+    page,
+    categoryFilter,
+    tagsFilter,
+    searchQuery,
+  });
+  {
+    /* Loading and Error Handling for Metadata */
+  }
+  {
+    metadataLoading && <p>Loading metadata...</p>;
+  }
+  {
+    metadataError && <p style={{ color: "red" }}>{metadataError}</p>;
+  }
 
-    // Filter by tags
-    if (tagsFilter.length > 0) {
-      filtered = filtered.filter((article) =>
-        tagsFilter.every((tag) => article.tags.includes(tag.value))
-      );
-    }
-
-    // Sort by latest or oldest
-    if (sortOrder === "latest") {
-      filtered = filtered.sort(
-        (a, b) => new Date(b.lastModified) - new Date(a.lastModified)
-      );
-    } else if (sortOrder === "oldest") {
-      filtered = filtered.sort(
-        (a, b) => new Date(a.lastModified) - new Date(b.lastModified)
-      );
-    }
-
-    setFilteredArticles(filtered);
-  };
-
-  // Handle apply button click
-  const handleApplyFilters = () => {
-    filterArticles();
-  };
+  {
+    /* Loading and Error Handling for Articles */
+  }
+  {
+    articlesLoading && <p>Loading articles...</p>;
+  }
+  {
+    articlesError && <p style={{ color: "red" }}>{articlesError}</p>;
+  }
 
   // Handle view mode toggle
   const toggleViewMode = (mode) => {
@@ -105,28 +72,36 @@ const ArticlesPage = () => {
 
   // Handle Edit/Delete actions
   const handleAction = (action, articleId) => {
+    const navigate = useNavigate(); // Get the navigate function
+    
     if (action === "edit") {
-      console.log(`Edit article ${articleId}`);
+      // Navigate to the edit page and pass the articleId as part of the URL
+      navigate(`/dashboard/edit-article/${articles._id}`);
     } else if (action === "delete") {
       console.log(`Delete article ${articleId}`);
+      // Implement delete logic here
     }
   };
+  
 
   return (
     <div className="container mx-auto p-4">
-      <div className="mb-6 flex flex-col gap-2 lg:flex-row lg:gap-8">
-        <h1 className="text-center text-2xl font-bold mb-2 order-1">Articles</h1>
-        <div className="relative w-full xl:w-[30%] order-2">
+      <div className="mb-6 flex flex-col  gap-2 lg:flex-row lg:items-center lg:gap-8">
+        <h1 className="text-center text-2xl font-bold mb-2 order-1">
+          Articles
+        </h1>
+        <div className="relative mt-2  w-full xl:w-[40%] 3xl:w-[60%] order-2">
           <input
             type="text"
             placeholder="Search articles..."
-            className=" p-3 pl-4 mb-2 pr-12 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={(e) => console.log(e.target.value)} // Handle search here
+            value={searchQuery}
+            className=" p-3  pl-4 mb-2 pr-12 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setSearchQuery(e.target.value)} // Handle search here
           />
           <button
             className={`${
               isMobileFilter ? "hidden" : "absolute"
-            } top-1/2 right-1 transform -translate-y-[60%] bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            } xl:hidden top-1/2 right-1 transform -translate-y-[60%] bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             onClick={() => console.log("Search clicked")} // Handle search action here
           >
             Search
@@ -163,7 +138,7 @@ const ArticlesPage = () => {
         </div>
 
         <div
-          className={`flex  justify-around items-center order-4 xl:order-3 bg-white gap-2 w-full sm:w-2/3 
+          className={`flex  justify-around items-center order-4 xl:order-3 bg-white gap-2 w-[94%] p-2  xl:p-0 sm:w-2/3 
     ${
       isMobileFilter
         ? "absolute w-[90%] top-48 z-40 flex-col"
@@ -172,7 +147,10 @@ const ArticlesPage = () => {
         >
           <Select
             options={categories}
-            onChange={setCategoryFilter}
+            value={categoryFilter}
+            onChange={(selectedOption) =>
+              setCategoryFilter(selectedOption || null)
+            }
             isClearable
             placeholder="Category"
             className="w-full sm:w-1/3"
@@ -181,100 +159,132 @@ const ArticlesPage = () => {
           <Select
             isMulti
             options={tags}
-            onChange={setTagsFilter}
+            value={tagsFilter} // Make sure the format is [{ value, label }]
+            onChange={(selectedOptions) => setTagsFilter(selectedOptions || [])}
             placeholder="Tags"
-              className="w-full sm:w-1/3"
+            className="w-full sm:w-1/3"
             classNamePrefix="select"
           />
-           <Select
+          <Select
             options={categories}
-            onChange={setCategoryFilter}
+            value={categoryFilter}
+            onChange={(selectedOption) =>
+              setCategoryFilter(selectedOption || null)
+            }
             isClearable
             placeholder="Latest"
             className="w-full sm:w-1/3"
             classNamePrefix="select"
           />
-          <button
-            onClick={handleApplyFilters}
-            className="bg-blue-500 text-white px-3 py-0 rounded-lg w-full sm:w-auto hover:bg-blue-600 transition duration-300"
-          >
-            Apply 
+          <button className="bg-blue-500 text-white px-3 py-2 rounded-lg w-full  sm:w-auto hover:bg-blue-600 transition duration-300">
+            Search
           </button>
         </div>
       </div>
 
       <div
         className={`grid  ${
-          viewMode === "grid" ? "grid-cols-2 gap-2" : "grid-cols-1 gap-6"
+          viewMode === "grid"
+            ? "grid-cols-2 gap-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5"
+            : "grid-cols-1 gap-6"
         }`}
       >
-        {filteredArticles.map((article) => (
-          <div className="flex flex-col   p-2 border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300 ">
+        {articles.length > 0 ? (
+          articles.map((article) => (
             <div
-              key={article.id}
-              className={`flex   ${
-                viewMode === "tile" ? " flex-row" : " flex-col"
-              }`}
+            key={article.id} // Move key here, on the outermost div
+            className="flex flex-col p-2 border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
+          >
+            <Link
+             to={`/dashboard/article/${encodeURIComponent(article.title)}/${article._id}`}// Use encodeURIComponent to safely pass the title as a parameter
+              className="flex flex-col w-full"
             >
-              <img
-                src={article.thumbnail}
-                alt={article.title}
-                className={` bg-red-50 ${
-                  viewMode === "tile" ? "w-20" : "w-full h-full"
-                } aspect-[1/1] h-20 object-cover rounded-lg mb-4`}
-              />
-
-              <div className="relative w-full">
-                <div className="flex flex-col justify-around w-full  gap-2 pl-2">
-                  <h3
-                    className={` ${
-                      viewMode === "tile" ? " w-[80%]" : "w-full"
-                    } font-semibold text-base text-gray-800`}
+              <div
+                className={`flex ${
+                  viewMode === "tile" ? "flex-row" : "flex-col"
+                }`}
+              >
+                <img
+                  src={article.thumbnail}
+                  alt={article.title}
+                  className={`bg-red-50 ${
+                    viewMode === "tile" ? "w-20" : "w-full h-full"
+                  } aspect-[4/3] h-20 object-cover rounded-lg mb-4`}
+                />
+          
+                <div className="relative w-full">
+                  <div className="flex flex-col justify-around w-full gap-2 pl-2">
+                    <h3
+                      className={`font-semibold text-base text-gray-800 ${
+                        viewMode === "tile" ? "w-[80%]" : "w-full"
+                      }`}
+                    >
+                      {article.title}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {article.description.slice(0, 100)}...
+                    </p>
+                  </div>
+          
+                  {/* Custom Edit and Delete Buttons */}
+                  <div
+                    className={`${
+                      viewMode === "tile" ? "right-0 top-0" : "-top-12 right-0"
+                    } absolute`}
                   >
-                    {article.title}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {article.description.slice(0, 100)}...
-                  </p>
-                </div>
-                {/* Custom Edit and Delete Buttons */}
-                <div
-                  className={`  ${
-                    viewMode === "tile" ? "right-0 top-0 " : "-top-12 right-0"
-                  } absolute `}
-                >
-                  <div className="flex gap-1">
-                    {/* Edit Button */}
-                    <button
-                      onClick={() => handleAction("edit", article.id)}
-                      className="flex items-center bg-blue-500 text-white px-2 py-2 rounded-lg text-xs hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <FilePenLine size={16} />
-                    </button>
-
-                    {/* Delete Button */}
-                    <button
-                      onClick={() => handleAction("delete", article.id)}
-                      className="flex items-center bg-red-500 text-white px-2 py-2 rounded-lg text-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="flex gap-1">
+                      {/* Edit Button */}
+                      <button
+                        onClick={() => handleAction("edit", article.id)}
+                        className="flex items-center bg-blue-500 text-white px-2 py-2 rounded-lg text-xs hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <FilePenLine size={16} />
+                      </button>
+          
+                      {/* Delete Button */}
+                      <button
+                        onClick={() => handleAction("delete", article.id)}
+                        className="flex items-center bg-red-500 text-white px-2 py-2 rounded-lg text-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              className={` p-2 ${
-                viewMode === "tile" ? "flex-row" : "flex-col"
-              } flex justify-between text-xs text-gray-400 mt-${
-                viewMode === "tile" ? "0" : "auto"
-              }`}
-            >
-              <h1>By someone</h1>
-              <small>Last Modified: {article.lastModified}</small>
-            </div>
+          
+              <div
+                className={`p-2 ${
+                  viewMode === "tile" ? "flex-row" : "flex-col"
+                } flex justify-between text-xs text-gray-400 mt-${
+                  viewMode === "tile" ? "0" : "auto"
+                }`}
+              >
+                <h1> {article.author}</h1>
+                <small>
+                  Last Modified:{" "}
+                  {new Date(article.date).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true, // Use 24-hour format
+                  })}
+                </small>
+              </div>
+            </Link>
           </div>
-        ))}
+          ))
+        ) : (
+          <p>No articles found.</p>
+        )}
+
+        {/* Pagination Controls */}
+        <button onClick={() => setPage(page - 1)} disabled={page === 1}>
+          Previous
+        </button>
+        <button onClick={() => setPage(page + 1)}>Next</button>
       </div>
     </div>
   );

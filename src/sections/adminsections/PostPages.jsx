@@ -74,9 +74,11 @@ export default function PostPages() {
   const handleSubmit = async (event) => {
     event.preventDefault();
   
+    const isoDate = new Date(formData.date).toISOString();
     if (!validateForm()) return;
   
     console.log("Submitting data", formData, image);
+  
   
     const postData = new FormData();
     Object.entries(formData).forEach(([key, value]) => postData.append(key, value));
