@@ -159,3 +159,51 @@ export const deleteArticle = async (articleId) => {
     throw new Error(error.response?.data?.message || "Failed to delete article");
   }
 };
+
+// Create multiple featured categories at once
+export const createFeaturedCategories = async (names) => {
+  try {
+    const response = await api.post("/categories", { names }, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data; // { message: "Categories added successfully", categories: [...] }
+  } catch (error) {
+    console.error("Error creating categories:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to create categories");
+  }
+};
+
+// Get all featured categories
+export const getFeaturedCategories = async () => {
+  try {
+    const response = await api.get("/categories");
+    return response.data; // Array of category objects
+  } catch (error) {
+    console.error("Error fetching categories:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to fetch categories");
+  }
+};
+
+// Delete featured category by ID
+export const deleteFeaturedCategory = async (categoryId) => {
+  try {
+    const response = await api.delete(`/categories/${categoryId}`);
+    return response.data; // { message: "Category deleted successfully" }
+  } catch (error) {
+    console.error("Error deleting category:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to delete category");
+  }
+};
+
+// Update a category by ID (placeholder since not provided)
+// export const updateCategory = async (categoryId, categoryData) => {
+//   try {
+//     const response = await api.put(`/categories/${categoryId}`, categoryData, {
+//       headers: { "Content-Type": "application/json" },
+//     });
+//     return response.data; // Expected: Updated category object or success message
+//   } catch (error) {
+//     console.error("Error updating category:", error.response?.data || error.message);
+//     throw new Error(error.response?.data?.message || "Failed to update category");
+//   }
+// };
