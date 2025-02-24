@@ -33,13 +33,27 @@ export default function EditArticlePage() {
   // Populate form with fetched article data
   useEffect(() => {
     if (article) {
+      // Helper function to format ISO 8601 to datetime-local
+    const formatForDateTimeLocal = (isoString) => {
+      const date = new Date(isoString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+      console.log("date: ", article.date);
       setFormData({
         title: article.title || "",
         summary: article.summary || "summary..",
         author: article.author || "",
         date: article.date
-          ? new Date(article.date).toISOString().slice(0, 16) // Format for datetime-local (YYYY-MM-DDTHH:MM)
-          : "",
+        ? formatForDateTimeLocal(article.date) // Convert ISO 8601 to datetime-local format
+        : getCurrentDateTime(),
+        // date: article.date,
+          // ? new Date(article.date).toISOString().slice(0, 16) // Format for datetime-local (YYYY-MM-DDTHH:MM)
+          // : "",
         category: article.category || "",
         tags: article.tags || "",
         mainArticleUrl: article.mainArticleUrl || "",

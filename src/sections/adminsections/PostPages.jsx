@@ -43,16 +43,25 @@ export default function PostPages() {
   const [description, setDescription] = useState("");
 
   const onDrop = (acceptedFiles) => {
+    console.log("hello", acceptedFiles[0]);
     if (acceptedFiles.length > 0) {
-      setImage(acceptedFiles[0]);
+      const file = acceptedFiles[0];
+      const fileName = file.name;  // Real file name
+      const fileExtension = file.name.split('.').pop();  // Real extension
+  
+      setImage(file);
+      // Optionally, store fileName and fileExtension if needed for later use
+      console.log('File Name:', fileName);
+      console.log('File Extension:', fileExtension);
     }
   };
-
+  
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: "image/*",
     multiple: false,
   });
+  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -105,6 +114,7 @@ export default function PostPages() {
 
     try {
       const response = await uploadArticle(postData);
+  
 
       if (response && response.message) {
         console.log("Success:", response);

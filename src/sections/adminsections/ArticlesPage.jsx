@@ -287,31 +287,33 @@ const ArticlesPage = () => {
                     </div>
                   </div>
                 </div>
-
                 <div
-                  className={`p-2 ${
-                    viewMode === "tile" ? "flex-row" : "flex-col"
-                  } flex justify-between text-xs text-gray-400 mt-${
-                    viewMode === "tile" ? "0" : "auto"
-                  }`}
-                >
+  className={`p-2 ${
+    viewMode === "tile" ? "flex-row" : "flex-col"
+  } flex justify-between text-xs text-gray-400 mt-${
+    viewMode === "tile" ? "0" : "auto"
+  }`}
+>
+  <div className="flex gap-2">
+    <h1>{article.author}</h1>
+    {article.isFeatured && <strong>Featured</strong>}
+  </div>
+  <small>
+    Last Modified:{" "}
+    {new Date(article.date).toLocaleString("en-US", {
+      weekday: "short",    // Optional: display day of the week (e.g., Mon, Tue)
+      year: "numeric",
+      month: "short",      // Optional: display abbreviated month (e.g., Jan, Feb)
+      day: "numeric",
+      hour: "2-digit",     // 12-hour clock
+      minute: "2-digit",   // 2-digit minute
+      hour12: true,        // Use 12-hour format
+      
+    })}
+  </small>
+</div>
 
-                  <div className="flex gap-2">
-                  <h1> {article.author}</h1>
-                  {article.isFeatured ? (<strong>Featured</strong>) : ("")}
-                  </div>
-                  <small>
-                    Last Modified:{" "}
-                    {new Date(article.date).toLocaleString("en-US", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true, // Use 24-hour format
-                    })}
-                  </small>
-                </div>
+
               </div>
             </div>
           ))
