@@ -8,6 +8,7 @@ import {
   deleteFeaturedCategory,
 } from "../../services/api"; // Added deleteFeaturedCategory
 
+
 const ContentManage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [submitStatus, setSubmitStatus] = useState(null);
@@ -22,6 +23,7 @@ const ContentManage = () => {
     categories: featuredCategories,
     loading: featuredLoading,
     error: featuredError,
+    refetch: featureRefetch
   } = useFetchFeaturedCategories();
 
   const handleCategoryChange = (selectedOptions) => {
@@ -40,8 +42,9 @@ const ContentManage = () => {
       const categoriesToSave = selectedCategories.map((cat) => cat.label);
       await createFeaturedCategories(categoriesToSave);
       setSubmitStatus("Categories saved successfully!");
-      // Refresh the page
-      window.location.reload();
+      featureRefetch()
+      setSelectedCategories([])
+     
     } catch (err) {
       setSubmitStatus("Failed to save categories: " + err.message);
     }
@@ -52,8 +55,8 @@ const ContentManage = () => {
     try {
       await deleteFeaturedCategory(categoryId);
       setSubmitStatus("Category deleted successfully!");
-      // Refresh the page
-      window.location.reload();
+      featureRefetch()
+     
       // Note: featuredCategories won't update automatically unless you refetch or manage state locally
     } catch (err) {
       setSubmitStatus("Failed to delete category: " + err.message);
