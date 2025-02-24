@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDropzone } from "react-dropzone";
@@ -6,72 +7,53 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { X } from "lucide-react";
-import { uploadArticle, fetchArticleById } from "../../services/api";
-import { useParams, useNavigate } from "react-router-dom"; // for fetching id from URL and navigation
+import { updateArticle } from "../../services/api";
+import useFetchArticleById from "../../components/hooks/useFetchArticleById";
 
 export default function EditArticlePage() {
-  const { articleId } = useParams(); // Get the article ID from the URL
-  const navigate = useNavigate(); // To navigate after successful update
+  const { articleId } = useParams();
+  const navigate = useNavigate();
+  const { article, loading, error } = useFetchArticleById(articleId);
+
   const [formData, setFormData] = useState({
     title: "",
     summary: "summary..",
     author: "",
-    date: "",
+    date: "", // Will store date and time (e.g., "2025-02-23T14:30")
     category: "",
     tags: "",
     mainArticleUrl: "",
     readTime: "",
+    isFeatured: false, // Added isFeatured field
   });
-  const [errors, setErrors] = useState({});
-  const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState(null);
+  const [errors, setErrors] = useState({});
 
-  // Fetch article data when the component is mounted or the ID changes
+  // Populate form with fetched article data
   useEffect(() => {
-    console.log("edit page", articleId);
-    const fetchArticle = async () => {
-      try {
-        const articleData = await fetchArticleById(articleId); // Fetch the article by ID
-        if (articleData) {
-          setFormData({
-            title: articleData.title,
-            summary: articleData.summary,
-            author: articleData.author,
-            date: articleData.date,
-            category: articleData.category,
-            tags: articleData.tags.join(", "), // Assuming tags is an array
-            mainArticleUrl: articleData.mainArticleUrl,
-            readTime: articleData.readTime.replace(/\D/g, ""), // Extract only the number
-          });
-          setDescription(articleData.description);
-          setImage(articleData.thumbnail); // Store the image URL directly
-        }
-      } catch (error) {
-        console.error("Error fetching article:", error);
-        alert("Failed to fetch article data.");
-      }
-    };
-    fetchArticle();
-  }, [articleId]);
-
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      summary: "summary",
-      author: "",
-      date: "",
-      category: "",
-      tags: "",
-      mainArticleUrl: "",
-    });
-    setDescription("");
-    setImage(null);
-    setErrors({});
-  };
+    if (article) {
+      setFormData({
+        title: article.title || "",
+        summary: article.summary || "summary..",
+        author: article.author || "",
+        date: article.date
+          ? new Date(article.date).toISOString().slice(0, 16) // Format for datetime-local (YYYY-MM-DDTHH:MM)
+          : "",
+        category: article.category || "",
+        tags: article.tags || "",
+        mainArticleUrl: article.mainArticleUrl || "",
+        readTime: article.readTime ? (article.readTime.match(/\d+/)?.[0] || "") : "",
+        isFeatured: article.isFeatured || false, // Set isFeatured from article data
+      });
+      setDescription(article.description || "");
+      setImage(article.thumbnail ? `http://localhost:5000${article.thumbnail}` : null);
+    }
+  }, [article]);
 
   const onDrop = (acceptedFiles) => {
     if (acceptedFiles.length > 0) {
-      setImage(acceptedFiles[0]);
+      setImage(acceptedFiles[0]); // Set as File object for new uploads
     }
   };
 
@@ -81,18 +63,22 @@ export default function EditArticlePage() {
     multiple: false,
   });
 
+  // Updated handleChange to handle checkbox
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const validateForm = () => {
     let newErrors = {};
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
+      if (key !== "isFeatured" && !formData[key]) { // Exclude isFeatured from required check
         newErrors[key] = `${key} is required`;
       }
     });
-
     if (!description) newErrors.description = "Description is required";
     if (!image) newErrors.image = "Image is required";
 
@@ -102,24 +88,30 @@ export default function EditArticlePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (!validateForm()) return;
 
-    const postData = new FormData();
-    Object.entries(formData).forEach(([key, value]) =>
-      postData.append(key, value)
-    );
-    postData.append("description", description);
+    // Convert the datetime-local value to ISO 8601 format
+    const isoDate = formData.date
+      ? new Date(formData.date).toISOString()
+      : new Date().toISOString(); // Fallback to current time if no date
 
-    if (image) postData.append("thumbnail", image);
+    const updatedFormData = {
+      ...formData,
+      date: isoDate, // Replace with ISO 8601 format
+    };
+
+    const postData = new FormData();
+    Object.entries(updatedFormData).forEach(([key, value]) => postData.append(key, value));
+    postData.append("description", description);
+    if (image && image instanceof File) {
+      postData.append("thumbnail", image); // Only append if it's a new File
+    }
 
     try {
-      const response = await uploadArticle(postData);
+      const response = await updateArticle(articleId, postData);
       if (response && response.message) {
-        console.log("Success:", response);
-        resetForm();
         alert("Article updated successfully!");
-        navigate("/dashboard"); // Redirect to the dashboard or wherever needed
+        navigate("/dashboard/articles");
       } else {
         throw new Error("Failed to update the article.");
       }
@@ -129,134 +121,200 @@ export default function EditArticlePage() {
     }
   };
 
+  if (loading) return <div className="w-full p-6 mx-auto">Loading...</div>;
+  if (error) return <div className="w-full p-6 mx-auto text-red-500">{error}</div>;
+
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-semibold text-gray-900 mb-6">
-        Edit Article
-      </h1>
+    <div className="w-full p-6 mx-auto">
+      <h2 className="text-2xl font-bold mb-4 pl-20 md:pl-0">Edit Article</h2>
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <Label htmlFor="title">Title</Label>
-          <Input
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <div className="flex flex-col lg:flex-row mb-4">
+          <div className="w-full lg:w-[65%] lg:shadow-md lg:p-2 2xl:p-4">
+            <div className="mb-4">
+              <Label htmlFor="title" className="mb-2 font-medium">
+                Title
+              </Label>
+              <Input
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+              />
+              {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+            </div>
 
-        <div className="mb-4">
-          <Label htmlFor="summary">Summary</Label>
-          <Input
-            id="summary"
-            name="summary"
-            value={formData.summary}
-            onChange={handleChange}
-            required
-          />
-        </div>
+            <div className="mb-4">
+              <Label className="mb-2 font-medium">Description</Label>
+              <ReactQuill
+                value={description}
+                onChange={setDescription}
+                className="bg-white border border-gray-300 rounded-md react-quill-editor"
+              />
+              {errors.description && (
+                <p className="text-red-500 text-sm">{errors.description}</p>
+              )}
+            </div>
 
-        <div className="mb-4">
-          <Label htmlFor="tags">Tags</Label>
-          <Input
-            id="tags"
-            name="tags"
-            value={formData.tags}
-            onChange={handleChange}
-            placeholder="e.g., tech, programming"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <Label htmlFor="description">Description</Label>
-          <ReactQuill
-            value={description}
-            onChange={setDescription}
-            theme="snow"
-            placeholder="Write the article description..."
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <Label>Thumbnail</Label>
-          <div
-            {...getRootProps()}
-            className="border-2 border-dashed p-4 text-center cursor-pointer"
-          >
-            <input {...getInputProps()} />
-            {console.log(image)}
-            {image ? (
-              <div className="relative">
-                <img
-                  src={
-                    typeof image === "string"
-                      ?  image.startsWith("/")
-                        ? image
-                        : `http://localhost:5000${image}` // Adjust the backend URL if needed
-                      : image instanceof File
-                      ? URL.createObjectURL(image)
-                      : null
-                  }
-                  alt="Selected"
-                  className="max-w-full h-48 object-cover mb-4"
-                />
-
-                <X
-                  size={20}
-                  className="absolute top-0 right-0 p-1 bg-white rounded-full cursor-pointer"
-                  onClick={() => setImage(null)}
-                />
+            <div className="mb-4">
+              <Label className="mb-2 font-medium">Image</Label>
+              <div
+                {...getRootProps()}
+                className="border-dashed border-2 p-4 text-center cursor-pointer"
+              >
+                <input {...getInputProps()} />
+                <p>Drag & drop an image here, or click to select a file</p>
               </div>
-            ) : (
-              <p>Drag and drop an image or click to select one</p>
-            )}
+              {image && (
+                <div className="relative mt-2">
+                  <img
+                    src={
+                      image instanceof File
+                        ? URL.createObjectURL(image)
+                        : image // URL from server
+                    }
+                    alt="Preview"
+                    className="w-40 h-40 object-cover rounded"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setImage(null)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              )}
+              {errors.image && <p className="text-red-500 text-sm">{errors.image}</p>}
+            </div>
+          </div>
+
+          <div className="w-full lg:w-[35%] px-4">
+            <div className="mb-4 grid grid-cols-2 lg:grid-cols-1 gap-4">
+              <div>
+                <Label className="mb-2 font-medium" htmlFor="author">
+                  Author
+                </Label>
+                <Input
+                  id="author"
+                  name="author"
+                  value={formData.author}
+                  onChange={handleChange}
+                />
+                {errors.author && (
+                  <p className="text-red-500 text-sm">{errors.author}</p>
+                )}
+              </div>
+              <div>
+                <Label className="mb-2 font-medium" htmlFor="date">
+                 Date and Time
+                </Label>
+                <Input
+                  id="date"
+                  type="datetime-local" // Changed to datetime-local
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                />
+                {errors.date && <p className="text-red-500 text-sm">{errors.date}</p>}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <Label className="mb-2 font-medium" htmlFor="category">
+                Category
+              </Label>
+              <Input
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+              />
+              {errors.category && (
+                <p className="text-red-500 text-sm">{errors.category}</p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <Label className="mb-2 font-medium" htmlFor="tags">
+                Tags
+              </Label>
+              <Input
+                id="tags"
+                name="tags"
+                value={formData.tags}
+                onChange={handleChange}
+              />
+              {errors.tags && <p className="text-red-500 text-sm">{errors.tags}</p>}
+            </div>
+
+            <div className="mb-4">
+              <Label className="mb-2 font-medium" htmlFor="mainArticleUrl">
+                Main Article URL
+              </Label>
+              <Input
+                id="mainArticleUrl"
+                name="mainArticleUrl"
+                value={formData.mainArticleUrl}
+                onChange={handleChange}
+              />
+              {errors.mainArticleUrl && (
+                <p className="text-red-500 text-sm">{errors.mainArticleUrl}</p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <Label className="mb-2 font-medium" htmlFor="readTime">
+                Read Time (in minutes)
+              </Label>
+              <Input
+                id="readTime"
+                name="readTime"
+                type="number"
+                value={formData.readTime}
+                onChange={handleChange}
+              />
+              {errors.readTime && (
+                <p className="text-red-500 text-sm">{errors.readTime}</p>
+              )}
+            </div>
+
+            <div className="mb-4 flex items-center gap-2">
+              <input
+                id="isFeatured"
+                name="isFeatured"
+                type="checkbox"
+                checked={formData.isFeatured} // Bind to boolean state
+                onChange={handleChange}
+              />
+              <Label className="font-medium" htmlFor="isFeatured">
+                Is Featured
+              </Label>
+              {errors.isFeatured && (
+                <p className="text-red-500 text-sm">{errors.isFeatured}</p>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="mb-4">
-          <Label htmlFor="category">Category</Label>
-          <Input
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <Label htmlFor="author">Author</Label>
-          <Input
-            id="author"
-            name="author"
-            value={formData.author}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <Label htmlFor="readTime">Read Time (in minutes)</Label>
-          <Input
-            id="readTime"
-            name="readTime"
-            value={formData.readTime}
-            onChange={handleChange}
-            type="number"
-            required
-          />
-        </div>
-
-        <div className="flex justify-between">
-          <Button type="button" onClick={() => navigate("/dashboard")}>
-            Cancel
-          </Button>
-          <Button type="submit">Save Changes</Button>
-        </div>
+        <Button type="submit">Update Article</Button>
       </form>
+      <style>{`
+        .react-quill-editor .ql-editor {
+          height: 100px;
+        }
+
+        @media (min-width: 640px) {
+          .react-quill-editor .ql-editor {
+            height: 200px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .react-quill-editor .ql-editor {
+            height: 250px;
+          }
+        }
+      `}</style>
     </div>
   );
 }

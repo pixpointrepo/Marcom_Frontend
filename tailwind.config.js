@@ -13,6 +13,7 @@ export default {
         width: {
           'scroll-width': '8px', // Custom width for scrollbar
         },
+        
       },
       fontFamily: {
 
@@ -42,7 +43,5 @@ export default {
     
     },
   },
-  plugins: [
-    
-  ],
+  plugins: [require('@tailwindcss/typography')],
 }

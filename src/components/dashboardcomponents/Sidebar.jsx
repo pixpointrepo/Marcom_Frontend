@@ -8,7 +8,8 @@ import {
   Users,
   LogOut,
   BookOpenText,
-  Settings
+  Settings,
+  FolderCog
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ import { useContext } from "react";
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const {logout} = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const handleLogout = () => {
     logout(); // Clear the authentication token
     // navigate("/pixadmin"); // Navigate to the login page
@@ -26,7 +27,7 @@ export default function Sidebar() {
 
   return (
     <div className="flex ">
-      {/* Sidebar */}  
+      {/* Sidebar */}
       <div
         className={`fixed md:sticky left-0 top-0 z-50 bg-gray-900 text-white w-64 h-screen p-5 transition-transform ${
           isOpen ? "translate-x-0 z-50 " : "-translate-x-full"
@@ -42,11 +43,13 @@ export default function Sidebar() {
                 />
                 <h1 className="text-lg font-bold ">PixPoint News</h1>
               </div>
-             
             </div>
-            <button className="md:hidden  fixed top-6 right-4" onClick={() => setIsOpen(false)}>
-                <X size={24} />
-              </button>
+            <button
+              className="md:hidden  fixed top-6 right-4"
+              onClick={() => setIsOpen(false)}
+            >
+              <X size={24} />
+            </button>
             <nav className="space-y-4">
               <SidebarItem
                 to="/dashboard"
@@ -61,9 +64,18 @@ export default function Sidebar() {
               <SidebarItem
                 to="/dashboard/posts"
                 icon={<FileText size={20} />}
-                label="Posts"
+                label="New Post"
               />
-              <SidebarItem to="/users" icon={<Users size={20} />} label="Users" />
+              <SidebarItem
+                to="/dashboard/manage-content"
+                icon={<FolderCog size={20} />}
+                label="Manage Contents"
+              />
+              <SidebarItem
+                to="/users"
+                icon={<Users size={20} />}
+                label="Users"
+              />
             </nav>
           </div>
           <div>
@@ -74,11 +86,11 @@ export default function Sidebar() {
               <Settings size={20} className="mr-2" /> Settings
             </Link>
             <button
-      onClick={handleLogout}
-      className="mt-6 flex items-center text-red-500 hover:text-red-400"
-    >
-      <LogOut size={20} className="mr-2" /> Logout
-    </button>
+              onClick={handleLogout}
+              className="mt-6 flex items-center text-red-500 hover:text-red-400"
+            >
+              <LogOut size={20} className="mr-2" /> Logout
+            </button>
           </div>
         </div>
       </div>
@@ -90,7 +102,6 @@ export default function Sidebar() {
       >
         <Menu size={24} />
       </button>
-      
     </div>
   );
 }

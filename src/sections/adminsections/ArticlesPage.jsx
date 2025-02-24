@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import Select from "react-select"; // For tags and category filters
-import { Link } from 'react-router-dom'; // Import Link from React Router
-import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom"; // Import Link from React Router
+import { useNavigate } from "react-router-dom";
 
 import {
   SlidersHorizontal,
@@ -15,10 +15,11 @@ import {
 } from "lucide-react";
 import useFetchMetadata from "../../components/hooks/useFetchMetadata";
 import useFetchArticles from "../../components/hooks/useFetchArticles";
+import { deleteArticle } from "../../services/api"; // Import the new function
 
 const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
-
+  const navigate = useNavigate();
   const [sortOrder, setSortOrder] = useState("latest");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isMobileFilter, setMobileFilter] = useState(false);
@@ -71,18 +72,23 @@ const ArticlesPage = () => {
   };
 
   // Handle Edit/Delete actions
-  const handleAction = (action, articleId) => {
-    const navigate = useNavigate(); // Get the navigate function
-    
+  const handleAction = async (action, id) => {
+    // Accepting both action and id
+
     if (action === "edit") {
-      // Navigate to the edit page and pass the articleId as part of the URL
-      navigate(`/dashboard/edit-article/${articles._id}`);
+      navigate(`/dashboard/edit-article/${id}`); // Use the id here
     } else if (action === "delete") {
-      console.log(`Delete article ${articleId}`);
-      // Implement delete logic here
+      if (window.confirm("Are you sure you want to delete this article?")) {
+        try {
+          await deleteArticle(id); // Use the id here as well
+          alert("Article deleted successfully!");
+          navigate("/dashboard/articles"); // Redirect to dashboard after deletion
+        } catch (error) {
+          alert("Failed to delete article: " + error.message);
+        }
+      }
     }
   };
-  
 
   return (
     <div className="container mx-auto p-4">
@@ -192,89 +198,122 @@ const ArticlesPage = () => {
         {articles.length > 0 ? (
           articles.map((article) => (
             <div
-            key={article.id} // Move key here, on the outermost div
-            className="flex flex-col p-2 border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
-          >
-            <Link
-             to={`/dashboard/article/${encodeURIComponent(article.title)}/${article._id}`}// Use encodeURIComponent to safely pass the title as a parameter
-              className="flex flex-col w-full"
+              key={article.id} // Move key here, on the outermost div
+              className="flex flex-col p-2 border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
             >
-              <div
-                className={`flex ${
-                  viewMode === "tile" ? "flex-row" : "flex-col"
-                }`}
-              >
-                <img
-                 src={`http://localhost:5000${article.thumbnail}`}
-                  alt={article.title}
-                  className={`bg-red-50 ${
-                    viewMode === "tile" ? "w-20" : "w-full h-full"
-                  } aspect-[4/3] h-20 object-cover rounded-lg mb-4`}
-                />
-          
-                <div className="relative w-full">
-                  <div className="flex flex-col justify-around w-full gap-2 pl-2">
-                    <h3
-                      className={`font-semibold text-base text-gray-800 ${
-                        viewMode === "tile" ? "w-[80%]" : "w-full"
-                      }`}
-                    >
-                      {article.title}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {article.description.slice(0, 100)}...
-                    </p>
-                  </div>
-          
-                  {/* Custom Edit and Delete Buttons */}
-                  <div
-                    className={`${
-                      viewMode === "tile" ? "right-0 top-0" : "-top-12 right-0"
-                    } absolute`}
+              <div className="flex flex-col w-full">
+                <div
+                  className={`flex ${
+                    viewMode === "tile" ? "flex-row" : "flex-col"
+                  }`}
+                >
+                  <Link
+                    to={`/dashboard/article/${encodeURIComponent(
+                      article.title
+                    )}/${article._id}`}
                   >
-                    <div className="flex gap-1">
-                      {/* Edit Button */}
-                      <button
-                        onClick={() => handleAction("edit", article.id)}
-                        className="flex items-center bg-blue-500 text-white px-2 py-2 rounded-lg text-xs hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    <img
+                      src={`http://localhost:5000${article.thumbnail}`}
+                      alt={article.title}
+                      className={`bg-red-50 ${
+                        viewMode === "tile" ? "w-20" : "w-full h-full"
+                      } aspect-[4/3] h-20 object-cover rounded-lg mb-4`}
+                    />
+                  </Link>
+
+                  <div className="relative w-full">
+                    <Link
+                      to={`/dashboard/article/${encodeURIComponent(
+                        article.title
+                      )}/${article._id}`} // Use encodeURIComponent to safely pass the title as a parameter
+                      className="flex flex-col justify-around w-full gap-2 pl-2 "
+                    >
+                      <h3
+                        className={`font-semibold text-base text-gray-800 ${
+                          viewMode === "tile" ? "w-[80%]" : "w-full"
+                        }`}
                       >
-                        <FilePenLine size={16} />
-                      </button>
-          
-                      {/* Delete Button */}
-                      <button
-                        onClick={() => handleAction("delete", article.id)}
-                        className="flex items-center bg-red-500 text-white px-2 py-2 rounded-lg text-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                        {article.title}
+                      </h3>
+                      {viewMode === "tile" ? (
+                        <p
+                          className="prose prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3 "
+                          dangerouslySetInnerHTML={{
+                            __html: article.description,
+                          }}
+                        />
+                      ) : (
+                        <p
+                          className="prose prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3"
+                          dangerouslySetInnerHTML={{
+                            __html: article.description,
+                          }}
+                        />
+                      )}
+                    </Link>
+
+                    {/* Custom Edit and Delete Buttons */}
+                    <div
+                      className={`${
+                        viewMode === "tile"
+                          ? "right-0 top-0"
+                          : "-top-12 right-0"
+                      } absolute z-40`}
+                    >
+                      <div className="flex gap-1">
+                        {/* Edit Button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent click from bubbling up to Link
+                            handleAction("edit", article._id);
+                          }}
+                          className="flex items-center bg-blue-500 text-white px-2 py-2 rounded-lg text-xs hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <FilePenLine size={16} />
+                        </button>
+
+                        {/* Delete Button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent click from bubbling up to Link
+                            handleAction("delete", article._id); // Fixed to "delete"
+                          }}
+                          className="flex items-center bg-red-500 text-white px-2 py-2 rounded-lg text-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                  
                     </div>
                   </div>
                 </div>
+
+                <div
+                  className={`p-2 ${
+                    viewMode === "tile" ? "flex-row" : "flex-col"
+                  } flex justify-between text-xs text-gray-400 mt-${
+                    viewMode === "tile" ? "0" : "auto"
+                  }`}
+                >
+
+                  <div className="flex gap-2">
+                  <h1> {article.author}</h1>
+                  {article.isFeatured ? (<strong>Featured</strong>) : ("")}
+                  </div>
+                  <small>
+                    Last Modified:{" "}
+                    {new Date(article.date).toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true, // Use 24-hour format
+                    })}
+                  </small>
+                </div>
               </div>
-          
-              <div
-                className={`p-2 ${
-                  viewMode === "tile" ? "flex-row" : "flex-col"
-                } flex justify-between text-xs text-gray-400 mt-${
-                  viewMode === "tile" ? "0" : "auto"
-                }`}
-              >
-                <h1> {article.author}</h1>
-                <small>
-                  Last Modified:{" "}
-                  {new Date(article.date).toLocaleString("en-US", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true, // Use 24-hour format
-                  })}
-                </small>
-              </div>
-            </Link>
-          </div>
+            </div>
           ))
         ) : (
           <p>No articles found.</p>

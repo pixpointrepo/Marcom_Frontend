@@ -23,6 +23,7 @@ import ProtectedRoute from './components/ProtectedRoute'; // A new component for
 import ArticlesPage from "./sections/adminsections/ArticlesPage";
 import ArticlePage from "./sections/adminsections/ArticlePage";
 import EditArticlePage from "./sections/adminsections/EditPage";
+import ContentManage from "./sections/adminsections/ContentManage";
 
 function App() {
   return (
@@ -57,6 +58,9 @@ function App() {
             <Route path="/dashboard/article/:title/:id" element={<ArticlePage />} />
             {/* Edit Page */}
             <Route path="/dashboard/edit-article/:articleId" element={<EditArticlePage />} />
+            {/* Mange content Display */}
+            <Route path="/dashboard/manage-content" element={<ContentManage />} />
+
 
             
           </Route>

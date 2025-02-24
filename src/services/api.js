@@ -16,18 +16,12 @@ api.interceptors.request.use(
       config.headers.Authorization = token;
     }
     return config;
-
-    // Simulate a delay (e.g., 2 seconds)
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve(config); // Proceed with the request after delay
-    //   }, 2000);
-    // });
   },
   (error) => {
     return Promise.reject(error);
   }
 );
+
 // Add response interceptor to handle unauthorized errors (401)
 api.interceptors.response.use(
   (response) => response,
@@ -40,7 +34,8 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-// Admin login (No token needed for login request)
+
+// Admin login (No token needed for login request, but using api for consistency)
 export const adminLogin = async (email, password) => {
   try {
     const response = await api.post(
@@ -50,89 +45,117 @@ export const adminLogin = async (email, password) => {
         headers: { "Content-Type": "application/json" },
       }
     );
-
     return response;
   } catch (error) {
     console.error("Error during login request:", error);
     throw error;
   }
 };
-export const uploadArticle = async (postData) => {
-    try {
-      // Use the configured api (axios instance) to make the request
-      const response = await api.post("/articles", postData);
-  
-      // If the request is successful, return the result
-      console.log("Success:", response.data);
-      return response.data;
-    } catch (error) {
-      // Handle errors by logging and rethrowing them
-      console.error("Error:", error);
-      throw error;  // Rethrow error to be handled by the caller
-    }
-  };
 
-  //fetching all articles
-  export const fetchArticles = async ({ page = 1, category = "", tags = "", date = "",search = "" ,limit = 10}) => {
-    console.log("Sending tags:", tags);
-    try {
-        const response = await axios.get(`${API_URL}/articles`, {
-            params: {
-                page,
-                limit,
-                category,
-                tags,
-                date,
-                search
-            }
-        });
-        return response.data;
-       
-    } catch (error) {
-        console.error("Error fetching articles:", error);
-        throw error;
-    }
+// Upload article
+export const uploadArticle = async (postData) => {
+  try {
+    const response = await api.post("/articles", postData);
+    console.log("Success:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
 };
 
+// Fetch all articles
+export const fetchArticles = async ({
+  page = 1,
+  category = "",
+  tags = "",
+  date = "",
+  search = "",
+  limit = 10,
+  isFeatured = null,
+}) => {
+  console.log("Sending tags:", tags);
+  console.log("Sending feature:", isFeatured);
+  try {
+    const response = await api.get("/articles", {
+      params: {
+        page,
+        limit,
+        category,
+        tags,
+        date,
+        search,
+        isFeatured,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    throw error;
+  }
+};
+
+// Fetch tags
 export const fetchTags = async () => {
   try {
-      const response = await axios.get(`${API_URL}/articles/tags`);
-      
-      // Remove duplicates but keep the original case
-      const uniqueTags = Array.from(
-          new Set(response.data) // No lowercase conversion
-      ).map(tag => ({ value: tag, label: tag }));
-      
-      return uniqueTags;
+    const response = await api.get("/articles/tags");
+    const uniqueTags = Array.from(new Set(response.data)).map((tag) => ({
+      value: tag,
+      label: tag,
+    }));
+    return uniqueTags;
   } catch (error) {
-      console.error("Error fetching tags:", error);
-      throw error;
+    console.error("Error fetching tags:", error);
+    throw error;
   }
 };
 
-
+// Fetch categories
 export const fetchCategories = async () => {
   try {
-      const response = await axios.get(`${API_URL}/articles/categories`);
-      
-      // Extract unique categories
-      const uniqueCategories = Array.from(
-          new Set(response.data.map(cat => JSON.stringify(cat)))
-      ).map(str => JSON.parse(str));
-      
-      return uniqueCategories;
+    const response = await api.get("/articles/categories");
+    const uniqueCategories = Array.from(
+      new Set(response.data.map((cat) => JSON.stringify(cat)))
+    ).map((str) => JSON.parse(str));
+    return uniqueCategories;
   } catch (error) {
-      console.error("Error fetching categories:", error);
-      throw error;
+    console.error("Error fetching categories:", error);
+    throw error;
   }
 };
+
 // Fetch article by ID
 export const fetchArticleById = async (articleId) => {
   try {
-    const response = await axios.get(`${API_URL}/articles/${articleId}`);
-    return response.data; // Return the article data
+    const response = await api.get(`/articles/${articleId}`);
+    return response.data;
   } catch (error) {
     throw new Error("Failed to fetch article");
   }
 };
 
+// Update article
+export const updateArticle = async (articleId, formData) => {
+  try {
+    const response = await api.put(`/articles/${articleId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating article:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to update article");
+  }
+};
+
+// Delete article
+export const deleteArticle = async (articleId) => {
+  try {
+    const response = await api.delete(`/articles/${articleId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting article:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to delete article");
+  }
+};

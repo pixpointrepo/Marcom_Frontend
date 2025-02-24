@@ -8,18 +8,19 @@ import { Label } from "../../components/ui/label";
 import { X } from "lucide-react";
 import { uploadArticle } from "../../services/api";
 
-
 export default function PostPages() {
   const [formData, setFormData] = useState({
     title: "",
     summary: "summary..",
     author: "",
-    date: "",
+    date: "", // Will store date and time (e.g., "2025-02-23T14:30")
     category: "",
     tags: "",
     mainArticleUrl: "",
     readTime: "",
+    isFeatured: null,
   });
+
   const resetForm = () => {
     setFormData({
       title: "",
@@ -29,11 +30,14 @@ export default function PostPages() {
       category: "",
       tags: "",
       mainArticleUrl: "",
+      readTime: "",
+      isFeatured: false,
     });
     setDescription("");
     setImage(null);
     setErrors({});
   };
+
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
@@ -51,49 +55,62 @@ export default function PostPages() {
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const validateForm = () => {
     let newErrors = {};
 
-    // Check each formData field
     Object.keys(formData).forEach((key) => {
-      if (!formData[key]) {
-        newErrors[key] = `${key} is required`; // Validate all fields
+      if (key !== "isFeatured" && !formData[key]) {
+        newErrors[key] = `${key} is required`;
       }
     });
 
-    // Validate description separately, as it's stored in a different state
     if (!description) newErrors.description = "Description is required";
     if (!image) newErrors.image = "Image is required";
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // If no errors, form is valid
+    return Object.keys(newErrors).length === 0;
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!validateForm()) return;
-  
-    console.log("Submitting data", formData, image);
-  
+
+    // Convert the datetime-local value to ISO 8601 format
+    const isoDate = formData.date
+      ? new Date(formData.date).toISOString()
+      : new Date().toISOString(); // Fallback to current time if no date is provided
+
+    const updatedFormData = {
+      ...formData,
+      date: isoDate, // Replace the date with ISO 8601 format
+    };
+
+    console.log("Submitting data", updatedFormData, image);
+
     const postData = new FormData();
-    Object.entries(formData).forEach(([key, value]) => postData.append(key, value));
+    Object.entries(updatedFormData).forEach(([key, value]) =>
+      postData.append(key, value)
+    );
     postData.append("description", description);
-  
-    // Use 'thumbnail' for the image field to match the backend
+
     if (image) postData.append("thumbnail", image);
-  
+
     try {
-      // Call the uploadArticle function and pass the FormData and image
       const response = await uploadArticle(postData);
-  
-      // Check for success or failure based on the response
+
       if (response && response.message) {
         console.log("Success:", response);
-        resetForm(); // Reset the form after successful upload
+        resetForm();
         alert("Article uploaded successfully!");
+
       } else {
         throw new Error("Failed to upload the article.");
       }
@@ -102,7 +119,6 @@ export default function PostPages() {
       alert(`Error: ${error.message}`);
     }
   };
-  
 
   return (
     <div className="w-full p-6 mx-auto">
@@ -144,7 +160,6 @@ export default function PostPages() {
                 className="border-dashed border-2 p-4 text-center cursor-pointer"
               >
                 <input {...getInputProps()} />
-
                 <p>Drag & drop an image here, or click to select a file</p>
               </div>
               {image && (
@@ -187,11 +202,11 @@ export default function PostPages() {
               </div>
               <div>
                 <Label className="mb-2 font-medium" htmlFor="date">
-                  Post Date
+                   Date and Time
                 </Label>
                 <Input
                   id="date"
-                  type="date"
+                  type="datetime-local" // Changed from "date" to "datetime-local"
                   name="date"
                   value={formData.date}
                   onChange={handleChange}
@@ -260,6 +275,22 @@ export default function PostPages() {
               />
               {errors.readTime && (
                 <p className="text-red-500 text-sm">{errors.readTime}</p>
+              )}
+            </div>
+
+            <div className="mb-4 flex items-center gap-2">
+              <input
+                id="isFeatured"
+                name="isFeatured"
+                type="checkbox"
+                checked={formData.isFeatured}
+                onChange={handleChange}
+              />
+              <Label className="font-medium" htmlFor="isFeatured">
+                Is Featured
+              </Label>
+              {errors.isFeatured && (
+                <p className="text-red-500 text-sm">{errors.isFeatured}</p>
               )}
             </div>
           </div>
