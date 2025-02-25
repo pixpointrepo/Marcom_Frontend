@@ -1,36 +1,56 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchArticles } from "../../services/api";
 
-const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilter = [], searchQuery = null,  isFeatured = null}) => {
+const useFetchArticles = ({
+  page = 1,
+  limit = 10,
+  categoryFilter = null,
+  tagsFilter = [],
+  searchQuery = null,
+  isFeatured = null,
+}) => {
   const [articles, setArticles] = useState([]);
-  const [totalFetchedPages,setTotalFetchedPages]= useState(0);
+  const [totalFetchedPages, setTotalFetchedPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const loadArticles = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const category = categoryFilter ? categoryFilter.value : "";
-        const tags = tagsFilter.map(tag => tag.value).join(',');
-        console.log(tags)
+  // Define the fetch function using useCallback to memoize it
+  const loadArticles = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const category = categoryFilter ? categoryFilter.value : "";
+      const tags = tagsFilter.map((tag) => tag.value).join(",");
+      console.log(tags);
 
-        const data = await fetchArticles({ page, category, tags, search: searchQuery , isFeatured   });
-        setArticles(data.articles);
-        setTotalFetchedPages(data.totalPages);
-       
-      } catch (err) {
-        setError("Failed to load articles");
-      }
+      const data = await fetchArticles({
+        page,
+        limit, // Include limit in the fetch call
+        category,
+        tags,
+        search: searchQuery,
+        isFeatured,
+      });
+      setArticles(data.articles);
+      setTotalFetchedPages(data.totalPages);
+    } catch (err) {
+      setError("Failed to load articles");
+    } finally {
       setLoading(false);
-      
-    };
+    }
+  }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]); // Dependencies for memoization
 
+  // Initial fetch and re-fetch on dependency change
+  useEffect(() => {
     loadArticles();
-  }, [page, categoryFilter, tagsFilter, searchQuery, limit, isFeatured]);
+  }, [loadArticles]); // Depend on the memoized function
 
-  return { articles, loading, error ,totalFetchedPages };
+  // Expose refetch as a manual trigger
+  const refetch = () => {
+    loadArticles();
+  };
+
+  return { articles, totalFetchedPages, loading, error, refetch };
 };
 
 export default useFetchArticles;

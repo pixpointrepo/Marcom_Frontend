@@ -6,12 +6,14 @@ import { Button } from "../../components/ui/button";
 import {
   createFeaturedCategories,
   deleteFeaturedCategory,
-} from "../../services/api"; // Added deleteFeaturedCategory
-
+} from "../../services/api";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal"
 
 const ContentManage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [featuredCategoryToDelete, setfeaturedCategoryToDelete] = useState(null);
 
   const {
     categories,
@@ -23,7 +25,7 @@ const ContentManage = () => {
     categories: featuredCategories,
     loading: featuredLoading,
     error: featuredError,
-    refetch: featureRefetch
+    refetch: featureRefetch,
   } = useFetchFeaturedCategories();
 
   const handleCategoryChange = (selectedOptions) => {
@@ -31,8 +33,6 @@ const ContentManage = () => {
   };
 
   const handleSubmit = async () => {
-    console.log(categories);
-    console.log(selectedCategories);
     if (selectedCategories.length === 0) {
       setSubmitStatus("Please select at least one category.");
       return;
@@ -42,28 +42,37 @@ const ContentManage = () => {
       const categoriesToSave = selectedCategories.map((cat) => cat.label);
       await createFeaturedCategories(categoriesToSave);
       setSubmitStatus("Categories saved successfully!");
-      featureRefetch()
-      setSelectedCategories([])
-     
+      setSelectedCategories([]);
+      featureRefetch();
     } catch (err) {
       setSubmitStatus("Failed to save categories: " + err.message);
     }
   };
 
-  // Handle deletion of a featured category
-  const handleDeleteFeaturedCategory = async (categoryId) => {
+  // Open the confirmation modal
+  const openDeleteModal = (categoryId) => {
+    const category = featuredCategories.find((cat) => cat._id === categoryId);
+    setfeaturedCategoryToDelete(category);
+    setIsModalOpen(true);
+  };
+
+  // Handle deletion after confirmation
+  const handleDeleteFeaturedCategory = async () => {
+    if (!featuredCategoryToDelete) return;
+
     try {
-      await deleteFeaturedCategory(categoryId);
+      await deleteFeaturedCategory(featuredCategoryToDelete._id);
       setSubmitStatus("Category deleted successfully!");
-      featureRefetch()
-     
-      // Note: featuredCategories won't update automatically unless you refetch or manage state locally
+      featureRefetch();
     } catch (err) {
       setSubmitStatus("Failed to delete category: " + err.message);
+    } finally {
+      setIsModalOpen(false); // Close the modal
+      setfeaturedCategoryToDelete(null); // Clear the category
     }
   };
 
-  if (metadataLoading || featuredLoading) {
+  if (metadataLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-gray-500 text-lg">Loading categories and tags...</p>
@@ -71,10 +80,10 @@ const ContentManage = () => {
     );
   }
 
-  if (metadataError || featuredError) {
+  if (metadataError) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-red-500 text-lg">{metadataError || featuredError}</p>
+        <p className="text-red-500 text-lg">{metadataError}</p>
       </div>
     );
   }
@@ -161,26 +170,32 @@ const ContentManage = () => {
           </div>
 
           <div>
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6 min-h-[300px]">
               <h2 className="text-xl font-semibold text-gray-700 mb-4">
                 Featured Categories
               </h2>
-              <ul className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                {featuredCategories.map((cat) => (
-                  <li
-                    key={cat._id}
-                    className="flex items-center justify-between text-gray-600 py-1 rounded-md hover:bg-gray-50 transition-colors"
-                  >
-                    <span>{cat.name}</span>
-                    <button
-                      onClick={() => handleDeleteFeaturedCategory(cat._id)}
-                      className="text-red-500 hover:text-red-700 focus:outline-none"
+              {featuredLoading ? (
+                <p className="text-gray-500">Loading featured categories...</p>
+              ) : featuredError ? (
+                <p className="text-red-500">{featuredError}</p>
+              ) : (
+                <ul className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  {featuredCategories.map((cat) => (
+                    <li
+                      key={cat._id}
+                      className="flex items-center justify-between text-gray-600 py-1 rounded-md hover:bg-gray-50 transition-colors"
                     >
-                      ✕
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                      <span>{cat.name}</span>
+                      <button
+                        onClick={() => openDeleteModal(cat._id)}
+                        className="pr-2 text-red-500 hover:text-red-700 focus:outline-none"
+                      >
+                        ✕
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6">
@@ -201,6 +216,14 @@ const ContentManage = () => {
           </div>
         </div>
       </div>
+
+      {/* Render the ConfirmDeleteModal */}
+      <ConfirmDeleteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDeleteFeaturedCategory}
+        itemName={featuredCategoryToDelete ?.name || "this category"}
+      />
     </div>
   );
 };
