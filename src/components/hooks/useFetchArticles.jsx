@@ -3,6 +3,7 @@ import { fetchArticles } from "../../services/api";
 
 const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilter = [], searchQuery = null,  isFeatured = null}) => {
   const [articles, setArticles] = useState([]);
+  const [totalFetchedPages,setTotalFetchedPages]= useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -17,16 +18,19 @@ const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilt
 
         const data = await fetchArticles({ page, category, tags, search: searchQuery , isFeatured   });
         setArticles(data.articles);
+        setTotalFetchedPages(data.totalPages);
+       
       } catch (err) {
         setError("Failed to load articles");
       }
       setLoading(false);
+      
     };
 
     loadArticles();
   }, [page, categoryFilter, tagsFilter, searchQuery, limit, isFeatured]);
 
-  return { articles, loading, error };
+  return { articles, loading, error ,totalFetchedPages };
 };
 
 export default useFetchArticles;

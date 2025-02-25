@@ -1,6 +1,6 @@
 // src/pages/ArticlesPage.js
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select"; // For tags and category filters
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ import {
 import useFetchMetadata from "../../components/hooks/useFetchMetadata";
 import useFetchArticles from "../../components/hooks/useFetchArticles";
 import { deleteArticle } from "../../services/api"; // Import the new function
+import Pagination from "../../components/dashboardcomponents/PaginationArticles";
 
 const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
@@ -27,7 +28,8 @@ const ArticlesPage = () => {
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [tagsFilter, setTagsFilter] = useState([]);
   const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
+  const [searchQuery, setSearchQuery] = useState("");
+  const [query, setQuery] = useState(""); // New state for search query
 
   const sortOrderCategory = [
     { label: "Latest", value: "latest" }, //
@@ -45,6 +47,7 @@ const ArticlesPage = () => {
 
   // Use the custom hook to fetch articles
   const {
+    totalFetchedPages,
     articles,
     loading: articlesLoading,
     error: articlesError,
@@ -55,6 +58,7 @@ const ArticlesPage = () => {
     searchQuery,
     isFeatured,
   });
+
 
   {
     /* Loading and Error Handling for Metadata */
@@ -81,22 +85,52 @@ const ArticlesPage = () => {
     setViewMode(mode);
   };
 
- 
-
+  const resetFilterStatus = () => {
+    const mediaQuery = window.matchMedia("(min-width: 1280px)");
+    if (mediaQuery.matches) {
+      setMobileFilter(false);
+    }
+  };
+  useEffect(() => {
+    resetFilterStatus(); // Run initially
+    window.addEventListener("resize", resetFilterStatus); // Run on resize
+    return () => window.removeEventListener("resize", resetFilterStatus); // Cleanup
+  }, []);
 
   const handleSort = (selectedOption) => {
-    if (selectedOption) { 
-      console.log(selectedOption.label);// Access label safely
-      if(selectedOption.value == "featured"){
-        setisFeatured(true)
-      } 
-      else{
-        setisFeatured(null)
+    if (selectedOption) {
+      console.log(selectedOption.label); // Access label safely
+      if (selectedOption.value == "featured") {
+        setisFeatured(true);
+      } else {
+        setisFeatured(null);
       }
-   
     } else {
       console.log("No option selected (undefined/null)");
     }
+  };
+
+  const handleSearch = () => {
+    console.log(query);
+    setSearchQuery(query);
+  };
+
+  const selectStyles = {
+    valueContainer: (provided) => ({
+      ...provided,
+      maxHeight: "40px", // Limit height (adjust as needed)
+      overflowY: "auto", // Scroll vertically if tags exceed height
+      display: "flex",
+      flexWrap: "wrap", // Allow tags to wrap if needed (optional)
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      margin: "2px", // Spacing between tags
+    }),
+    container: (provided) => ({
+      ...provided,
+      // Ensure it respects the parent width
+    }),
   };
 
   // Handle Edit/Delete actions
@@ -117,32 +151,34 @@ const ArticlesPage = () => {
       }
     }
   };
+  
 
+  
   return (
     <div className="container mx-auto p-4">
-      <div className="mb-6 flex flex-col  gap-2 lg:flex-row lg:items-center lg:gap-8">
+      <div className="mb-6 flex flex-col relative  gap-2 lg:flex-row lg:items-center lg:gap-8">
         <h1 className="text-center text-2xl font-bold mb-2 order-1">
           Articles
         </h1>
-        <div className="relative mt-2  w-full xl:w-[40%] 3xl:w-[60%] order-2">
+        <div className="relative mt-2  w-full xl:w-[60%] 3xl:w-[60%] order-2">
           <input
             type="text"
             placeholder="Search articles..."
-            value={searchQuery}
-            className=" p-3  pl-4 mb-2 pr-12 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={(e) => setSearchQuery(e.target.value)} // Handle search here
+            value={query}
+            className=" p-3   pl-4 mb-2 pr-12 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => setQuery(e.target.value)} // Handle search here
           />
           <button
             className={`absolute
            top-1/2 right-1 transform -translate-y-[60%] bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            onClick={() => console.log("Search clicked")} // Handle search action here
+            onClick={handleSearch} // Handle search action here
           >
             Search
           </button>
         </div>
 
         <div className="flex justify-between items-center order-3 xl:order-4">
-          <div className="xl:hidden bg-gray-200 p-3 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
+          <div className="xl:hidden mr-1 bg-gray-200 p-3 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">
             {isMobileFilter ? (
               <X onClick={() => setMobileFilter(false)} />
             ) : (
@@ -171,23 +207,23 @@ const ArticlesPage = () => {
         </div>
 
         <div
-          className={`flex  justify-around items-center order-4 xl:order-3 bg-white gap-2 w-[94%] p-2  xl:p-0 sm:w-2/3 
+          className={`flex  justify-around items-center order-4 xl:order-3 bg-white gap-2 w-[94%] p-2  xl:p-0  
     ${
       isMobileFilter
-        ? "absolute w-[90%] top-48 z-50 flex-col"
+        ? "absolute w-full top-48 z-50 flex-col lg:top-16 pb-10 pt-2 shadow-md "
         : "hidden xl:flex xl:flex-row"
     }`}
         >
           <Select
             options={categories}
             value={categoryFilter}
-            onChange={(selectedOption) =>{
-              setMobileFilter(false)
-              setCategoryFilter(selectedOption || null)}
-            }
+            onChange={(selectedOption) => {
+              setMobileFilter(false);
+              setCategoryFilter(selectedOption || null);
+            }}
             isClearable
             placeholder="Category"
-            className="w-full sm:w-1/3"
+            className="w-full xl:w-1/3"
             classNamePrefix="select"
           />
           <Select
@@ -195,24 +231,24 @@ const ArticlesPage = () => {
             options={tags}
             value={tagsFilter} // Make sure the format is [{ value, label }]
             onChange={(selectedOptions) => {
-              setMobileFilter(false)
-              setTagsFilter(selectedOptions || [])}}
+              setMobileFilter(false);
+              setTagsFilter(selectedOptions || []);
+            }}
             placeholder="Tags"
-            className="w-full sm:w-1/3 "
+            className="w-full xl:w-1/3 "
             classNamePrefix="select"
-           
+            styles={selectStyles}
           />
           <Select
             options={sortOrderCategory}
             value={sortOrder}
             onChange={(selectedOption) => {
-              setMobileFilter(false)
-              setSortOrder(selectedOption); 
+              setMobileFilter(false);
+              setSortOrder(selectedOption);
               handleSort(selectedOption);
             }}
-            
             placeholder="Latest"
-            className="w-full sm:w-1/3"
+            className="w-full xl:w-1/3"
             classNamePrefix="select"
           />
           {/* <button className="bg-blue-500 text-white px-3 py-2 rounded-lg w-full  sm:w-auto hover:bg-blue-600 transition duration-300">
@@ -232,52 +268,57 @@ const ArticlesPage = () => {
           articles.map((article) => (
             <div
               key={article.id} // Move key here, on the outermost div
-              className="flex flex-col p-2 border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
+              className="flex flex-col  border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
             >
-              <div className="flex flex-col w-full">
+              <div className="flex flex-col h-full  w-full">
                 <div
-                  className={`flex ${
+                  className={`flex  ${
                     viewMode === "tile" ? "flex-row" : "flex-col"
                   }`}
                 >
+                  {/* image  */}
                   <Link
                     to={`/dashboard/article/${encodeURIComponent(
                       article.title
                     )}/${article._id}`}
                   >
-                    <img
-                      src={`http://localhost:5000${article.thumbnail}`}
-                      alt={article.title}
-                      className={`bg-red-50 ${
-                        viewMode === "tile" ? "w-20" : "w-full h-full"
-                      } aspect-[4/3] h-20 object-cover rounded-lg mb-4`}
-                    />
+                    <div className="p-2 ">
+                      <img
+                        src={`http://localhost:5000${article.thumbnail}`}
+                        alt={article.title}
+                        className={`bg-red-50  ${
+                          viewMode === "tile" ? "w-20" : "w-full h-full"
+                        } aspect-[4/3] h-20 object-cover rounded-lg mb-4`}
+                      />
+                    </div>
                   </Link>
-
+                  {/* title desc and buttons */}
                   <div className="relative w-full">
                     <Link
                       to={`/dashboard/article/${encodeURIComponent(
                         article.title
                       )}/${article._id}`} // Use encodeURIComponent to safely pass the title as a parameter
-                      className="flex flex-col justify-around w-full gap-2 pl-2 "
+                      className="flex flex-col justify-around w-full  gap-2 pl-2 "
                     >
                       <h3
-                        className={`font-semibold text-base text-gray-800 ${
-                          viewMode === "tile" ? "w-[80%]" : "w-full"
+                        className={`  font-semibold text-base  text-gray-800 mt-1 pr-1 ${
+                          viewMode === "tile"
+                            ? "w-[80%]"
+                            : "w-full line-clamp-1"
                         }`}
                       >
                         {article.title}
                       </h3>
                       {viewMode === "tile" ? (
                         <p
-                          className="prose prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3 "
+                          className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3"
                           dangerouslySetInnerHTML={{
                             __html: article.description,
                           }}
                         />
                       ) : (
                         <p
-                          className="prose prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3"
+                          className="prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3"
                           dangerouslySetInnerHTML={{
                             __html: article.description,
                           }}
@@ -287,10 +328,8 @@ const ArticlesPage = () => {
 
                     {/* Custom Edit and Delete Buttons */}
                     <div
-                      className={`${
-                        viewMode === "tile"
-                          ? "right-0 top-0"
-                          : "-top-12 right-0"
+                      className={` px-2 pt-1 ${
+                        viewMode === "tile" ? "right-0 top-0" : "-top-9 right-0"
                       } absolute z-40`}
                     >
                       <div className="flex gap-1">
@@ -300,7 +339,7 @@ const ArticlesPage = () => {
                             e.stopPropagation(); // Prevent click from bubbling up to Link
                             handleAction("edit", article._id);
                           }}
-                          className="flex items-center bg-blue-500 text-white px-2 py-2 rounded-lg text-xs hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className=" shadow-md flex items-center bg-blue-500 text-white px-2 py-2 rounded-lg text-xs hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <FilePenLine size={16} />
                         </button>
@@ -311,7 +350,7 @@ const ArticlesPage = () => {
                             e.stopPropagation(); // Prevent click from bubbling up to Link
                             handleAction("delete", article._id); // Fixed to "delete"
                           }}
-                          className="flex items-center bg-red-500 text-white px-2 py-2 rounded-lg text-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          className="shadow-md flex items-center bg-red-500 text-white px-2 py-2 rounded-lg text-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -319,9 +358,10 @@ const ArticlesPage = () => {
                     </div>
                   </div>
                 </div>
+                {/* author featured and modified date */}
                 <div
-                  className={`p-2 ${
-                    viewMode === "tile" ? "flex-row" : "flex-col"
+                  className={`p-2  ${
+                    viewMode === "tile" ? "flex-row" : "flex-col "
                   } flex justify-between text-xs text-gray-400 mt-${
                     viewMode === "tile" ? "0" : "auto"
                   }`}
@@ -350,12 +390,15 @@ const ArticlesPage = () => {
           <p>No articles found.</p>
         )}
 
-        {/* Pagination Controls */}
-        <button onClick={() => setPage(page - 1)} disabled={page === 1}>
-          Previous
-        </button>
-        <button onClick={() => setPage(page + 1)}>Next</button>
+       
       </div>
+       {/* Pagination Controls */}
+       <div className="mt-9">
+       <Pagination
+        totalFetchedPages={totalFetchedPages}
+        page={page}
+        setPage={setPage}
+      /></div>
     </div>
   );
 };

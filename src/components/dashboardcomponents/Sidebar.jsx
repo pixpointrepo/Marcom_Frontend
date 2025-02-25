@@ -52,26 +52,32 @@ export default function Sidebar() {
             </button>
             <nav className="space-y-4">
               <SidebarItem
+             
+               setSidebarOpen={setIsOpen}
                 to="/dashboard"
                 icon={<Home size={20} />}
                 label="Dashboard"
               />
               <SidebarItem
+               setSidebarOpen={setIsOpen}
                 to="/dashboard/articles"
                 icon={<BookOpenText size={20} />}
                 label="Articles"
               />
               <SidebarItem
+               setSidebarOpen={setIsOpen}
                 to="/dashboard/posts"
                 icon={<FileText size={20} />}
                 label="New Post"
               />
               <SidebarItem
+               setSidebarOpen={setIsOpen}
                 to="/dashboard/manage-content"
                 icon={<FolderCog size={20} />}
                 label="Manage Contents"
               />
               <SidebarItem
+               setSidebarOpen={setIsOpen}
                 to="/users"
                 icon={<Users size={20} />}
                 label="Users"
@@ -106,10 +112,16 @@ export default function Sidebar() {
   );
 }
 
-function SidebarItem({ to, icon, label }) {
+function SidebarItem({ to, icon, label,setSidebarOpen }) {
+  const handleClick = () => {
+    if (setSidebarOpen) {
+      setSidebarOpen(false);
+    }
+  };
   return (
     <Link
       to={to}
+      onClick={handleClick}
       className="flex items-center py-2 px-3 rounded hover:bg-gray-800"
     >
       {icon}

@@ -24,11 +24,13 @@ import ArticlesPage from "./sections/adminsections/ArticlesPage";
 import ArticlePage from "./sections/adminsections/ArticlePage";
 import EditArticlePage from "./sections/adminsections/EditPage";
 import ContentManage from "./sections/adminsections/ContentManage";
+import ScrollToTop from "./utils/ScrollToTop";
 
 function App() {
   return (
     <AuthProvider> {/* Move AuthProvider to wrap the entire BrowserRouter */}
       <BrowserRouter>
+      <ScrollToTop/>
         <Routes>
           {/* Layout Route */}
           <Route path="/" element={<Layout />}>
