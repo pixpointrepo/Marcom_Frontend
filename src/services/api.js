@@ -68,7 +68,7 @@ export const uploadArticle = async (postData) => {
 export const fetchArticles = async ({
   page = 1,
   category = "",
-  tags = "",
+  tags = [],
   date = "",
   search = "",
   limit = 10,

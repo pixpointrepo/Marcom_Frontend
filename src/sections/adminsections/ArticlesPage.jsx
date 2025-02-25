@@ -20,13 +20,21 @@ import { deleteArticle } from "../../services/api"; // Import the new function
 const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
   const navigate = useNavigate();
-  const [sortOrder, setSortOrder] = useState("latest");
+  const [sortOrder, setSortOrder] = useState(null);
+  const [isFeatured, setisFeatured] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isMobileFilter, setMobileFilter] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [tagsFilter, setTagsFilter] = useState([]);
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState(""); // New state for search query
+
+  const sortOrderCategory = [
+    { label: "Latest", value: "latest" }, //
+    { label: "Featured", value: "featured" },
+
+    // ... more options
+  ];
 
   const {
     categories,
@@ -45,7 +53,9 @@ const ArticlesPage = () => {
     categoryFilter,
     tagsFilter,
     searchQuery,
+    isFeatured,
   });
+
   {
     /* Loading and Error Handling for Metadata */
   }
@@ -69,6 +79,24 @@ const ArticlesPage = () => {
   // Handle view mode toggle
   const toggleViewMode = (mode) => {
     setViewMode(mode);
+  };
+
+ 
+
+
+  const handleSort = (selectedOption) => {
+    if (selectedOption) { 
+      console.log(selectedOption.label);// Access label safely
+      if(selectedOption.value == "featured"){
+        setisFeatured(true)
+      } 
+      else{
+        setisFeatured(null)
+      }
+   
+    } else {
+      console.log("No option selected (undefined/null)");
+    }
   };
 
   // Handle Edit/Delete actions
@@ -105,9 +133,8 @@ const ArticlesPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)} // Handle search here
           />
           <button
-            className={`${
-              isMobileFilter ? "hidden" : "absolute"
-            } xl:hidden top-1/2 right-1 transform -translate-y-[60%] bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className={`absolute
+           top-1/2 right-1 transform -translate-y-[60%] bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             onClick={() => console.log("Search clicked")} // Handle search action here
           >
             Search
@@ -147,15 +174,16 @@ const ArticlesPage = () => {
           className={`flex  justify-around items-center order-4 xl:order-3 bg-white gap-2 w-[94%] p-2  xl:p-0 sm:w-2/3 
     ${
       isMobileFilter
-        ? "absolute w-[90%] top-48 z-40 flex-col"
+        ? "absolute w-[90%] top-48 z-50 flex-col"
         : "hidden xl:flex xl:flex-row"
     }`}
         >
           <Select
             options={categories}
             value={categoryFilter}
-            onChange={(selectedOption) =>
-              setCategoryFilter(selectedOption || null)
+            onChange={(selectedOption) =>{
+              setMobileFilter(false)
+              setCategoryFilter(selectedOption || null)}
             }
             isClearable
             placeholder="Category"
@@ -166,25 +194,30 @@ const ArticlesPage = () => {
             isMulti
             options={tags}
             value={tagsFilter} // Make sure the format is [{ value, label }]
-            onChange={(selectedOptions) => setTagsFilter(selectedOptions || [])}
+            onChange={(selectedOptions) => {
+              setMobileFilter(false)
+              setTagsFilter(selectedOptions || [])}}
             placeholder="Tags"
-            className="w-full sm:w-1/3"
+            className="w-full sm:w-1/3 "
             classNamePrefix="select"
+           
           />
           <Select
-            options={categories}
-            value={categoryFilter}
-            onChange={(selectedOption) =>
-              setCategoryFilter(selectedOption || null)
-            }
-            isClearable
+            options={sortOrderCategory}
+            value={sortOrder}
+            onChange={(selectedOption) => {
+              setMobileFilter(false)
+              setSortOrder(selectedOption); 
+              handleSort(selectedOption);
+            }}
+            
             placeholder="Latest"
             className="w-full sm:w-1/3"
             classNamePrefix="select"
           />
-          <button className="bg-blue-500 text-white px-3 py-2 rounded-lg w-full  sm:w-auto hover:bg-blue-600 transition duration-300">
+          {/* <button className="bg-blue-500 text-white px-3 py-2 rounded-lg w-full  sm:w-auto hover:bg-blue-600 transition duration-300">
             Search
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -283,37 +316,33 @@ const ArticlesPage = () => {
                           <Trash2 size={16} />
                         </button>
                       </div>
-                  
                     </div>
                   </div>
                 </div>
                 <div
-  className={`p-2 ${
-    viewMode === "tile" ? "flex-row" : "flex-col"
-  } flex justify-between text-xs text-gray-400 mt-${
-    viewMode === "tile" ? "0" : "auto"
-  }`}
->
-  <div className="flex gap-2">
-    <h1>{article.author}</h1>
-    {article.isFeatured && <strong>Featured</strong>}
-  </div>
-  <small>
-    Last Modified:{" "}
-    {new Date(article.date).toLocaleString("en-US", {
-      weekday: "short",    // Optional: display day of the week (e.g., Mon, Tue)
-      year: "numeric",
-      month: "short",      // Optional: display abbreviated month (e.g., Jan, Feb)
-      day: "numeric",
-      hour: "2-digit",     // 12-hour clock
-      minute: "2-digit",   // 2-digit minute
-      hour12: true,        // Use 12-hour format
-      
-    })}
-  </small>
-</div>
-
-
+                  className={`p-2 ${
+                    viewMode === "tile" ? "flex-row" : "flex-col"
+                  } flex justify-between text-xs text-gray-400 mt-${
+                    viewMode === "tile" ? "0" : "auto"
+                  }`}
+                >
+                  <div className="flex gap-2">
+                    <h1>{article.author}</h1>
+                    {article.isFeatured && <strong>Featured</strong>}
+                  </div>
+                  <small>
+                    Last Modified:{" "}
+                    {new Date(article.date).toLocaleString("en-US", {
+                      weekday: "short", // Optional: display day of the week (e.g., Mon, Tue)
+                      year: "numeric",
+                      month: "short", // Optional: display abbreviated month (e.g., Jan, Feb)
+                      day: "numeric",
+                      hour: "2-digit", // 12-hour clock
+                      minute: "2-digit", // 2-digit minute
+                      hour12: true, // Use 12-hour format
+                    })}
+                  </small>
+                </div>
               </div>
             </div>
           ))

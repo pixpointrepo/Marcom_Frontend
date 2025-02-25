@@ -13,8 +13,9 @@ const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilt
       try {
         const category = categoryFilter ? categoryFilter.value : "";
         const tags = tagsFilter.map(tag => tag.value).join(',');
+        console.log(tags)
 
-        const data = await fetchArticles({ page, category, tags,search: searchQuery  });
+        const data = await fetchArticles({ page, category, tags, search: searchQuery , isFeatured   });
         setArticles(data.articles);
       } catch (err) {
         setError("Failed to load articles");
