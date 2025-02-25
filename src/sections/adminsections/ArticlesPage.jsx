@@ -21,7 +21,7 @@ const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
   const navigate = useNavigate();
   const [sortOrder, setSortOrder] = useState(null);
-  const [isFeatured, setisFeatured] = useState("false");
+  const [isFeatured, setisFeatured] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isMobileFilter, setMobileFilter] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState(null);
@@ -81,6 +81,9 @@ const ArticlesPage = () => {
     setViewMode(mode);
   };
 
+ 
+
+
   const handleSort = (selectedOption) => {
     if (selectedOption) { 
       console.log(selectedOption.label);// Access label safely
@@ -88,7 +91,7 @@ const ArticlesPage = () => {
         setisFeatured(true)
       } 
       else{
-        setisFeatured(false)
+        setisFeatured(null)
       }
    
     } else {
@@ -130,9 +133,8 @@ const ArticlesPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)} // Handle search here
           />
           <button
-            className={`${
-              isMobileFilter ? "hidden" : "absolute"
-            } xl:hidden top-1/2 right-1 transform -translate-y-[60%] bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className={`absolute
+           top-1/2 right-1 transform -translate-y-[60%] bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             onClick={() => console.log("Search clicked")} // Handle search action here
           >
             Search
@@ -172,15 +174,16 @@ const ArticlesPage = () => {
           className={`flex  justify-around items-center order-4 xl:order-3 bg-white gap-2 w-[94%] p-2  xl:p-0 sm:w-2/3 
     ${
       isMobileFilter
-        ? "absolute w-[90%] top-48 z-40 flex-col"
+        ? "absolute w-[90%] top-48 z-50 flex-col"
         : "hidden xl:flex xl:flex-row"
     }`}
         >
           <Select
             options={categories}
             value={categoryFilter}
-            onChange={(selectedOption) =>
-              setCategoryFilter(selectedOption || null)
+            onChange={(selectedOption) =>{
+              setMobileFilter(false)
+              setCategoryFilter(selectedOption || null)}
             }
             isClearable
             placeholder="Category"
@@ -191,16 +194,19 @@ const ArticlesPage = () => {
             isMulti
             options={tags}
             value={tagsFilter} // Make sure the format is [{ value, label }]
-            onChange={(selectedOptions) => setTagsFilter(selectedOptions || [])}
+            onChange={(selectedOptions) => {
+              setMobileFilter(false)
+              setTagsFilter(selectedOptions || [])}}
             placeholder="Tags"
-            className="w-full sm:w-1/3"
+            className="w-full sm:w-1/3 "
             classNamePrefix="select"
+           
           />
           <Select
             options={sortOrderCategory}
             value={sortOrder}
             onChange={(selectedOption) => {
-           
+              setMobileFilter(false)
               setSortOrder(selectedOption); 
               handleSort(selectedOption);
             }}
@@ -209,9 +215,9 @@ const ArticlesPage = () => {
             className="w-full sm:w-1/3"
             classNamePrefix="select"
           />
-          <button className="bg-blue-500 text-white px-3 py-2 rounded-lg w-full  sm:w-auto hover:bg-blue-600 transition duration-300">
+          {/* <button className="bg-blue-500 text-white px-3 py-2 rounded-lg w-full  sm:w-auto hover:bg-blue-600 transition duration-300">
             Search
-          </button>
+          </button> */}
         </div>
       </div>
 
