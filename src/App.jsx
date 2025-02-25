@@ -34,7 +34,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             {/* Public Routes */}
             <Route index element={<HomeSection />} />
-            <Route path=":category/:articleTitle" element={<NewsDetailScreen />} />
+            <Route path=":category/:url" element={<NewsDetailScreen />} />
             <Route path="/news/:categoryName" element={<NewsCategoryScreen />} />
             <Route path="search" element={<SearchResultsScreen />} />
             <Route path="/contact-us" element={<ContactUsScreen />} />

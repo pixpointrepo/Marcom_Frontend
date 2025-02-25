@@ -95,6 +95,17 @@ export const fetchArticles = async ({
   }
 };
 
+// fetch articles for homepage
+export const fetchHomepageArticles = async (limit = 5) => {
+  try {
+    const response = await api.get(`/articles/homepage?limit=${limit}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching homepage articles:", error);
+    throw error;
+  }
+};
+
 // Fetch tags
 export const fetchTags = async () => {
   try {
@@ -133,6 +144,17 @@ export const fetchArticleById = async (articleId) => {
     throw new Error("Failed to fetch article");
   }
 };
+
+// Fetch article by url
+export const fetchArticleByUrl = async (url) => {
+  try {
+    const response = await api.get(`/articles/url/${url}`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch article");
+  }
+};
+
 
 // Update article
 export const updateArticle = async (articleId, formData) => {

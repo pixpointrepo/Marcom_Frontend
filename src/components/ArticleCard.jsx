@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,9 +15,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
       }`}
       onClick={() =>{
         navigate(
-          `/${article.categoryUrl}/${article.title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")}`
+          `/${article.categoryUrl}/${article.url}`
         )
         window.scrollTo({
           top: 0,
@@ -26,7 +25,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
       }
     >
       <img
-        src={article.thumbnail}
+        src={`http://localhost:5000${article.thumbnail}`}
         alt={article.title}
         className={`${isHomeScreen && index === 0 ? "h-64" : "h-48"} w-full object-cover`}
       />
