@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { fetchArticles } from "../../services/api";
 
-const useFetchArticles = ({ page = 1, categoryFilter = null, tagsFilter = [],searchQuery = null,limit=10 ,isFeatured = null}) => {
+const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilter = [], searchQuery = null,  isFeatured = null}) => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -23,7 +23,7 @@ const useFetchArticles = ({ page = 1, categoryFilter = null, tagsFilter = [],sea
     };
 
     loadArticles();
-  }, [page, categoryFilter, tagsFilter,searchQuery,limit,isFeatured]);
+  }, [page, categoryFilter, tagsFilter, searchQuery, limit, isFeatured]);
 
   return { articles, loading, error };
 };
