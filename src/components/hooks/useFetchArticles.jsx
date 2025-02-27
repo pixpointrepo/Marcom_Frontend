@@ -1,9 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchArticles } from "../../services/api";
 
-const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilter = [], searchQuery = null,  isFeatured = null}) => {
+const useFetchArticles = ({
+  page = 1,
+  limit = 10,
+  categoryFilter = null,
+  tagsFilter = [],
+  searchQuery = null,
+  isFeatured = null,
+}) => {
   const [articles, setArticles] = useState([]);
-  const [totalFetchedPages,setTotalFetchedPages]= useState(0);
+  const [totalFetchedPages, setTotalFetchedPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -24,9 +31,16 @@ const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilt
         setError("Failed to load articles");
       }
       setLoading(false);
-      
-    };
+    }
+  }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]); // Dependencies for memoization
 
+  // Initial fetch and re-fetch on dependency change
+  useEffect(() => {
+    loadArticles();
+  }, [loadArticles]); // Depend on the memoized function
+
+  // Expose refetch as a manual trigger
+  const refetch = () => {
     loadArticles();
   }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]);
 

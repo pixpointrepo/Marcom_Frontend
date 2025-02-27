@@ -30,6 +30,7 @@ const ArticlesPage = () => {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [query, setQuery] = useState(""); // New state for search query
+  const [itemsDisplayed, setItemsDisplayed] = useState(8);
 
   const sortOrderCategory = [
     { label: "Latest", value: "latest" }, //
@@ -45,20 +46,48 @@ const ArticlesPage = () => {
     error: metadataError,
   } = useFetchMetadata();
 
+  useEffect(() => {
+    // Function to update items based on screen width
+    const handleResize = () => {
+      const width = window.innerWidth;
+
+      if (width >= 1920) {
+        setItemsDisplayed(15);
+      } else if (width >= 1280) {
+        // xl breakpoint in Tailwind
+        setItemsDisplayed(12);
+      } else if (width >= 1024) {
+        // lg breakpoint in Tailwind
+        setItemsDisplayed(9);
+      } else {
+        setItemsDisplayed(8);
+      }
+    };
+
+    // Call once on mount to set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup function to remove event listener
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty dependency array means this runs once on mount
   // Use the custom hook to fetch articles
   const {
     totalFetchedPages,
     articles,
     loading: articlesLoading,
     error: articlesError,
+    refetch: articleRefetch,
   } = useFetchArticles({
     page,
     categoryFilter,
     tagsFilter,
     searchQuery,
     isFeatured,
+    limit: itemsDisplayed
   });
-
 
   {
     /* Loading and Error Handling for Metadata */
@@ -144,6 +173,7 @@ const ArticlesPage = () => {
         try {
           await deleteArticle(id); // Use the id here as well
           alert("Article deleted successfully!");
+          articleRefetch();
           navigate("/dashboard/articles"); // Redirect to dashboard after deletion
         } catch (error) {
           alert("Failed to delete article: " + error.message);
@@ -151,9 +181,7 @@ const ArticlesPage = () => {
       }
     }
   };
-  
 
-  
   return (
     <div className="container mx-auto p-4">
       <div className="mb-6 flex flex-col relative  gap-2 lg:flex-row lg:items-center lg:gap-8">
@@ -360,7 +388,7 @@ const ArticlesPage = () => {
                 </div>
                 {/* author featured and modified date */}
                 <div
-                  className={`p-2  ${
+                  className={`p-2 h-full ${
                     viewMode === "tile" ? "flex-row" : "flex-col "
                   } flex justify-between text-xs text-gray-400 mt-${
                     viewMode === "tile" ? "0" : "auto"
@@ -389,16 +417,15 @@ const ArticlesPage = () => {
         ) : (
           <p>No articles found.</p>
         )}
-
-       
       </div>
-       {/* Pagination Controls */}
-       <div className="mt-9">
-       <Pagination
-        totalFetchedPages={totalFetchedPages}
-        page={page}
-        setPage={setPage}
-      /></div>
+      {/* Pagination Controls */}
+      <div className="mt-9">
+        <Pagination
+          totalFetchedPages={totalFetchedPages}
+          page={page}
+          setPage={setPage}
+        />
+      </div>
     </div>
   );
 };

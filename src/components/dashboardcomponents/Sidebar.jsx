@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   Menu,
   X,
@@ -9,20 +9,26 @@ import {
   LogOut,
   BookOpenText,
   Settings,
-  FolderCog
+  FolderCog,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
-import { useContext } from "react";
+import ConfirmDialog from "../../components/ui/ConformDialog"
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
+
   const handleLogout = () => {
     logout(); // Clear the authentication token
-    // navigate("/pixadmin"); // Navigate to the login page
+    navigate("/pixadmin"); // Navigate to the login page
+    setIsDialogOpen(false); // Close the dialog
+  };
+
+  const openLogoutDialog = () => {
+    setIsDialogOpen(true);
   };
 
   return (
@@ -45,39 +51,38 @@ export default function Sidebar() {
               </div>
             </div>
             <button
-              className="md:hidden  fixed top-6 right-4"
+              className="md:hidden fixed top-6 right-4"
               onClick={() => setIsOpen(false)}
             >
               <X size={24} />
             </button>
             <nav className="space-y-4">
               <SidebarItem
-             
-               setSidebarOpen={setIsOpen}
+                setSidebarOpen={setIsOpen}
                 to="/dashboard"
                 icon={<Home size={20} />}
                 label="Dashboard"
               />
               <SidebarItem
-               setSidebarOpen={setIsOpen}
+                setSidebarOpen={setIsOpen}
                 to="/dashboard/articles"
                 icon={<BookOpenText size={20} />}
                 label="Articles"
               />
               <SidebarItem
-               setSidebarOpen={setIsOpen}
+                setSidebarOpen={setIsOpen}
                 to="/dashboard/posts"
                 icon={<FileText size={20} />}
                 label="New Post"
               />
               <SidebarItem
-               setSidebarOpen={setIsOpen}
+                setSidebarOpen={setIsOpen}
                 to="/dashboard/manage-content"
                 icon={<FolderCog size={20} />}
                 label="Manage Contents"
               />
               <SidebarItem
-               setSidebarOpen={setIsOpen}
+                setSidebarOpen={setIsOpen}
                 to="/users"
                 icon={<Users size={20} />}
                 label="Users"
@@ -92,7 +97,7 @@ export default function Sidebar() {
               <Settings size={20} className="mr-2" /> Settings
             </Link>
             <button
-              onClick={handleLogout}
+              onClick={openLogoutDialog}
               className="mt-6 flex items-center text-red-500 hover:text-red-400"
             >
               <LogOut size={20} className="mr-2" /> Logout
@@ -108,11 +113,22 @@ export default function Sidebar() {
       >
         <Menu size={24} />
       </button>
+
+      {/* ConfirmDialog for Logout */}
+      <ConfirmDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={handleLogout}
+        title="Confirm Logout"
+        message="Are you sure you want to logout?"
+        confirmText="Logout"
+        cancelText="Stay"
+      />
     </div>
   );
 }
 
-function SidebarItem({ to, icon, label,setSidebarOpen }) {
+function SidebarItem({ to, icon, label, setSidebarOpen }) {
   const handleClick = () => {
     if (setSidebarOpen) {
       setSidebarOpen(false);
