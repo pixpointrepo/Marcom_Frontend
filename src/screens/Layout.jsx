@@ -3,8 +3,14 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import allArticles from "../data/articles";
 
+import useFetchArticles from "../components/hooks/useFetchArticles";
+
 const Layout = () => {
   const navigate = useNavigate();
+
+  // fetch 3 latest articles to display in the sidebar
+  const {articles: latestArticles, error, loading} = useFetchArticles({limit: 3, isFeatured: false});
+
   return (
     <>
     <Navbar/>
@@ -36,9 +42,9 @@ const Layout = () => {
               <div className="flex w-[40%] h-0.5 bg-blue-500"></div>
             </div>
 
-            {/* Stories List */}
+            {/* Latest Stories List */}
             <ul className="space-y-3">
-              {allArticles.recentArticles.articles.map((story) => (
+              {latestArticles.map((story) => (
                 <li
                   key={story.id}
                   className="flex items-start gap-4 hover:text-blue-500 cursor-pointer"

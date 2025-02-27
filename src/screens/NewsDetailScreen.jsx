@@ -115,7 +115,10 @@ const NewsDetailScreen = () => {
           />
         </>
       )}
-
+      
+      {/* Divider */}
+      <hr className="my-6" />
+      
       {/* Related Articles */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold mb-4">Similar Articles</h2>

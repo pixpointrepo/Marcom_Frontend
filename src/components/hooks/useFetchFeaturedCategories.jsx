@@ -14,7 +14,7 @@ const useFetchFeaturedCategories = () => {
       const data = await getFeaturedCategories();
       setCategories(data); // Assuming data is an array of category objects
     } catch (err) {
-      setError(err.message || "Failed to fetch featured categories");
+      setError(err.message || "Failed to load featured categories");
     } finally {
       setLoading(false);
     }

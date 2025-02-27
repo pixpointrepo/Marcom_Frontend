@@ -139,7 +139,7 @@ export const fetchArticleById = async (articleId) => {
     const response = await api.get(`/articles/${articleId}`);
     return response.data;
   } catch (error) {
-    throw new Error("Failed to fetch article");
+    throw new Error("Failed to load article");
   }
 };
 
@@ -149,7 +149,7 @@ export const fetchArticleByUrl = async (url) => {
     const response = await api.get(`/articles/url/${url}`);
     return response.data;
   } catch (error) {
-    throw new Error("Failed to fetch article");
+    throw new Error("Failed to load article");
   }
 };
 
@@ -200,7 +200,7 @@ export const getFeaturedCategories = async () => {
     return response.data; // Array of category objects
   } catch (error) {
     console.error("Error fetching categories:", error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || "Failed to fetch categories");
+    throw new Error(error.response?.data?.message || "Failed to load categories");
   }
 };
 
