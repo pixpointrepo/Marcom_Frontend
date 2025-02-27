@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select"; // For tags and category filters
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { useNavigate } from "react-router-dom";
+import htmlToPlainText from "../../utils/htmlToPlainText";
 
 import {
   SlidersHorizontal,
@@ -39,6 +40,7 @@ const ArticlesPage = () => {
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [tagsMapped, setMappedTags] = useState("");
   const [categoryValueSelect, setCategoryValueSelect] = useState("");
+ 
 
   const sortOrderCategory = [
     { label: "Latest", value: "latest" }, //
@@ -55,8 +57,11 @@ const ArticlesPage = () => {
   } = useFetchMetadata();
 
   useEffect(() => {
-    // Function to update items based on screen width
+   
     const handleResize = () => {
+     
+     
+ // Function to update items based on screen width
       const width = window.innerWidth;
 
       if (width >= 1920) {
@@ -147,6 +152,7 @@ const ArticlesPage = () => {
   };
   useEffect(() => {
     resetFilterStatus(); // Run initially
+    
     window.addEventListener("resize", resetFilterStatus); // Run on resize
     return () => window.removeEventListener("resize", resetFilterStatus); // Cleanup
   }, []);
@@ -396,11 +402,12 @@ const ArticlesPage = () => {
                       </h3>
                       {viewMode === "tile" ? (
                         <p
-                          className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal !text-sm !font-normal text-gray-600 line-clamp-3"
-                          dangerouslySetInnerHTML={{
-                            __html: article.description,
-                          }}
-                        />
+                          className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal !text-sm !font-normal text-gray-600 line-clamp-3">
+                            {htmlToPlainText(article.description)}
+                          </p>
+                        
+                      
+                       
                       ) : (
                         <p
                           className="prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3"
