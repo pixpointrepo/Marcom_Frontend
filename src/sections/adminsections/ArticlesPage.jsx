@@ -20,6 +20,7 @@ import { deleteArticle } from "../../services/api"; // Import the new function
 import Pagination from "../../components/dashboardcomponents/PaginationArticles";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ResultModal from "../../components/ui/ResultModal";
+import { useLocation } from "react-router-dom";
 
 const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
@@ -40,8 +41,16 @@ const ArticlesPage = () => {
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [tagsMapped, setMappedTags] = useState("");
   const [categoryValueSelect, setCategoryValueSelect] = useState("");
+  const [isGettingDeleted,setisGettingDeleted]= useState(false);
  
-
+  const location = useLocation();
+  const message = location.state?.message;
+  useEffect(() => {
+    if (location.state?.message) {
+      setSubmitStatus(location.state.message);
+      setIsResultModalOpen(true); // Open modal when there's a message
+    }
+  }, [location.state]);
   const sortOrderCategory = [
     { label: "Latest", value: "latest" }, //
     { label: "Featured", value: "featured" },
@@ -210,26 +219,33 @@ const ArticlesPage = () => {
   };
 
   const handleDelete = async () => {
+    setisGettingDeleted(true)
     try {
+      
       await deleteArticle(articleToDelete);
+      setisGettingDeleted(false)
       setSubmitStatus("Article deleted successfully!");
       setIsModalOpen(false); // Close modal before navigation
       setArticleToDelete(null);
       setArticleToDeleteTitle(null);
+   
       articleRefetch();
       setIsResultModalOpen(true);
     } catch (error) {
       console.error("Delete error:", error);
+      setisGettingDeleted(false)
       setSubmitStatus("Failed to delete article: " + error.message);
+      
       setIsModalOpen(false); // Close modal even on error
       setIsResultModalOpen(true);
     }
   };
   const closeResultModal = () => {
     setIsResultModalOpen(false);
-    setSubmitStatus(null); // Clear the status after closing
+    setSubmitStatus(null); // Clear the message after closing
+    // Optionally clear the navigation state if needed
+    window.history.replaceState({}, document.title, location.pathname); // Removes state from URL
   };
-
   return (
     <div className="container mx-auto p-4">
       <div className="mb-6 flex flex-col relative  gap-2 lg:flex-row lg:items-center lg:gap-8">

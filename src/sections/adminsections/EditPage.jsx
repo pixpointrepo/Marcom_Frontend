@@ -32,6 +32,8 @@ export default function EditArticlePage() {
 
 
 
+
+
   // Populate form with fetched article data
   useEffect(() => {
     if (article) {
@@ -111,6 +113,7 @@ export default function EditArticlePage() {
     });
     if (!description) newErrors.description = "Description is required";
     if (!image) newErrors.image = "Image is required";
+        if(formData.readTime && formData.readTime<1) newErrors.readTime = "Read Time must be at least 1 min"
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -140,8 +143,10 @@ export default function EditArticlePage() {
     try {
       const response = await updateArticle(articleId, postData);
       if (response && response.message) {
-        alert("Article updated successfully!");
-        navigate("/dashboard/articles");
+        // alert("Article updated successfully!");
+        navigate("/dashboard/articles", {
+          state: { message: "Article edited successfully!" },
+        });
       } else {
         throw new Error("Failed to update the article.");
       }

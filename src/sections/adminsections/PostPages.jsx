@@ -7,6 +7,7 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { X } from "lucide-react";
 import { uploadArticle } from "../../services/api";
+import ResultModal from "../../components/ui/ResultModal";
 
 export default function PostPages() {
   const [formData, setFormData] = useState({
@@ -18,7 +19,7 @@ export default function PostPages() {
     tags: "",
     mainArticleUrl: "",
     readTime: "",
-    isFeatured: null,
+    isFeatured: false,
   });
 
   const resetForm = () => {
@@ -38,9 +39,26 @@ export default function PostPages() {
     setErrors({});
   };
 
+  // Custom toolbar configuration
+  const modules = {
+    toolbar: [
+      [{ header: [2, 3, 4, false] }], // Only allow h2, h3, h4 (false disables h1)
+      ["bold", "italic", "underline", "strike"], // Text formatting
+      [{ list: "ordered" }, { list: "bullet" }], // Lists
+      ["blockquote", "code-block"], // Blockquote and code
+
+      ["link"], // Link and image
+      ["clean"], // Remove formatting button
+    ],
+  };
+
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+
+  const [submitStatus, setSubmitStatus] = useState(null);
+
 
   const onDrop = (acceptedFiles) => {
     console.log("hello", acceptedFiles[0]);
@@ -82,6 +100,7 @@ export default function PostPages() {
 
     if (!description) newErrors.description = "Description is required";
     if (!image) newErrors.image = "Image is required";
+  if(formData.readTime && formData.readTime<1) newErrors.readTime = "Read Time must be at least 1 min"
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -89,6 +108,7 @@ export default function PostPages() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log("form",formData)
 
     if (!validateForm()) return;
 
@@ -119,15 +139,21 @@ export default function PostPages() {
       if (response && response.message) {
         console.log("Success:", response);
         resetForm();
-        alert("Article uploaded successfully!");
+        setIsResultModalOpen(true);
+        setSubmitStatus("Article Uploaded successfully!");
 
       } else {
         throw new Error("Failed to upload the article.");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert(`Error: ${error.message}`);
+      setIsResultModalOpen(true);
+        setSubmitStatus("Failed to Upload");
     }
+  };
+  const closeResultModal = () => {
+    setIsResultModalOpen(false);
+    setSubmitStatus(null); // Clear the status after closing
   };
 
   return (
@@ -154,6 +180,7 @@ export default function PostPages() {
             <div className="mb-4">
               <Label className="mb-2 font-medium">Description</Label>
               <ReactQuill
+              modules={modules}
                 value={description}
                 onChange={setDescription}
                 className="bg-white border border-gray-300 rounded-md react-quill-editor"
@@ -308,6 +335,11 @@ export default function PostPages() {
 
         <Button type="submit">Publish Post</Button>
       </form>
+      <ResultModal
+            isOpen={isResultModalOpen}
+            onClose={closeResultModal}
+            message={submitStatus}
+          />
       <style>{`
         .react-quill-editor .ql-editor {
           height: 100px;

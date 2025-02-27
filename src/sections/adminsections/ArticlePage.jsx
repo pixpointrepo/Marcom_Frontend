@@ -4,6 +4,7 @@ import useFetchArticleById from "../../components/hooks/useFetchArticleById";
 import { Edit, Trash2 } from "lucide-react";
 import { deleteArticle } from "../../services/api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
 const ArticlePage = () => {
   const { id } = useParams();
@@ -14,9 +15,11 @@ const ArticlePage = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
+      // <div className="flex justify-center items-center min-h-screen">
+      //   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      // </div>
+      <div className="w-screen h-full bg-red-50"> <ActionsLoader loading={loading}/></div>
+      
     );
   if (error)
     return (
@@ -45,12 +48,15 @@ const ArticlePage = () => {
     try {
       await deleteArticle(article._id);
       setSubmitStatus("Article deleted successfully!");
-      setIsModalOpen(false); // Close modal before navigation
-      navigate("/dashboard/articles");
+      setIsModalOpen(true);
+      navigate("/dashboard/articles", {
+        state: { message: "Article deleted successfully!" },
+      });
     } catch (error) {
       console.error("Delete error:", error);
+
       setSubmitStatus("Failed to delete article: " + error.message);
-      setIsModalOpen(false); // Close modal even on error
+      alert("error", error);
     }
   };
 
@@ -162,9 +168,7 @@ const ArticlePage = () => {
 
             {/* Tags */}
             <div className="bg-white rounded-xl shadow-sm p-2">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Tags
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Tags</h3>
               <div className="flex flex-wrap gap-2">
                 {article.tags.map((tag, index) => (
                   <span
