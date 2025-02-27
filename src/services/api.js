@@ -74,8 +74,6 @@ export const fetchArticles = async ({
   limit = 10,
   isFeatured = null,
 }) => {
-  console.log("Sending tags:", tags);
-  console.log("Sending feature:", isFeatured);
   try {
     const response = await api.get("/articles", {
       params: {

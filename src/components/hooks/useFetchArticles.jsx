@@ -14,28 +14,22 @@ const useFetchArticles = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Define the fetch function using useCallback to memoize it
-  const loadArticles = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const category = categoryFilter ? categoryFilter.value : "";
-      const tags = tagsFilter.map((tag) => tag.value).join(",");
-      console.log(tags);
+  useEffect(() => {
+    const loadArticles = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const category = categoryFilter ? categoryFilter : "";
+        const tags = tagsFilter.map(tag => tag.value).join(',');
+        console.log(tags)
 
-      const data = await fetchArticles({
-        page,
-        limit, // Include limit in the fetch call
-        category,
-        tags,
-        search: searchQuery,
-        isFeatured,
-      });
-      setArticles(data.articles);
-      setTotalFetchedPages(data.totalPages);
-    } catch (err) {
-      setError("Failed to load articles");
-    } finally {
+        const data = await fetchArticles({ page, category, tags, search: searchQuery , isFeatured   });
+        setArticles(data.articles);
+        setTotalFetchedPages(data.totalPages);
+       
+      } catch (err) {
+        setError("Failed to load articles");
+      }
       setLoading(false);
     }
   }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]); // Dependencies for memoization
@@ -48,9 +42,16 @@ const useFetchArticles = ({
   // Expose refetch as a manual trigger
   const refetch = () => {
     loadArticles();
-  };
+  }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]);
 
-  return { articles, totalFetchedPages, loading, error, refetch };
+  return { totalFetchedPages, articles, loading, error };
 };
+
+// page,
+//     limit,
+//     JSON.stringify(categoryFilter),  // Fix infinite loop by converting object to string
+//     JSON.stringify(tagsFilter),      // Fix infinite loop by converting array to string
+//     searchQuery,
+//     isFeatured
 
 export default useFetchArticles;
