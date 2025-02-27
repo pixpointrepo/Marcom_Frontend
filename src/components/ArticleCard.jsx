@@ -45,7 +45,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
         </p>
         {/* article metadata */}
         <div className="mt-3 text-sm text-gray-500">
-          <small>
+          
             {new Date(article.date).toLocaleString("en-US", {
               weekday: "short", // Optional: display day of the week (e.g., Mon, Tue)
               year: "numeric",
@@ -55,7 +55,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
               minute: "2-digit", // 2-digit minute
               hour12: true, // Use 12-hour format
             })}
-          </small>{" "}
+          {" "}
           ·{" "}
           <span>
             <svg

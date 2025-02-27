@@ -16,7 +16,7 @@ const useFetchArticleById = (articleId) => {
         const articleData = await fetchArticleById(articleId); // Call the API function
         setArticle(articleData); // Set the article data in state
       } catch (err) {
-        setError("Failed to fetch article");
+        setError("Failed to load article");
         console.error(err); // Log the error for debugging
       } finally {
         setLoading(false); // Set loading to false after fetching is complete
