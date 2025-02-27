@@ -43,7 +43,7 @@ const useFetchArticles = ({
     loadArticles();
   }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]);
 
-  // Expose refetch as a manual trigger
+  // Expose refetch as a manual trigger // check
   const refetch = () => {
     loadArticles();
   };
