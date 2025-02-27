@@ -17,13 +17,14 @@ import useFetchMetadata from "../../components/hooks/useFetchMetadata";
 import useFetchArticles from "../../components/hooks/useFetchArticles";
 import { deleteArticle } from "../../services/api"; // Import the new function
 import Pagination from "../../components/dashboardcomponents/PaginationArticles";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import ResultModal from "../../components/ui/ResultModal";
 
 const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
   const navigate = useNavigate();
   const [sortOrder, setSortOrder] = useState(null);
   const [isFeatured, setisFeatured] = useState(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isMobileFilter, setMobileFilter] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [tagsFilter, setTagsFilter] = useState([]);
@@ -31,6 +32,11 @@ const ArticlesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [query, setQuery] = useState(""); // New state for search query
   const [itemsDisplayed, setItemsDisplayed] = useState(8);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const [articleToDelete, setArticleToDelete] = useState(null);
+  const [articelToDeleteTitle, setArticleToDeleteTitle] = useState(null);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
 
   const sortOrderCategory = [
     { label: "Latest", value: "latest" }, //
@@ -86,7 +92,7 @@ const ArticlesPage = () => {
     tagsFilter,
     searchQuery,
     isFeatured,
-    limit: itemsDisplayed
+    limit: itemsDisplayed,
   });
 
   {
@@ -168,18 +174,35 @@ const ArticlesPage = () => {
 
     if (action === "edit") {
       navigate(`/dashboard/edit-article/${id}`); // Use the id here
-    } else if (action === "delete") {
-      if (window.confirm("Are you sure you want to delete this article?")) {
-        try {
-          await deleteArticle(id); // Use the id here as well
-          alert("Article deleted successfully!");
-          articleRefetch();
-          navigate("/dashboard/articles"); // Redirect to dashboard after deletion
-        } catch (error) {
-          alert("Failed to delete article: " + error.message);
-        }
-      }
     }
+  };
+  // Open the confirmation modal
+  const openDeleteModal = (articleId, articelTitle) => {
+    setArticleToDelete(articleId);
+    setArticleToDeleteTitle(articelTitle);
+
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteArticle(articleToDelete);
+      setSubmitStatus("Article deleted successfully!");
+      setIsModalOpen(false); // Close modal before navigation
+      setArticleToDelete(null);
+      setArticleToDeleteTitle(null);
+      articleRefetch();
+      setIsResultModalOpen(true);
+    } catch (error) {
+      console.error("Delete error:", error);
+      setSubmitStatus("Failed to delete article: " + error.message);
+      setIsModalOpen(false); // Close modal even on error
+      setIsResultModalOpen(true);
+    }
+  };
+  const closeResultModal = () => {
+    setIsResultModalOpen(false);
+    setSubmitStatus(null); // Clear the status after closing
   };
 
   return (
@@ -376,7 +399,7 @@ const ArticlesPage = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation(); // Prevent click from bubbling up to Link
-                            handleAction("delete", article._id); // Fixed to "delete"
+                            openDeleteModal(article._id, article.title); // Directly call the function
                           }}
                           className="shadow-md flex items-center bg-red-500 text-white px-2 py-2 rounded-lg text-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                         >
@@ -426,6 +449,18 @@ const ArticlesPage = () => {
           setPage={setPage}
         />
       </div>
+      {/* Render the ConfirmDeleteModal */}
+      <ConfirmDeleteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDelete}
+        itemName={articelToDeleteTitle}
+      />
+    <ResultModal
+        isOpen={isResultModalOpen}
+        onClose={closeResultModal}
+        message={submitStatus}
+      />
     </div>
   );
 };
