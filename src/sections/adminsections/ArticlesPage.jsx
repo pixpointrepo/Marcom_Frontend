@@ -26,7 +26,7 @@ const ArticlesPage = () => {
   const [sortOrder, setSortOrder] = useState(null);
   const [isFeatured, setisFeatured] = useState(null);
   const [isMobileFilter, setMobileFilter] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState([]);
   const [tagsFilter, setTagsFilter] = useState([]);
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,6 +37,8 @@ const ArticlesPage = () => {
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [articelToDeleteTitle, setArticleToDeleteTitle] = useState(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [tagsMapped, setMappedTags] = useState("");
+  const [categoryValueSelect,setCategoryValueSelect]=useState("")
 
   const sortOrderCategory = [
     { label: "Latest", value: "latest" }, //
@@ -88,8 +90,8 @@ const ArticlesPage = () => {
     refetch: articleRefetch,
   } = useFetchArticles({
     page,
-    categoryFilter,
-    tagsFilter,
+    categoryFilter:categoryValueSelect,
+    tagsFilter: tagsMapped,
     searchQuery,
     isFeatured,
     limit: itemsDisplayed,
@@ -120,6 +122,23 @@ const ArticlesPage = () => {
     setViewMode(mode);
   };
 
+  const mapTagsWithComma = () => {
+    const tags = tagsFilter.map((tag) => tag.value).join(",");
+    console.log("checking tags",tags)
+    setMappedTags(tags);
+  };
+  const selectCategoryValue = () => {
+  const selectValue = categoryFilter.value;
+    console.log("checking value",selectValue)
+    setCategoryValueSelect(selectValue);
+  };
+  useEffect(() => {
+   mapTagsWithComma()
+  }, [tagsFilter]);
+  useEffect(() => {
+    selectCategoryValue()
+   }, [categoryFilter]);
+  
   const resetFilterStatus = () => {
     const mediaQuery = window.matchMedia("(min-width: 1280px)");
     if (mediaQuery.matches) {
@@ -271,13 +290,26 @@ const ArticlesPage = () => {
             onChange={(selectedOption) => {
               setMobileFilter(false);
               setCategoryFilter(selectedOption || null);
-              console.log("sent",categoryFilter)
             }}
             isClearable
             placeholder="Category"
             className="w-full xl:w-1/3"
             classNamePrefix="select"
           />
+           {/* <Select
+            options={categories}
+            value={categoryFilter}
+            onChange={(selectedOption) => {
+              setMobileFilter(false);
+              const newValue = selectedOption ? selectedOption.value : null;
+              setCategoryFilter(newValue);
+              console.log("sent", newValue); // Log the new value immediately
+            }}
+            isClearable
+            placeholder="Category"
+            className="w-full xl:w-1/3"
+            classNamePrefix="select"
+          /> */}
           <Select
             isMulti
             options={tags}
@@ -285,6 +317,8 @@ const ArticlesPage = () => {
             onChange={(selectedOptions) => {
               setMobileFilter(false);
               setTagsFilter(selectedOptions || []);
+              console.log("selecredTags",selectedOptions)
+            
             }}
             placeholder="Tags"
             className="w-full xl:w-1/3 "
@@ -457,7 +491,7 @@ const ArticlesPage = () => {
         onConfirm={handleDelete}
         itemName={articelToDeleteTitle}
       />
-    <ResultModal
+      <ResultModal
         isOpen={isResultModalOpen}
         onClose={closeResultModal}
         message={submitStatus}
