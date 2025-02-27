@@ -5,7 +5,7 @@ const useFetchArticles = ({
   page = 1,
   limit = 10,
   categoryFilter = null,
-  tagsFilter = [],
+  tagsFilter = null,
   searchQuery = null,
   isFeatured = null,
 }) => {
@@ -19,8 +19,9 @@ const useFetchArticles = ({
     setError(null);
     try {
       const category = categoryFilter ? categoryFilter : "";
-      const tags = tagsFilter.map((tag) => tag.value).join(",");
-      console.log(tags);
+      const tags = tagsFilter ? tagsFilter : "";
+
+      // console.log(tags);
 
       const data = await fetchArticles({
         page,
