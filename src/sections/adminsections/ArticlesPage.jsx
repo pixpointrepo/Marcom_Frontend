@@ -271,6 +271,7 @@ const ArticlesPage = () => {
             onChange={(selectedOption) => {
               setMobileFilter(false);
               setCategoryFilter(selectedOption || null);
+              console.log("sent",categoryFilter)
             }}
             isClearable
             placeholder="Category"
