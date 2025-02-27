@@ -12,7 +12,7 @@ const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilt
       setLoading(true);
       setError(null);
       try {
-        const category = categoryFilter ? categoryFilter.value : "";
+        const category = categoryFilter ? categoryFilter : "";
         const tags = tagsFilter.map(tag => tag.value).join(',');
         console.log(tags)
 
@@ -28,9 +28,16 @@ const useFetchArticles = ({ page = 1, limit=10,  categoryFilter = null, tagsFilt
     };
 
     loadArticles();
-  }, [page, categoryFilter, tagsFilter, searchQuery, limit, isFeatured]);
+  }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]);
 
-  return { articles, loading, error ,totalFetchedPages };
+  return { totalFetchedPages, articles, loading, error };
 };
+
+// page,
+//     limit,
+//     JSON.stringify(categoryFilter),  // Fix infinite loop by converting object to string
+//     JSON.stringify(tagsFilter),      // Fix infinite loop by converting array to string
+//     searchQuery,
+//     isFeatured
 
 export default useFetchArticles;

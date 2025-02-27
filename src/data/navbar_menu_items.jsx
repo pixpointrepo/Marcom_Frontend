@@ -8,7 +8,7 @@ const newsCategories = Object.values(allNewsArticles).map((categoryData) => ({
 
 const newsCategoryItems = newsCategories.map((category) => ({
   label: category.label,
-  path: `/news/${category.urlSlug}`,
+  path: `/category/${category.urlSlug}`,
   items: []
 }));
 
@@ -22,7 +22,7 @@ const menuItems = [
   },
   {
     label: "News",
-    path: "/news",
+    path: "/category",
     items: newsCategoryItems // Assume this is already consistent with `items`
   },
   {
