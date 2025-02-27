@@ -12,7 +12,7 @@ const useFetchArticleByUrl = (url) => {
 
     const fetchArticle = async () => {
       setLoading(true); // Start loading
-      setError(null); // Reset error state
+      setError(null); // Reset error statea
       try {
         const articleData = await fetchArticleByUrl(url); // Call the API function
         setArticle(articleData); // Set the article data in state

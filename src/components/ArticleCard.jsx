@@ -1,41 +1,62 @@
 /* eslint-disable */
 
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import htmlToPlainText from "../utils/htmlToPlainText";
 
 const ArticleCard = ({ article, index, isHomeScreen }) => {
   const navigate = useNavigate();
- 
+
   return (
     <div
       key={article.id}
       className={`bg-white p-2 border  rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition ${
         isHomeScreen && index === 0 ? "md:col-span-2 " : "bg-[#EAEAEA]"
       }`}
-      onClick={() =>{
-        navigate(
-          `/${article.categoryUrl}/${article.url}`
-        )
+      onClick={() => {
+        navigate(`/${article.categoryUrl}/${article.url}`);
         window.scrollTo({
           top: 0,
-          behavior: 'smooth', 
+          behavior: "smooth",
         });
-      }
-      }
+      }}
     >
+      {/* image */}
       <img
         src={`http://localhost:5000${article.thumbnail}`}
         alt={article.title}
-        className={`${isHomeScreen && index === 0 ? "h-64" : "h-48"} w-full object-cover`}
+        className={`${
+          isHomeScreen && index === 0 ? "h-64" : "h-48"
+        } w-full object-cover`}
       />
+
+      {/* article content */}
       <div className="p-4">
-        <h3 className={`${isHomeScreen && index === 0 ? "text-2xl" : "text-lg"} font-semibold hover:text-blue-500`}>
+        <h3
+          className={`${
+            isHomeScreen && index === 0 ? "text-2xl" : "text-lg"
+          } font-semibold hover:text-blue-500`}
+        >
           {article.title}
         </h3>
-        <p className="text-sm text-gray-600 mt-2 line-clamp-2">{article.summary}</p>
+        <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+          {htmlToPlainText(article.description)}
+        </p>
+        {/* article metadata */}
         <div className="mt-3 text-sm text-gray-500">
-          <span>{article.date}</span> ·{" "}
+          <small>
+            {new Date(article.date).toLocaleString("en-US", {
+              weekday: "short", // Optional: display day of the week (e.g., Mon, Tue)
+              year: "numeric",
+              month: "short", // Optional: display abbreviated month (e.g., Jan, Feb)
+              day: "numeric",
+              hour: "2-digit", // 12-hour clock
+              minute: "2-digit", // 2-digit minute
+              hour12: true, // Use 12-hour format
+            })}
+          </small>{" "}
+          ·{" "}
           <span>
             <svg
               className="h-4 w-4 text-gray-400 inline"
