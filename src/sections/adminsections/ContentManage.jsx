@@ -7,13 +7,14 @@ import {
   createFeaturedCategories,
   deleteFeaturedCategory,
 } from "../../services/api";
-import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal"
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 
 const ContentManage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [featuredCategoryToDelete, setfeaturedCategoryToDelete] = useState(null);
+  const [featuredCategoryToDelete, setfeaturedCategoryToDelete] =
+    useState(null);
 
   const {
     categories,
@@ -222,7 +223,7 @@ const ContentManage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDeleteFeaturedCategory}
-        itemName={featuredCategoryToDelete ?.name || "this category"}
+        itemName={featuredCategoryToDelete?.name || "this category"}
       />
     </div>
   );

@@ -38,7 +38,7 @@ const ArticlesPage = () => {
   const [articelToDeleteTitle, setArticleToDeleteTitle] = useState(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [tagsMapped, setMappedTags] = useState("");
-  const [categoryValueSelect,setCategoryValueSelect]=useState("")
+  const [categoryValueSelect, setCategoryValueSelect] = useState("");
 
   const sortOrderCategory = [
     { label: "Latest", value: "latest" }, //
@@ -90,7 +90,7 @@ const ArticlesPage = () => {
     refetch: articleRefetch,
   } = useFetchArticles({
     page,
-    categoryFilter:categoryValueSelect,
+    categoryFilter: categoryValueSelect,
     tagsFilter: tagsMapped,
     searchQuery,
     isFeatured,
@@ -124,21 +124,21 @@ const ArticlesPage = () => {
 
   const mapTagsWithComma = () => {
     const tags = tagsFilter.map((tag) => tag.value).join(",");
-    console.log("checking tags",tags)
+    console.log("checking tags", tags);
     setMappedTags(tags);
   };
   const selectCategoryValue = () => {
-  const selectValue = categoryFilter.value;
-    console.log("checking value",selectValue)
+    const selectValue = categoryFilter.value;
+    console.log("checking value", selectValue);
     setCategoryValueSelect(selectValue);
   };
   useEffect(() => {
-   mapTagsWithComma()
+    mapTagsWithComma();
   }, [tagsFilter]);
   useEffect(() => {
-    selectCategoryValue()
-   }, [categoryFilter]);
-  
+    selectCategoryValue();
+  }, [categoryFilter]);
+
   const resetFilterStatus = () => {
     const mediaQuery = window.matchMedia("(min-width: 1280px)");
     if (mediaQuery.matches) {
@@ -296,7 +296,7 @@ const ArticlesPage = () => {
             className="w-full xl:w-1/3"
             classNamePrefix="select"
           />
-           {/* <Select
+          {/* <Select
             options={categories}
             value={categoryFilter}
             onChange={(selectedOption) => {
@@ -317,8 +317,7 @@ const ArticlesPage = () => {
             onChange={(selectedOptions) => {
               setMobileFilter(false);
               setTagsFilter(selectedOptions || []);
-              console.log("selecredTags",selectedOptions)
-            
+              console.log("selecredTags", selectedOptions);
             }}
             placeholder="Tags"
             className="w-full xl:w-1/3 "
@@ -397,7 +396,7 @@ const ArticlesPage = () => {
                       </h3>
                       {viewMode === "tile" ? (
                         <p
-                          className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3"
+                          className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal !text-sm !font-normal text-gray-600 line-clamp-3"
                           dangerouslySetInnerHTML={{
                             __html: article.description,
                           }}

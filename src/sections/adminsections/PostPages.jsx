@@ -11,7 +11,7 @@ import { uploadArticle } from "../../services/api";
 export default function PostPages() {
   const [formData, setFormData] = useState({
     title: "",
-    summary: "summary..",
+    summary: "",
     author: "",
     date: "", // Will store date and time (e.g., "2025-02-23T14:30")
     category: "",
@@ -41,6 +41,19 @@ export default function PostPages() {
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+
+  // Custom toolbar configuration
+  const modules = {
+    toolbar: [
+      [{ header: [2, 3, 4, false] }], // Only allow h2, h3, h4 (false disables h1)
+      ["bold", "italic", "underline", "strike"], // Text formatting
+      [{ list: "ordered" }, { list: "bullet" }], // Lists
+      ["blockquote", "code-block"], // Blockquote and code
+    
+      ["link"], // Link and image
+      ["clean"], // Remove formatting button
+    ],
+  };
 
   const onDrop = (acceptedFiles) => {
     console.log("hello", acceptedFiles[0]);
@@ -156,6 +169,7 @@ export default function PostPages() {
               <ReactQuill
                 value={description}
                 onChange={setDescription}
+                modules={modules}
                 className="bg-white border border-gray-300 rounded-md react-quill-editor"
               />
               {errors.description && (

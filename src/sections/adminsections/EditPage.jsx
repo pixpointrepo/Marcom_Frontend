@@ -17,7 +17,7 @@ export default function EditArticlePage() {
 
   const [formData, setFormData] = useState({
     title: "",
-    summary: "summary..",
+    summary: "",
     author: "",
     date: "", // Will store date and time (e.g., "2025-02-23T14:30")
     category: "",
@@ -29,6 +29,8 @@ export default function EditArticlePage() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
+
+
 
   // Populate form with fetched article data
   useEffect(() => {
@@ -64,6 +66,20 @@ export default function EditArticlePage() {
       setImage(article.thumbnail ? `http://localhost:5000${article.thumbnail}` : null);
     }
   }, [article]);
+
+  
+  // Custom toolbar configuration
+  const modules = {
+    toolbar: [
+      [{ header: [2, 3, 4, false] }], // Only allow h2, h3, h4 (false disables h1)
+      ["bold", "italic", "underline", "strike"], // Text formatting
+      [{ list: "ordered" }, { list: "bullet" }], // Lists
+      ["blockquote", "code-block"], // Blockquote and code
+    
+      ["link"], // Link and image
+      ["clean"], // Remove formatting button
+    ],
+  };
 
   const onDrop = (acceptedFiles) => {
     if (acceptedFiles.length > 0) {
@@ -162,6 +178,7 @@ export default function EditArticlePage() {
               <ReactQuill
                 value={description}
                 onChange={setDescription}
+                modules={modules}
                 className="bg-white border border-gray-300 rounded-md react-quill-editor"
               />
               {errors.description && (
