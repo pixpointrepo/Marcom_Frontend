@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchArticles } from "../../services/api";
+import { useCallback } from "react";
 
 const useFetchArticles = ({
   page = 1,
@@ -14,7 +15,7 @@ const useFetchArticles = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const loadArticles = async () => {
+  const loadArticles =  useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -25,6 +26,7 @@ const useFetchArticles = ({
 
       const data = await fetchArticles({
         page,
+        limit, 
         category,
         tags,
         search: searchQuery,
@@ -37,12 +39,12 @@ const useFetchArticles = ({
     } finally {
       setLoading(false); // Ensure loading is reset even on error
     }
-  };
+  }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]); 
 
   // Initial fetch and re-fetch on dependency change
   useEffect(() => {
     loadArticles();
-  }, [page, limit, categoryFilter, tagsFilter, searchQuery, isFeatured]);
+  }, [loadArticles]);
 
   // Expose refetch as a manual trigger // check
   const refetch = () => {
