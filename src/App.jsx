@@ -65,7 +65,7 @@ function App() {
               <Route index element={<HomeSection />} />
               <Route path=":category/:url" element={<NewsDetailScreen />} />
               <Route
-                path="category/:categoryName"
+                path="/categories/:categoryName"
                 element={<NewsCategoryScreen />}
               />
               <Route path="/tags/:tagName" element={<NewsTagsScreen />} />

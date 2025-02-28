@@ -28,7 +28,7 @@ const Navbar = () => {
     if (!loading && !error) {
       const categoryItems = categories.map((cat) => ({
         label: cat.label,
-        path: `/${cat.value}`,
+        path: `/categories/${cat.value}`,
         items: [],
       }));
 
