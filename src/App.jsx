@@ -25,6 +25,7 @@ import ArticlePage from "./sections/adminsections/ArticlePage";
 import EditArticlePage from "./sections/adminsections/EditPage";
 import ContentManage from "./sections/adminsections/ContentManage";
 import ScrollToTop from "./utils/ScrollToTop";
+import NewsTagsScreen from "./screens/NewsTagsScreen";
 
 function App() {
   return (
@@ -37,7 +38,8 @@ function App() {
             {/* Public Routes */}
             <Route index element={<HomeSection />} />
             <Route path=":category/:url" element={<NewsDetailScreen />} />
-            <Route path="/category/:categoryName" element={<NewsCategoryScreen />} />
+            <Route path=":categoryName" element={<NewsCategoryScreen />} />
+            <Route path="/tags/:tagName" element={<NewsTagsScreen />} />
             <Route path="search" element={<SearchResultsScreen />} />
             <Route path="/contact-us" element={<ContactUsScreen />} />
             <Route path="/events/dashboard" element={<EventsDashboardScreen />} />

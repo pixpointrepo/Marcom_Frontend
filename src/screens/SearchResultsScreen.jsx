@@ -1,52 +1,69 @@
 /* eslint-disable */
 
-import { useLocation } from 'react-router-dom';
-import allNewsArticles from '../data/articles';
+import { useLocation, useSearchParams } from "react-router-dom";
+import allNewsArticles from "../data/articles";
 
-import { useState, useEffect } from 'react';
-import ArticleCard from '../components/ArticleCard';
+import { useState, useEffect } from "react";
+import ArticleCard from "../components/ArticleCard";
+import Pagination from "../components/ui/Pagination";
+
+import useFetchArticles from "../components/hooks/useFetchArticles";
 
 const SearchResultsScreen = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const searchTitle = queryParams.get('title'); 
+  const searchTitle = queryParams.get("title");
 
-  const [filteredArticles, setFilteredArticles] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const articlesPerPage = 5; // Customize as needed
 
-  useEffect(() => {
-    
-    if (!searchTitle) {
-      setFilteredArticles([]); 
-      return;
-    }
+  // Fetch articles based on search query and pagination
+  const { articles, totalFetchedPages, loading, error } = useFetchArticles({
+    page: currentPage,
+    limit: articlesPerPage,
+    searchQuery: searchTitle,
+  });
 
-    // Filter articles based on search query
-    const allNewsArticlesArray = Object.values(allNewsArticles).flatMap((data) => data.articles);
-    const filtered = allNewsArticlesArray.filter((article) =>
-      article.title.toLowerCase().includes(searchTitle.toLowerCase()) ||
-      article.summary.toLowerCase().includes(searchTitle.toLowerCase()) ||
-      article.tags.some(tag => tag.toLowerCase().includes(searchTitle.toLowerCase()))
-    );
-
-    setFilteredArticles(filtered);
-
-  }, [searchTitle]);  // Only re-run the effect if searchTitle changes
+  // Handle page change
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalFetchedPages) return; // Prevent invalid page numbers
+    setCurrentPage(page);
+    setSearchParams({ title: searchTitle, page }); // Update the URL with the new page
+  };
 
   if (!searchTitle) {
-    return <p>Please enter a search term.</p>;
+    return <p className="text-center mt-4">Please enter a search term.</p>;
   }
 
   return (
     <div>
-      <h1 className=' items-center justify-center m-4'>Search Results for: '{searchTitle}'</h1>
-      {filteredArticles.length > 0 ? (
-        <div >
-          {filteredArticles.map((article, index) => (
-            <ArticleCard article={article} index={index} />
+      <h1 className="text-center font-bold text-xl my-4">
+        Search Results for: '{searchTitle}'
+      </h1>
+
+      {loading ? (
+        <p className="text-center mt-20">Loading...</p>
+      ) : error ? (
+        <p className="text-center mt-20 text-red-500">{error}</p>
+      ) : articles.length > 0 ? (
+        <div>
+          {articles.map((article, index) => (
+            <ArticleCard key={article.id} article={article} index={index} />
           ))}
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalFetchedPages={totalFetchedPages}
+            handlePageChange={handlePageChange}
+          />
+          
         </div>
       ) : (
-        <p className='mt-20  text-center'>No articles found for '{searchTitle}'</p>
+        <p className="text-center mt-20">
+          No articles found for '{searchTitle}'
+        </p>
       )}
     </div>
   );

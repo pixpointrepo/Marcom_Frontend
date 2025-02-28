@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import allNewsArticles from "../data/articles";
 import MobileMenu from "./MobileMenuBar";
-import menuItems from "../data/navbar_menu_items";
+import menuItemsBase  from "../data/navbar_menu_items";
 import DesktopMenuBar from "./DesktopMenuBar";
 
-
+import nameToUrl from "../utils/nameToUrl";
+import useFetchMetadata from "./hooks/useFetchMetadata";
 
 const Navbar = () => {
 
@@ -19,7 +20,46 @@ const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
 
+  // fetch and set categories and tags
+  const [menuItems, setMenuItems] = useState(menuItemsBase);
+  const { categories, tags, loading, error } = useFetchMetadata();
 
+  useEffect(() => {
+    if (!loading && !error) {
+      const categoryItems = categories.map((cat) => ({
+        label: cat.label,
+        path: `/${cat.value}`,
+        items: [],
+      }));
+
+      const tagItems = tags.map((tag) => ({
+        label: tag.label,
+        path: `/tags/${nameToUrl(tag.label)}`,
+        items: [],
+      }));
+
+      // Inject categories and tags dynamically
+      const updatedMenu = [...menuItems];
+
+      // Add a "Categories" section
+      updatedMenu.push({
+        label: "Categories",
+        path: "/categories",
+        items: categoryItems,
+      });
+      
+      // Add a "Tags" section
+      updatedMenu.push({
+        label: "Tags",
+        path: "/tags",
+        items: tagItems,
+      });
+
+      setMenuItems(updatedMenu);
+    }
+  }, [ loading, error]);
+
+  // handle scroll event
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
@@ -120,7 +160,7 @@ return (
               : "relative top-[90px]"
           }`}
         >
-          <DesktopMenuBar />
+          <DesktopMenuBar menuItems={menuItems}/>
         </div>
 
       </div>

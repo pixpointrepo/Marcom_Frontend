@@ -1,16 +1,6 @@
 import allNewsArticles from "./articles";
 
 
-const newsCategories = Object.values(allNewsArticles).map((categoryData) => ({
-  label: categoryData.category,
-  urlSlug: categoryData.urlSlug,
-}));
-
-const newsCategoryItems = newsCategories.map((category) => ({
-  label: category.label,
-  path: `/category/${category.urlSlug}`,
-  items: []
-}));
 
 
 
@@ -20,11 +10,7 @@ const menuItems = [
     path: "/",
     items: [] // No dropdown
   },
-  {
-    label: "News",
-    path: "/category",
-    items: newsCategoryItems // Assume this is already consistent with `items`
-  },
+  
   {
     label: "Articles",
     path: "/articles",
@@ -53,11 +39,11 @@ const menuItems = [
         label: "Marketing Initiative",
         path: "/articles/marketing-initiative",
         items: [
-          {
-            label: "Advertorial",
-            path: "/articles/marketing-initiative/advertorial",
-            items: []
-          }
+          // {
+          //   label: "Advertorial",
+          //   path: "/articles/marketing-initiative/advertorial",
+          //   items: []
+          // }
         ]
       }
     ]
@@ -87,9 +73,9 @@ const menuItems = [
       },
       {
         label: "Roundtable",
-        path: "/events/roundtable",
+        path: "/events/roundtable/pixpoint",
         items: [
-          { label: "Pixpoint Roundtable", path: "/events/roundtable/pixpoint", items: [] },
+          // { label: "Pixpoint Roundtable", path: "/events/roundtable/pixpoint", items: [] },
          
         ]
       },
@@ -110,12 +96,12 @@ const menuItems = [
         label: "Creative Showcase",
         path: "/more/creative-showcase",
         items: [
-          { label: "Television", path: "/more/creative-showcase/television", items: [] },
-          { label: "Digital", path: "/more/creative-showcase/digital", items: [] },
-          { label: "OOH", path: "/more/creative-showcase/ooh", items: [] },
-          { label: "Print", path: "/more/creative-showcase/print", items: [] },
-          { label: "Radio", path: "/more/creative-showcase/radio", items: [] },
-          { label: "International", path: "/more/creative-showcase/international", items: [] }
+          // { label: "Television", path: "/more/creative-showcase/television", items: [] },
+          // { label: "Digital", path: "/more/creative-showcase/digital", items: [] },
+          // { label: "OOH", path: "/more/creative-showcase/ooh", items: [] },
+          // { label: "Print", path: "/more/creative-showcase/print", items: [] },
+          // { label: "Radio", path: "/more/creative-showcase/radio", items: [] },
+          // { label: "International", path: "/more/creative-showcase/international", items: [] }
         ]
       },
       { label: "Authors", path: "/authors", items: [] },
