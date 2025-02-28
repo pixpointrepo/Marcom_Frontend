@@ -9,11 +9,13 @@ import { Label } from "../../components/ui/label";
 import { X } from "lucide-react";
 import { updateArticle } from "../../services/api";
 import useFetchArticleById from "../../components/hooks/useFetchArticleById";
+import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
 export default function EditArticlePage() {
   const { articleId } = useParams();
   const navigate = useNavigate();
   const { article, loading, error } = useFetchArticleById(articleId);
+  const [isBeingSubmitted, setIsBeingSubmitted] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -141,7 +143,9 @@ export default function EditArticlePage() {
     }
 
     try {
+      setIsBeingSubmitted(true)
       const response = await updateArticle(articleId, postData);
+     
       if (response && response.message) {
         // alert("Article updated successfully!");
         navigate("/dashboard/articles", {
@@ -151,12 +155,13 @@ export default function EditArticlePage() {
         throw new Error("Failed to update the article.");
       }
     } catch (error) {
+      setIsBeingSubmitted(false)
       console.error("Error:", error);
       alert(`Error: ${error.message}`);
     }
   };
 
-  if (loading) return <div className="w-full p-6 mx-auto">Loading...</div>;
+  if (loading || isBeingSubmitted) return <> {loading ? (<ActionsLoader loading={loading}/>) : (<ActionsLoader loading={isBeingSubmitted}/>)}</>
   if (error) return <div className="w-full p-6 mx-auto text-red-500">{error}</div>;
 
   return (

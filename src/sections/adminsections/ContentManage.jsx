@@ -8,6 +8,7 @@ import {
   deleteFeaturedCategory,
 } from "../../services/api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
 const ContentManage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -75,9 +76,7 @@ const ContentManage = () => {
 
   if (metadataLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-gray-500 text-lg">Loading categories and tags...</p>
-      </div>
+      <ActionsLoader loading={metadataLoading} />
     );
   }
 
@@ -176,7 +175,7 @@ const ContentManage = () => {
                 Featured Categories
               </h2>
               {featuredLoading ? (
-                <p className="text-gray-500">Loading featured categories...</p>
+                <p className="text-gray-500">Loading...</p>
               ) : featuredError ? (
                 <p className="text-red-500">{featuredError}</p>
               ) : (

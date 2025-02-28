@@ -7,7 +7,10 @@ const ActionsLoader = ({ loading }) => {
 
   return (
     <div className="fixed inset-0 flex  items-center justify-center bg-gray-100 bg-opacity-50 z-50">
-      <ImSpinner3 className="animate-spin text-blue-500 text-5xl" />
+      <div className="md:w-64">
+
+      </div>
+      <div><ImSpinner3 className="animate-spin text-blue-500 text-5xl" /></div>
     </div>
   );
 };
