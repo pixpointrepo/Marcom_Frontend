@@ -20,6 +20,8 @@ import { deleteArticle } from "../../services/api"; // Import the new function
 import Pagination from "../../components/dashboardcomponents/PaginationArticles";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ResultModal from "../../components/ui/ResultModal";
+import { useLocation } from "react-router-dom";
+import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
 const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
@@ -40,8 +42,17 @@ const ArticlesPage = () => {
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [tagsMapped, setMappedTags] = useState("");
   const [categoryValueSelect, setCategoryValueSelect] = useState("");
- 
+  const [isGettingDeleted, setisGettingDeleted] = useState(false);
 
+  const location = useLocation();
+  
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSubmitStatus(location.state.message);
+      setIsResultModalOpen(true); // Open modal when there's a message
+    }
+  }, [location.state]);
   const sortOrderCategory = [
     { label: "Latest", value: "latest" }, //
     { label: "Featured", value: "featured" },
@@ -57,11 +68,8 @@ const ArticlesPage = () => {
   } = useFetchMetadata();
 
   useEffect(() => {
-   
     const handleResize = () => {
-     
-     
- // Function to update items based on screen width
+      // Function to update items based on screen width
       const width = window.innerWidth;
 
       if (width >= 1920) {
@@ -105,9 +113,9 @@ const ArticlesPage = () => {
   {
     /* Loading and Error Handling for Metadata */
   }
-  {
-    metadataLoading && <p>Loading metadata...</p>;
-  }
+  // {
+  //   metadataLoading && <p>Loading metadata...</p>;
+  // }
   {
     metadataError && <p style={{ color: "red" }}>{metadataError}</p>;
   }
@@ -115,9 +123,9 @@ const ArticlesPage = () => {
   {
     /* Loading and Error Handling for Articles */
   }
-  {
-    articlesLoading && <p>Loading articles...</p>;
-  }
+  // {
+  //   articlesLoading && <p>Loading articles...</p>;
+  // }
   {
     articlesError && <p style={{ color: "red" }}>{articlesError}</p>;
   }
@@ -132,17 +140,23 @@ const ArticlesPage = () => {
     console.log("checking tags", tags);
     setMappedTags(tags);
   };
-  const selectCategoryValue = () => {
-    const selectValue = categoryFilter.value;
-    console.log("checking value", selectValue);
-    setCategoryValueSelect(selectValue);
-  };
-  useEffect(() => {
+  const updateCategoryValue = () => {
+    if (categoryFilter && 'value' in categoryFilter) {
+        const newValue = categoryFilter.value;
+        console.log(categoryFilter.value +" ......label:"+ categoryFilter.label)
+        setCategoryValueSelect(newValue);
+    } else {
+        setCategoryValueSelect("");
+    }
+};
+
+useEffect(() => {
     mapTagsWithComma();
-  }, [tagsFilter]);
-  useEffect(() => {
-    selectCategoryValue();
-  }, [categoryFilter]);
+}, [tagsFilter]);
+
+useEffect(() => {
+    updateCategoryValue();
+}, [categoryFilter]);
 
   const resetFilterStatus = () => {
     const mediaQuery = window.matchMedia("(min-width: 1280px)");
@@ -152,7 +166,7 @@ const ArticlesPage = () => {
   };
   useEffect(() => {
     resetFilterStatus(); // Run initially
-    
+
     window.addEventListener("resize", resetFilterStatus); // Run on resize
     return () => window.removeEventListener("resize", resetFilterStatus); // Cleanup
   }, []);
@@ -210,25 +224,41 @@ const ArticlesPage = () => {
   };
 
   const handleDelete = async () => {
+    setisGettingDeleted(true);
     try {
       await deleteArticle(articleToDelete);
+      setisGettingDeleted(false);
       setSubmitStatus("Article deleted successfully!");
       setIsModalOpen(false); // Close modal before navigation
       setArticleToDelete(null);
       setArticleToDeleteTitle(null);
+
       articleRefetch();
       setIsResultModalOpen(true);
     } catch (error) {
       console.error("Delete error:", error);
+      setisGettingDeleted(false);
       setSubmitStatus("Failed to delete article: " + error.message);
+
       setIsModalOpen(false); // Close modal even on error
       setIsResultModalOpen(true);
     }
   };
   const closeResultModal = () => {
     setIsResultModalOpen(false);
-    setSubmitStatus(null); // Clear the status after closing
+    setSubmitStatus(null); // Clear the message after closing
+    // Optionally clear the navigation state if needed
+    window.history.replaceState({}, document.title, location.pathname); // Removes state from URL
   };
+
+  if (articlesLoading || metadataLoading) {
+    return (
+      <div className="w-full h-full bg-red-50">
+        {metadataLoading? ( <ActionsLoader loading={metadataLoading} />) : ( <ActionsLoader loading={articlesLoading} />) }
+        <ActionsLoader loading={articlesLoading} />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -299,7 +329,7 @@ const ArticlesPage = () => {
             }}
             isClearable
             placeholder="Category"
-            className="w-full xl:w-1/3"
+            className="w-full xl:w-1/3 z-50"
             classNamePrefix="select"
           />
           {/* <Select
@@ -326,7 +356,7 @@ const ArticlesPage = () => {
               console.log("selecredTags", selectedOptions);
             }}
             placeholder="Tags"
-            className="w-full xl:w-1/3 "
+            className="w-full xl:w-1/3 z-50 "
             classNamePrefix="select"
             styles={selectStyles}
           />
@@ -339,7 +369,7 @@ const ArticlesPage = () => {
               handleSort(selectedOption);
             }}
             placeholder="Latest"
-            className="w-full xl:w-1/3"
+            className="w-full xl:w-1/3 z-50"
             classNamePrefix="select"
           />
           {/* <button className="bg-blue-500 text-white px-3 py-2 rounded-lg w-full  sm:w-auto hover:bg-blue-600 transition duration-300">
@@ -401,13 +431,9 @@ const ArticlesPage = () => {
                         {article.title}
                       </h3>
                       {viewMode === "tile" ? (
-                        <p
-                          className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal !text-sm !font-normal text-gray-600 line-clamp-3">
-                            {htmlToPlainText(article.description)}
-                          </p>
-                        
-                      
-                       
+                        <p className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal !text-sm !font-normal text-gray-600 line-clamp-3">
+                          {htmlToPlainText(article.description)}
+                        </p>
                       ) : (
                         <p
                           className="prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600 line-clamp-3"

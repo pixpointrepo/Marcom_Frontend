@@ -99,7 +99,7 @@ const Navbar = () => {
 
 
 return (
-  <nav className={`w-full text-white text-sm z-50`}>
+  <nav className={`w-full relative mt-10 text-white text-sm z-50`}>
 
       {/* desktop navbar */}
       <div className="hidden md:flex md:flex-col">

@@ -7,8 +7,11 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { X } from "lucide-react";
 import { uploadArticle } from "../../services/api";
+import ResultModal from "../../components/ui/ResultModal";
+import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
 export default function PostPages() {
+  const [isBeingSubmitted, setIsBeingSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     summary: "summary..",
@@ -18,7 +21,7 @@ export default function PostPages() {
     tags: "",
     mainArticleUrl: "",
     readTime: "",
-    isFeatured: null,
+    isFeatured: false,
   });
 
   const resetForm = () => {
@@ -38,30 +41,45 @@ export default function PostPages() {
     setErrors({});
   };
 
+  // Custom toolbar configuration
+  const modules = {
+    toolbar: [
+      [{ header: [2, 3, 4, false] }], // Only allow h2, h3, h4 (false disables h1)
+      ["bold", "italic", "underline", "strike"], // Text formatting
+      [{ list: "ordered" }, { list: "bullet" }], // Lists
+      ["blockquote", "code-block"], // Blockquote and code
+
+      ["link"], // Link and image
+      ["clean"], // Remove formatting button
+    ],
+  };
+
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   const onDrop = (acceptedFiles) => {
     console.log("hello", acceptedFiles[0]);
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
-      const fileName = file.name;  // Real file name
-      const fileExtension = file.name.split('.').pop();  // Real extension
-  
+      const fileName = file.name; // Real file name
+      const fileExtension = file.name.split(".").pop(); // Real extension
+
       setImage(file);
       // Optionally, store fileName and fileExtension if needed for later use
-      console.log('File Name:', fileName);
-      console.log('File Extension:', fileExtension);
+      console.log("File Name:", fileName);
+      console.log("File Extension:", fileExtension);
     }
   };
-  
+
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: "image/*",
     multiple: false,
   });
-  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -82,6 +100,8 @@ export default function PostPages() {
 
     if (!description) newErrors.description = "Description is required";
     if (!image) newErrors.image = "Image is required";
+    if (formData.readTime && formData.readTime < 1)
+      newErrors.readTime = "Read Time must be at least 1 min";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -89,6 +109,7 @@ export default function PostPages() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log("form", formData);
 
     if (!validateForm()) return;
 
@@ -113,22 +134,38 @@ export default function PostPages() {
     if (image) postData.append("thumbnail", image);
 
     try {
+      setIsBeingSubmitted(true);
       const response = await uploadArticle(postData);
-  
+      setIsBeingSubmitted(false);
 
       if (response && response.message) {
         console.log("Success:", response);
         resetForm();
-        alert("Article uploaded successfully!");
-
+       
+        setIsResultModalOpen(true);
+        setSubmitStatus("Article Uploaded successfully!");
       } else {
         throw new Error("Failed to upload the article.");
       }
     } catch (error) {
       console.error("Error:", error);
-      alert(`Error: ${error.message}`);
+      setIsBeingSubmitted(false);
+      setIsResultModalOpen(true);
+      setSubmitStatus("Failed to Upload");
     }
   };
+  const closeResultModal = () => {
+    setIsResultModalOpen(false);
+    setSubmitStatus(null); // Clear the status after closing
+  };
+
+  if (isBeingSubmitted)
+    return (
+      <div>
+        {" "}
+        <ActionsLoader loading={isBeingSubmitted} />
+      </div>
+    );
 
   return (
     <div className="w-full p-6 mx-auto">
@@ -154,6 +191,7 @@ export default function PostPages() {
             <div className="mb-4">
               <Label className="mb-2 font-medium">Description</Label>
               <ReactQuill
+                modules={modules}
                 value={description}
                 onChange={setDescription}
                 className="bg-white border border-gray-300 rounded-md react-quill-editor"
@@ -212,7 +250,7 @@ export default function PostPages() {
               </div>
               <div>
                 <Label className="mb-2 font-medium" htmlFor="date">
-                   Date and Time
+                  Date and Time
                 </Label>
                 <Input
                   id="date"
@@ -308,6 +346,11 @@ export default function PostPages() {
 
         <Button type="submit">Publish Post</Button>
       </form>
+      <ResultModal
+        isOpen={isResultModalOpen}
+        onClose={closeResultModal}
+        message={submitStatus}
+      />
       <style>{`
         .react-quill-editor .ql-editor {
           height: 100px;

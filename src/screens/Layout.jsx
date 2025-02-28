@@ -134,11 +134,11 @@ const Layout = () => {
             </div>
           </div>
 
-          {/* Right Sidebar or Ads */}
-          <div className="hidden md:block bg-gray-100 w-32 mx-2"></div>
-        </div>
+        {/* Right Sidebar or Ads */}
+        <div className="hidden md:block bg-gray-100 w-32 mx-2"></div>
       </div>
-      <Footer />
+    </div>
+   
     </>
   );
 };
