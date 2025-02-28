@@ -1,0 +1,12 @@
+.text-stroke {
+    -webkit-text-stroke: 0.3px black; /* Width and color of the stroke */
+    color: transparent; /* Optional: Make the fill transparent */
+}
+
+.text-stroke-white {
+    -webkit-text-stroke: 0.3px white;
+}
+
+.text-stroke-black {
+    -webkit-text-stroke: 0.6px black;
+}
