@@ -8,6 +8,7 @@ import ArticleCard from "../components/ArticleCard";
 import Pagination from "../components/ui/Pagination";
 
 import useFetchArticles from "../components/hooks/useFetchArticles";
+import ArticleCardSkeleton from "../components/skeletons/ArticleCardSkeleton";
 
 const SearchResultsScreen = () => {
   const location = useLocation();
@@ -44,7 +45,11 @@ const SearchResultsScreen = () => {
       </h1>
 
       {loading ? (
-        <p className="text-center mt-20">Loading...</p>
+        <div >
+          {[...Array(3)].map((_, index) => (
+            <ArticleCardSkeleton key={index} />
+          ))}
+        </div>
       ) : error ? (
         <p className="text-center mt-20 text-red-500">{error}</p>
       ) : articles.length > 0 ? (
@@ -53,12 +58,13 @@ const SearchResultsScreen = () => {
             <ArticleCard key={article.id} article={article} index={index} />
           ))}
           {/* Pagination */}
-          <Pagination
-            currentPage={currentPage}
-            totalFetchedPages={totalFetchedPages}
-            handlePageChange={handlePageChange}
-          />
-          
+          {totalFetchedPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalFetchedPages={totalFetchedPages}
+              handlePageChange={handlePageChange}
+            />
+          )}
         </div>
       ) : (
         <p className="text-center mt-20">

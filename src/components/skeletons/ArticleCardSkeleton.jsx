@@ -5,6 +5,7 @@ const ArticleCardSkeleton = ({ index, isHomeScreen }) => {
           isHomeScreen && index === 0 ? "md:col-span-2" : ""
         }`}
       >
+
         {/* Image Skeleton */}
         <div
           className={`bg-gray-300 w-full ${

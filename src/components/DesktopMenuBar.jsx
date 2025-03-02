@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import menuItems from "../data/navbar_menu_items";
-import React, { useState } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 
@@ -117,6 +117,25 @@ const Dropdown = ({ label, items }) => {
 const DesktopMenuBar = ({ menuItems }) => {
   const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
+
+  // Handle clicks outside searchBox
+  const searchRef = useRef(null);
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSearch(false);
+      }
+    }
+
+    if (showSearch) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showSearch]);
+
   return (
     <ul className="hidden md:flex justify-center w-full text-xs md:text-sm md:space-x-10 bg-blue-900">
       {menuItems.map((menu, index) =>
@@ -158,7 +177,7 @@ const DesktopMenuBar = ({ menuItems }) => {
 
         {/* Search Bar (Absolutely Positioned Below Icon) */}
         {showSearch && (
-          <div className="absolute left-1/2 -translate-x-1/2 top-10 bg-white shadow-lg p-2 rounded-md ">
+          <div ref={searchRef} className="absolute left-1/2 -translate-x-1/2 top-10 bg-white shadow-lg p-2 rounded-md ">
             <SearchBar isDesktop={true} />
           </div>
         )}

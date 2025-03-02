@@ -34,7 +34,7 @@ const Pagination = ({ currentPage, totalFetchedPages, handlePageChange }) => {
   }
 
   return (
-    <div className="flex justify-center mt-6 space-x-2">
+    <div className="flex justify-center mt-10 space-x-2 text-sm">
       {/* Previous Button */}
       <button
         onClick={() => handlePageChange(currentPage - 1)}

@@ -20,7 +20,7 @@ const HomeScreen = () => {
       <>
         {loading
           ? // Show Skeleton Loader while data is loading
-            [...Array(3)].map((_, idx) => (
+            
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[...Array(5)].map((_, index) => (
                     <ArticleCardSkeleton
@@ -30,7 +30,7 @@ const HomeScreen = () => {
                     />
                   ))}
                 </div>
-            ))
+            
           : // Show Articles when data is loaded
             Object.keys(articles).map((categoryKey, idx) => {
               const categoryArticles = articles[categoryKey];
