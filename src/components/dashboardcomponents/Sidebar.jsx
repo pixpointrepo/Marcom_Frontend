@@ -47,7 +47,7 @@ export default function Sidebar() {
                   src="/pixpointLogo.png"
                   className="aspect-[3/2] h-10 mb-2 md:mb-0 ml-20  md:ml-0"
                 />
-                <h1 className="text-lg font-bold ">PixPoint News</h1>
+                <h1 className="text-2xl font-bold ">Marcom</h1>
               </div>
             </div>
             <button

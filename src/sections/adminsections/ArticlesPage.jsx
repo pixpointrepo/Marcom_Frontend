@@ -23,6 +23,16 @@ import ResultModal from "../../components/ui/ResultModal";
 import { useLocation } from "react-router-dom";
 import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
+
+// Function to calculate initial items based on width
+const getInitialItems = () => {
+  const width = window.innerWidth;
+  if (width >= 1920) return 15;
+  if (width >= 1280) return 12;
+  if (width >= 1024) return 9;
+  return 8;
+};
+
 const ArticlesPage = () => {
   const [viewMode, setViewMode] = useState("tile"); // grid or tile
   const navigate = useNavigate();
@@ -34,7 +44,7 @@ const ArticlesPage = () => {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [query, setQuery] = useState(""); // New state for search query
-  const [itemsDisplayed, setItemsDisplayed] = useState(8);
+  const [itemsDisplayed, setItemsDisplayed] = useState(getInitialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [articleToDelete, setArticleToDelete] = useState(null);
@@ -69,31 +79,21 @@ const ArticlesPage = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      // Function to update items based on screen width
       const width = window.innerWidth;
-
       if (width >= 1920) {
         setItemsDisplayed(15);
       } else if (width >= 1280) {
-        // xl breakpoint in Tailwind
         setItemsDisplayed(12);
       } else if (width >= 1024) {
-        // lg breakpoint in Tailwind
         setItemsDisplayed(9);
       } else {
         setItemsDisplayed(8);
       }
     };
 
-    // Call once on mount to set initial value
-    handleResize();
-
-    // Add event listener
     window.addEventListener("resize", handleResize);
-
-    // Cleanup function to remove event listener
     return () => window.removeEventListener("resize", handleResize);
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
   // Use the custom hook to fetch articles
   const {
     totalFetchedPages,
@@ -329,7 +329,7 @@ useEffect(() => {
             }}
             isClearable
             placeholder="Category"
-            className="w-full xl:w-1/3 z-50"
+            className="w-full xl:w-1/3 z-30"
             classNamePrefix="select"
           />
           {/* <Select
@@ -356,7 +356,7 @@ useEffect(() => {
               console.log("selecredTags", selectedOptions);
             }}
             placeholder="Tags"
-            className="w-full xl:w-1/3 z-50 "
+            className="w-full xl:w-1/3 z-30 "
             classNamePrefix="select"
             styles={selectStyles}
           />
@@ -369,7 +369,7 @@ useEffect(() => {
               handleSort(selectedOption);
             }}
             placeholder="Latest"
-            className="w-full xl:w-1/3 z-50"
+            className="w-full xl:w-1/3 z-30"
             classNamePrefix="select"
           />
           {/* <button className="bg-blue-500 text-white px-3 py-2 rounded-lg w-full  sm:w-auto hover:bg-blue-600 transition duration-300">

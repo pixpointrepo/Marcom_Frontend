@@ -1,56 +1,60 @@
 import React from "react";
 
 const Pagination = ({ totalFetchedPages, page, setPage }) => {
+  console.log(totalFetchedPages)
   const scrollToTop = () => {
     window.scrollTo(0, 0);
   };
 
-  // Generate pagination range
   const getPaginationRange = () => {
     const totalPages = totalFetchedPages || 0;
     const range = [];
-    const halfTotalPages = Math.floor(totalPages / 2); // Halfway point
 
-    // If total pages is 0 or 1, return empty range
+    // Return empty array if 0 or 1 page
     if (totalPages <= 1) return [];
 
-    let firstPage, secondPage;
+    const maxVisibleNumbers = 5; // Maximum numbers to show (excluding ellipsis)
+    const sideNumbers = 2; // Numbers shown on each side of current page
 
-    if (page === 1) {
-      // On page 1, show 1 and 2
-      firstPage = 1;
-      secondPage = totalPages > 1 ? 2 : null;
-    } else if (page <= halfTotalPages) {
-      // Up to half, show current and next
-      firstPage = page;
-      secondPage = page < totalPages ? page + 1 : null;
-    } else {
-      // After half, including last page, show 1, ..., current, next (if not last)
-      firstPage = 1; // Always start with 1
-      range.push(firstPage);
-      range.push("..."); // Ellipsis after 1
-      firstPage = page; // Current page becomes the next number
-      secondPage = page < totalPages ? page + 1 : null;
+    // If total pages is small enough, show all pages
+    if (totalPages <= maxVisibleNumbers) {
+      for (let i = 1; i <= totalPages; i++) {
+        range.push(i);
+      }
+      return range;
     }
 
-    // Build the range
-    range.push(firstPage);
-    if (secondPage && secondPage !== firstPage) {
-      range.push(secondPage);
+    // Calculate start and end of the sliding window
+    let start = Math.max(1, page - sideNumbers);
+    let end = Math.min(totalPages, page + sideNumbers);
+
+    // Adjust start and end if we're near the edges
+    if (page <= sideNumbers + 1) {
+      start = 1;
+      end = maxVisibleNumbers - 1;
+    } else if (page >= totalPages - sideNumbers) {
+      start = totalPages - (maxVisibleNumbers - 2);
+      end = totalPages;
     }
 
-    // Add ellipsis if there's a gap to the last page (only if not already added)
-    if (
-      totalPages > 2 &&
-      secondPage &&
-      secondPage < totalPages &&
-      range[range.length - 1] !== "..."
-    ) {
+    // Add first page and ellipsis if needed
+    if (start > 2) {
+      range.push(1);
       range.push("...");
+    } else if (start === 2) {
+      range.push(1);
     }
 
-    // Add last page if not already included
-    if (totalPages > 1 && totalPages !== range[range.length - 1]) {
+    // Add the sliding window of numbers
+    for (let i = start; i <= end; i++) {
+      range.push(i);
+    }
+
+    // Add last page and ellipsis if needed
+    if (end < totalPages - 1) {
+      range.push("...");
+      range.push(totalPages);
+    } else if (end === totalPages - 1) {
       range.push(totalPages);
     }
 
@@ -59,12 +63,10 @@ const Pagination = ({ totalFetchedPages, page, setPage }) => {
 
   const paginationRange = getPaginationRange();
 
-  // Don't render pagination if there's no pages or only one page
   if (totalFetchedPages <= 1) return null;
 
   return (
     <div className="flex justify-center items-center gap-2 mt-4">
-      {/* Previous Button */}
       <button
         onClick={() => {
           setPage(page - 1);
@@ -76,7 +78,6 @@ const Pagination = ({ totalFetchedPages, page, setPage }) => {
         Previous
       </button>
 
-      {/* Pagination Numbers */}
       {paginationRange.map((item, index) => (
         <div key={index}>
           {item === "..." ? (
@@ -99,7 +100,6 @@ const Pagination = ({ totalFetchedPages, page, setPage }) => {
         </div>
       ))}
 
-      {/* Next Button */}
       <button
         onClick={() => {
           setPage(page + 1);
