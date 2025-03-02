@@ -10,11 +10,15 @@ const api = axios.create({
 
 // Add request interceptor to automatically include token in headers
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = getToken();
     if (token) {
       config.headers.Authorization = token;
     }
+
+    // Simulate loading by delaying the request
+    await new Promise((resolve) => setTimeout(resolve, 4000)); // 2-second delay
+
     return config;
   },
   (error) => {

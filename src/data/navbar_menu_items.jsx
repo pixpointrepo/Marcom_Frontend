@@ -10,58 +10,69 @@ const menuItems = [
     path: "/",
     items: [] // No dropdown
   },
-  
   {
-    label: "Articles",
-    path: "/articles",
-    items: [
-      {
-        label: "Interviews",
-        path: "/articles/interviews",
-        items: []
-      },
-      {
-        label: "Points of View",
-        path: "/articles/points-of-view",
-        items: []
-      },
-      {
-        label: "Profiles",
-        path: "/articles/profiles",
-        items: []
-      },
-      {
-        label: "Guest Articles",
-        path: "/articles/guest-articles",
-        items: []
-      },
-      {
-        label: "Marketing Initiative",
-        path: "/articles/marketing-initiative",
-        items: [
-          // {
-          //   label: "Advertorial",
-          //   path: "/articles/marketing-initiative/advertorial",
-          //   items: []
-          // }
-        ]
-      }
-    ]
+    label: "Categories",
+    path: "/categories",
+    items: [],
   },
+
   {
-    label: "Media",
-    path: "/media",
-    items: [
-      { label: "Television", path: "/media/television", items: [] },
-      { label: "Digital", path: "/media/digital", items: [] },
-      { label: "OTT Streaming", path: "/media/ott-streaming", items: [] },
-      { label: "Social Media", path: "/media/social-media", items: [] },
-      { label: "Print", path: "/media/print", items: [] },
-      { label: "OOH", path: "/media/ooh", items: [] },
-      { label: "Radio", path: "/media/radio", items: [] },
-      { label: "Cinema", path: "/media/cinema", items: [] }
-    ]
+    label: "Tags",
+    path: "/tags",
+    items: [],
   },
+
+  // {
+  //   label: "Articles",
+  //   path: "/articles",
+  //   items: [
+  //     {
+  //       label: "Interviews",
+  //       path: "/articles/interviews",
+  //       items: []
+  //     },
+  //     {
+  //       label: "Points of View",
+  //       path: "/articles/points-of-view",
+  //       items: []
+  //     },
+  //     {
+  //       label: "Profiles",
+  //       path: "/articles/profiles",
+  //       items: []
+  //     },
+  //     {
+  //       label: "Guest Articles",
+  //       path: "/articles/guest-articles",
+  //       items: []
+  //     },
+  //     {
+  //       label: "Marketing Initiative",
+  //       path: "/articles/marketing-initiative",
+  //       items: [
+  //         // {
+  //         //   label: "Advertorial",
+  //         //   path: "/articles/marketing-initiative/advertorial",
+  //         //   items: []
+  //         // }
+  //       ]
+  //     }
+  //   ]
+  // },
+  // {
+  //   label: "Media",
+  //   path: "/media",
+  //   items: [
+  //     { label: "Television", path: "/media/television", items: [] },
+  //     { label: "Digital", path: "/media/digital", items: [] },
+  //     { label: "OTT Streaming", path: "/media/ott-streaming", items: [] },
+  //     { label: "Social Media", path: "/media/social-media", items: [] },
+  //     { label: "Print", path: "/media/print", items: [] },
+  //     { label: "OOH", path: "/media/ooh", items: [] },
+  //     { label: "Radio", path: "/media/radio", items: [] },
+  //     { label: "Cinema", path: "/media/cinema", items: [] }
+  //   ]
+  // },
   {
     label: "Events",
     path: "/events",
