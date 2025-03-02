@@ -66,7 +66,7 @@ const Layout = () => {
                         className="flex items-start gap-4 animate-pulse"
                       >
                         {/* Image Skeleton */}
-                        <div className="h-20 w-28 bg-gray-300 rounded-md shadow-sm"></div>
+                        <div className="h-20 w-44 bg-gray-300 rounded-md shadow-sm"></div>
 
                         {/* Text Skeleton */}
                         <div className="flex flex-col gap-2 w-full">

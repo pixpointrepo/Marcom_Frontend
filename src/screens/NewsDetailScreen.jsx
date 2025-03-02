@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import useFetchArticleByUrl from "../components/hooks/useFetchArticleByUrl";
 import { fetchArticles } from "../services/api";
+import ArticleSkeleton from "../components/skeletons/ArticleDetailsSkeleton";
+import RelatedArticlesSkeleton from "../components/skeletons/RelatedArticleSkeleton";
 
 const NewsDetailScreen = () => {
   const navigate = useNavigate();
@@ -46,85 +48,81 @@ const NewsDetailScreen = () => {
 
   return (
     <div className="px-4 md:p-6">
-      {/* Article Tags */}
-      <div className="flex gap-3 mb-2">
-        {article?.tags.map((tag) => (
-          <div
-            key={tag}
-            className="py-0.5 px-2 bg-amber-300 rounded-md text-sm"
-          >
-            <h2>{tag}</h2>
-          </div>
-        ))}
-      </div>
-
-      {/* Main Article Content */}
-      {loading ? (
-        <div className="flex justify-center items-center h-60">
-          Loading article...
+    {/* Article Tags */}
+    <div className="flex gap-3 mb-2">
+      {article?.tags.map((tag) => (
+        <div key={tag} className="py-0.5 px-2 bg-amber-300 rounded-md text-sm">
+          <h2>{tag}</h2>
         </div>
-      ) : error ? (
-        <div className="text-red-500 text-center mt-10">{error}</div>
-      ) : !article ? (
-        <div className="text-gray-500 text-center mt-10">No article found.</div>
-      ) : (
-        <>
-          <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
-          <p className="text-sm text-gray-500 flex space-x--">
-            {new Date(article.date).toLocaleString("en-US", {
-              weekday: "short", // Optional: display day of the week (e.g., Mon, Tue)
-              year: "numeric",
-              month: "short", // Optional: display abbreviated month (e.g., Jan, Feb)
-              day: "numeric",
-              hour: "2-digit", // 12-hour clock
-              minute: "2-digit", // 2-digit minute
-              hour12: true, // Use 12-hour format
-            })}
-            <span className="mx-2">·</span>
-            <span>
-              <svg
-                className="h-4 w-4 text-gray-400 inline"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 7V12L14.5 10.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></path>
-              </svg>{" "}
-              {article.readTime}
-            </span>
-            <span className="mx-2">·</span>
-            <span>{article.author}</span>
-          </p>
+      ))}
+    </div>
 
-          <img
-            src={`http://localhost:5000${article.thumbnail}`}
-            alt={article.title}
-            className="w-full h-64 object-cover rounded-md mt-4 mb-6"
-          />
-          <p
-            className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600"
-            dangerouslySetInnerHTML={{
-              __html: article.description,
-            }}
-          />
-        </>
-      )}
-      
+    {/* Main Article Content */}
+    {loading ? (
+      <ArticleSkeleton />
+    ) : error ? (
+      <div className="text-red-500 text-center mt-10">{error}</div>
+    ) : !article ? (
+      <div className="text-gray-500 text-center mt-10">No article found.</div>
+    ) : (
+      <>
+        <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
+        <p className="text-sm text-gray-500 flex space-x--">
+          {new Date(article.date).toLocaleString("en-US", {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          })}
+          <span className="mx-2">·</span>
+          <span>
+            <svg
+              className="h-4 w-4 text-gray-400 inline"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 7V12L14.5 10.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>{" "}
+            {article.readTime}
+          </span>
+          <span className="mx-2">·</span>
+          <span>{article.author}</span>
+        </p>
+
+        <img
+          src={`http://localhost:5000${article.thumbnail}`}
+          alt={article.title}
+          className="w-full h-64 object-cover rounded-md mt-4 mb-6"
+        />
+        <p
+          className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600"
+          dangerouslySetInnerHTML={{
+            __html: article.description,
+          }}
+        />
+      </>
+    )}
       {/* Divider */}
       <hr className="my-6" />
       
       {/* Related Articles */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold mb-4">Similar Articles</h2>
-        {loadingSimilarArticles ? (
-          <div className="flex justify-center items-center h-32">
-            Loading related articles...
+        {loadingSimilarArticles || loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[...Array(4)].map((_, index) => (
+                   <RelatedArticlesSkeleton key={index} />
+                ))}
           </div>
         ) : errorSimilarArticles ? (
           <div className="text-red-500 text-center mt-10">
