@@ -45,14 +45,12 @@ const TopLevelNavbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full py-6 h-20 md:h-14 bg-white text-black flex items-center justify-between z-50 transition-transform duration-300 ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
-      }`}
+      className={` w-full py-6 h-20 md:h-14 bg-white text-black flex items-center justify-between z-50 transition-transform duration-300"}`}
     >
       <div className="flex flex-col items-center sm:flex-col md:flex-row lg:flex-row md:items-center w-full md:gap-4">
         {/* Logo */}
         <img
-          src="/pixpointLogo.png"
+          src="/marcom.jpg"
           alt="Logo"
           className="mx-4 h-12 w-fit p-2"
         />

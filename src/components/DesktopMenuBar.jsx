@@ -3,6 +3,7 @@
 import menuItems from "../data/navbar_menu_items";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 // DropdownItem Component to handle nested items
 const DropdownItem = ({ label, items }) => {
@@ -92,7 +93,7 @@ const Dropdown = ({ label, items }) => {
       </div>
       {isOpen && (
         <ul className="absolute left-0 top-full bg-white text-black shadow-lg z-50 w-auto whitespace-nowrap max-h-80 overflow-visible overflow-y-auto">
-           {/* <ul className="absolute left-0 top-full bg-white text-black shadow-lg overflow-visible z-50 w-auto whitespace-nowrap"> */}
+          {/* <ul className="absolute left-0 top-full bg-white text-black shadow-lg overflow-visible z-50 w-auto whitespace-nowrap"> */}
           {items.map((item, index) =>
             item.items.length > 0 ? (
               <DropdownItem key={index} label={item.label} items={item.items} />
@@ -113,9 +114,9 @@ const Dropdown = ({ label, items }) => {
     </li>
   );
 };
-
 const DesktopMenuBar = ({ menuItems }) => {
   const navigate = useNavigate();
+  const [showSearch, setShowSearch] = useState(false);
   return (
     <ul className="hidden md:flex justify-center w-full text-xs md:text-sm md:space-x-10 bg-blue-900">
       {menuItems.map((menu, index) =>
@@ -131,6 +132,37 @@ const DesktopMenuBar = ({ menuItems }) => {
           </li>
         )
       )}
+      {/* Search Bar */}
+      <div className="relative flex items-center">
+        {/* Search Icon */}
+        <button
+          className="text-white"
+          onClick={() => setShowSearch((prev) => !prev)}
+          aria-label="Toggle Search"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            className=" p-1.5 w-8 h-8"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        {/* Search Bar (Absolutely Positioned Below Icon) */}
+        {showSearch && (
+          <div className="absolute left-1/2 -translate-x-1/2 top-10 bg-white shadow-lg p-2 rounded-md ">
+            <SearchBar isDesktop={true} />
+          </div>
+        )}
+      </div>
     </ul>
   );
 };

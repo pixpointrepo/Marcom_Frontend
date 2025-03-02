@@ -19,7 +19,7 @@ const Layout = () => {
   return (
     <>
       <Navbar />
-      <div className="container mt-4 md:mt-20 mx-auto py-4 px-2">
+      <div className="container mt-4 md:mt-0 mx-auto py-4 px-2">
         <div className="flex flex-col md:flex-row gap-2">
           {/* Left Sidebar or Ads */}
           <div className="hidden md:block bg-gray-100 w-32 mx-2"></div>
@@ -49,13 +49,7 @@ const Layout = () => {
 
               {/* Latest Stories List */}
               <div className="space-y-3">
-                {/* Loading State */}
-                {latestArticlesLoading && (
-                  <div className="flex justify-center items-center py-4 text-gray-500">
-                    Loading latest articles...
-                  </div>
-                )}
-
+                
                 {/* Error State */}
                 {latestArticlesError && (
                   <div className="text-red-500 text-center py-4">
@@ -64,45 +58,66 @@ const Layout = () => {
                 )}
 
                 {/* Articles List (only render if not loading and no error) */}
-                {!latestArticlesLoading && !latestArticlesError && latestArticles.length > 0 && (
+                {latestArticlesLoading ? (
                   <ul className="space-y-3">
-                    {latestArticles.map((story) => (
+                    {[...Array(3)].map((_, index) => (
                       <li
-                        key={story.id}
-                        className="flex items-start gap-4 hover:text-blue-500 cursor-pointer"
-                        onClick={() => {
-                          navigate(`/${story.categoryUrl}/${story.url}`);
-                          window.scrollTo({
-                            top: 0,
-                            behavior: "smooth",
-                          });
-                        }}
+                        key={index}
+                        className="flex items-start gap-4 animate-pulse"
                       >
-                        <img
-                          src={`http://localhost:5000${story.thumbnail}`}
-                          alt=""
-                          className="h-20 w-28 object-cover rounded-md shadow-sm"
-                        />
+                        {/* Image Skeleton */}
+                        <div className="h-20 w-28 bg-gray-300 rounded-md shadow-sm"></div>
 
-                        <div className="flex flex-col gap-1">
-                          <h3 className="text-sm font-semibold hover:text-blue-500">
-                            {story.title}
-                          </h3>
-                          <p className="text-xs text-gray-500 line-clamp-2">
-                            {htmlToPlainText(story.description)}
-                          </p>
+                        {/* Text Skeleton */}
+                        <div className="flex flex-col gap-2 w-full">
+                          <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                          <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+                          <div className="h-3 bg-gray-200 rounded w-2/3"></div>
                         </div>
                       </li>
                     ))}
                   </ul>
+                ) : (
+                  !latestArticlesError &&
+                  latestArticles.length > 0 && (
+                    <ul className="space-y-3">
+                      {latestArticles.map((story) => (
+                        <li
+                          key={story.id}
+                          className="flex items-start gap-4 hover:text-blue-500 cursor-pointer"
+                          onClick={() => {
+                            navigate(`/${story.categoryUrl}/${story.url}`);
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                          }}
+                        >
+                          <img
+                            src={`http://localhost:5000${story.thumbnail}`}
+                            alt=""
+                            className="h-20 w-28 object-cover rounded-md shadow-sm"
+                          />
+
+                          <div className="flex flex-col gap-1">
+                            <h3 className="text-sm font-semibold hover:text-blue-500">
+                              {story.title}
+                            </h3>
+                            <p className="text-xs text-gray-500 line-clamp-2">
+                              {htmlToPlainText(story.description)}
+                            </p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )
                 )}
 
                 {/* No Articles Found */}
-                {!latestArticlesLoading && !latestArticlesError && latestArticles.length === 0 && (
-                  <div className="text-gray-500 text-center py-4">
-                    No latest stories available.
-                  </div>
-                )}
+                {!latestArticlesLoading &&
+                  !latestArticlesError &&
+                  latestArticles.length === 0 && (
+                    <div className="text-gray-500 text-center py-4">
+                      No latest stories available.
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -134,11 +149,10 @@ const Layout = () => {
             </div>
           </div>
 
-        {/* Right Sidebar or Ads */}
-        <div className="hidden md:block bg-gray-100 w-32 mx-2"></div>
+          {/* Right Sidebar or Ads */}
+          <div className="hidden md:block bg-gray-100 w-32 mx-2"></div>
+        </div>
       </div>
-    </div>
-   
     </>
   );
 };
