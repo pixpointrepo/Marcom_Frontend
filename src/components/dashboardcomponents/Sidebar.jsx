@@ -40,14 +40,14 @@ export default function Sidebar() {
         } transition-transform  md:translate-x-0 md:w-64 `}
       >
         <div className="flex flex-col h-full justify-between">
-          <div>
+          <div className="">
             <div className="flex w-full mb-6">
-              <div className="flex flex-col md:flex-row w-full items-start md:space-x-4 md:items-end">
+              <div className="flex flex-col md:flex-row w-full items-start md:space-x-4 md:items-end ">
                 <img
-                  src="/pixpointLogo.png"
-                  className="aspect-[3/2] h-10 mb-2 md:mb-0 ml-20  md:ml-0"
+                  src="/marcom.jpg"
+                  className="aspect-[3/2] md:h-14 h-10 md:w-full w-[65%] mb-2 md:mb-0 ml-10  md:ml-0 rounded-lg "
                 />
-                <h1 className="text-2xl font-bold ">Marcom</h1>
+                {/* <h1 className="text-2xl font-bold ">Marcom</h1> */}
               </div>
             </div>
             <button

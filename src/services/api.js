@@ -17,7 +17,7 @@ api.interceptors.request.use(
     }
 
     // Simulate loading by delaying the request
-    await new Promise((resolve) => setTimeout(resolve, 4000)); // 2-second delay
+    // await new Promise((resolve) => setTimeout(resolve, 4000)); // 2-second delay
 
     return config;
   },

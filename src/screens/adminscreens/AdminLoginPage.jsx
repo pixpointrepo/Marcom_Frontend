@@ -7,6 +7,7 @@ import { Label } from "../../components/ui/label";
 import { Lock, User, Eye, EyeOff } from "lucide-react";
 import AuthContext from "../../context/AuthContext"
 import { adminLogin } from "../../services/api";
+import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
  
 export default function AdminLoginPage() {
@@ -55,6 +56,12 @@ export default function AdminLoginPage() {
       setLoading(false);
     }
   };
+
+  if(loading){
+    return(
+      <ActionsLoader loading={loading} widthLeft="0px"/>
+    )
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
