@@ -97,7 +97,7 @@ const Layout = () => {
                           />
 
                           <div className="flex flex-col gap-1">
-                            <h3 className="text-sm font-semibold hover:text-blue-500">
+                            <h3 className="text-sm font-semibold hover:text-blue-500 line-clamp-2">
                               {story.title}
                             </h3>
                             <p className="text-xs text-gray-500 line-clamp-2">
