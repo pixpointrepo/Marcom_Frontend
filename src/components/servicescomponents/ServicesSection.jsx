@@ -11,7 +11,7 @@ const ServiceItem = ({id, title, text, svg }) => {
   const navigate = useNavigate();
 
   const handleNavigation = () => {
-    navigate(`/all-services#${id}`);
+    navigate(`/services#${id}`);
   };
 
   return (

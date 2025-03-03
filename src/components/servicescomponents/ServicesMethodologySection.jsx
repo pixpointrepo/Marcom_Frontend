@@ -61,7 +61,7 @@ const ImageTextRow = ({ imageSrc, title, subtitle, text, isAlternate }) => {
 
 const ServicesMethodologySection = ()=>{
  return(
-  <section id='methodology'>
+  <section id='strategy'>
       <div className="flex flex-col items-center py-2 px-6 sm:px-8 md:px-10 lg:px-40 overflow-x-hidden bg-white">
 
       <h1 className="text-md sm:text-xl md:text-2xl lg:text-2xl mt-4 ">How we do it</h1> 

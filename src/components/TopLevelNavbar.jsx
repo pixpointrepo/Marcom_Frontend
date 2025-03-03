@@ -49,14 +49,17 @@ const TopLevelNavbar = () => {
     >
       <div className="flex flex-col items-center sm:flex-col md:flex-row lg:flex-row md:items-center w-full md:gap-4">
         {/* Logo */}
+        <div className="md:absolute">
         <img
           src="/marcom.jpg"
           alt="Logo"
           className="mx-4 h-12 w-fit p-2"
         />
+        </div>
 
         {/* Navigation Links */}
-        <div className="flex items-center justify-center w-full md:w-auto md:ml-4">
+       
+        <div className="flex items-center justify-center w-full ">
           <Link
             to="/"
             className="h-fit mx-3  text-base transition-colors duration-300 hover:text-black font-semibold bg-gradient-to-r from-main to-purple-700 bg-clip-text text-transparent"
@@ -70,10 +73,10 @@ const TopLevelNavbar = () => {
             Products
           </Link>
           <Link
-            to="/services"
+            to="/contact-us"
             className="h-fit mx-3  text-base transition-colors duration-300 hover:text-black font-semibold bg-gradient-to-r from-main to-purple-700 bg-clip-text text-transparent"
           >
-            Services
+            Contact Us
           </Link>
           {/* <button
             onClick={() => handleNavigation("contact")}
@@ -83,7 +86,8 @@ const TopLevelNavbar = () => {
           </button> */}
           
         </div>
-      </div>
+        </div>
+     
     </nav>
   );
 };

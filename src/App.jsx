@@ -28,31 +28,13 @@ import ScrollToTop from "./utils/ScrollToTop";
 
 import NewsTagsScreen from "./screens/NewsTagsScreen";
 import TopLevelLayout from "./screens/TopLevelLayout";
-import ServicesNavbar from "./components/servicescomponents/ServicesNavabr";
-import ServicesHomeSection from "./components/servicescomponents/ServicesHomeSection";
-import ServicesSection from "./components/servicescomponents/ServicesSection";
-import ServicesMethodologySection from "./components/servicescomponents/ServicesMethodologySection";
-import ServicesTeamSection from "./components/servicescomponents/ServicesTeamSection";
-import ServicesClientSection from "./components/servicescomponents/ServicesClientsSection";
-import ServicesContactSection from "./components/servicescomponents/ServicesContactSection";
+
 import AllServicesSection from "./components/servicescomponents/AllServicesSection";
-import { ThemeProvider } from "./providers/ThemeContext";
+
+import ContactSection from "./components/servicescomponents/ContactSection";
+import MainPage from "./components/servicescomponents/MainPage";
 
 function App() {
-  // Stacked Sections for /products
-  const MainPage = () => (
-    <div>
-      <ThemeProvider>
-        <ServicesHomeSection />
-        <ServicesSection />
-        <ServicesMethodologySection />
-        <ServicesTeamSection />
-        <ServicesClientSection />
-        <ServicesContactSection />
-      </ThemeProvider>
-    </div>
-  );
-
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -70,7 +52,7 @@ function App() {
               />
               <Route path="/tags/:tagName" element={<NewsTagsScreen />} />
               <Route path="search" element={<SearchResultsScreen />} />
-              <Route path="contact-us" element={<ContactUsScreen />} />
+
               <Route
                 path="events/dashboard"
                 element={<EventsDashboardScreen />}
@@ -86,6 +68,7 @@ function App() {
 
             {/* Routes Outside Layout but Under TopLevelLayout */}
             <Route path="products" element={<MainPage />} />
+            <Route path="contact-us" element={<ContactSection />} />
             <Route path="services" element={<AllServicesSection />} />
             {/* Uncomment if needed */}
             {/* <Route path="careers" element={<CareersSection />} /> */}

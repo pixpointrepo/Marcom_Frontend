@@ -128,7 +128,7 @@ const Navbar = () => {
             {/* Logo */}
             <div className="flex items-center p-1">
               <img
-                src="/src/assets/images/pixpointLogo.png"
+               src="/marcom.jpg"
                 alt="Logo"
                 className="h-8 w-auto"
               />
