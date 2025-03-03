@@ -7,13 +7,14 @@ import ArticleCard from "../components/ArticleCard";
 import ArticleCardSkeleton from "../components/skeletons/ArticleCardSkeleton";
 
 import useFetchHomepage from "../components/hooks/useFetchHomepage";
+import ErrorScreen from "./ErrorScreen";
 
 const HomeScreen = () => {
   const navigate = useNavigate();
   const { articles, loading, error } = useFetchHomepage(5); // Limit of 5 articles per category
 
   
-  if (error) return <p className="text-red-500">Failed to load articles.</p>;
+  if (error) return <ErrorScreen  />;
 
   return (
  

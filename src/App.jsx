@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./screens/Layout";
 import Navbar from "./components/Navbar";
 import HomeSection from "./screens/HomeScreen";
@@ -64,6 +64,8 @@ function App() {
                 path="events/roundtable/pixpoint"
                 element={<RoundTableScreen />}
               />
+              {/* Default fallback route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
 
             {/* Routes Outside Layout but Under TopLevelLayout */}
@@ -90,6 +92,7 @@ function App() {
             />
             <Route path="manage-content" element={<ContentManage />} />
           </Route>
+          
         </Routes>
       </BrowserRouter>
     </AuthProvider>
