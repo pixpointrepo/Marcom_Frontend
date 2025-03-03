@@ -105,6 +105,10 @@ const NewsDetailScreen = () => {
           src={`http://localhost:5000${article.thumbnail}`}
           alt={article.title}
           className="w-full h-64 object-cover rounded-md mt-4 mb-6"
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite loop
+            e.target.src = "/placeholder-2.png"; // Fallback image path
+          }}
         />
         <p
           className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600"
@@ -145,9 +149,13 @@ const NewsDetailScreen = () => {
                   src={`http://localhost:5000${related.thumbnail}`}
                   alt={related.title}
                   className="h-48 w-full object-cover rounded-md"
+                  onError={(e) => {
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = "/placeholder-2.png"; // Fallback image path
+                  }}
                 />
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold hover:text-blue-500">
+                  <h3 className="text-lg font-semibold hover:text-blue-500 line-clamp-2">
                     {related.title}
                   </h3>
                   <p className="text-sm text-gray-600 mt-2 line-clamp-2">

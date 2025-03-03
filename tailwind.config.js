@@ -18,6 +18,10 @@ export default {
       fontFamily: {
 
         montserrat: ['Montserrat', 'sans-serif'], // For Google Fonts
+        quicksand: ['Quicksand', 'sans-serif'],
+        playfair: ['Playfair Display', 'sans-serif'],
+        tinos : ['Tinos', 'sans-serif'],
+
         // custom: ['CustomFont', 'sans-serif'], // For Local Fonts
       },
       backgroundImage: {

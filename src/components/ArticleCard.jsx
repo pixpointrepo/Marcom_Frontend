@@ -11,7 +11,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
   return (
     <div
       key={article.id}
-      className={`bg-white p-2 border  rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition ${
+      className={` bg-white p-2 border  rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition  ${
         isHomeScreen && index === 0 ? "md:col-span-2 " : "bg-[#EAEAEA]"
       }`}
       onClick={() => {
@@ -29,6 +29,10 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
         className={`${
           isHomeScreen && index === 0 ? "h-64" : "h-48"
         } w-full object-cover`}
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = "/placeholder-2.png"; // Fallback image path
+        }}
       />
 
       {/* article content */}
