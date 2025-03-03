@@ -5,6 +5,8 @@ import useFetchArticleByUrl from "../components/hooks/useFetchArticleByUrl";
 import { fetchArticles } from "../services/api";
 import ArticleSkeleton from "../components/skeletons/ArticleDetailsSkeleton";
 import RelatedArticlesSkeleton from "../components/skeletons/RelatedArticleSkeleton";
+import nameToUrl from "../utils/nameToUrl";
+import ErrorScreen from "./ErrorScreen";
 
 const NewsDetailScreen = () => {
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ const NewsDetailScreen = () => {
       setErrorSimilarArticles(null);
       try {
         const data = await fetchArticles({
-          limit: 5,
+          limit: 4,
           categoryFilter: article.category,
         });
         // Exclude the current article from the related articles
@@ -51,7 +53,7 @@ const NewsDetailScreen = () => {
     {/* Article Tags */}
     <div className="flex gap-3 mb-2">
       {article?.tags.map((tag) => (
-        <div key={tag} className="py-0.5 px-2 bg-amber-300 rounded-md text-sm">
+        <div onClick={() => navigate(`/tags/${nameToUrl(tag)}`)} key={tag} className="py-0.5 px-2 bg-amber-300 rounded-md text-sm cursor-pointer">
           <h2>{tag}</h2>
         </div>
       ))}
@@ -61,7 +63,7 @@ const NewsDetailScreen = () => {
     {loading ? (
       <ArticleSkeleton />
     ) : error ? (
-      <div className="text-red-500 text-center mt-10">{error}</div>
+      <ErrorScreen/>
     ) : !article ? (
       <div className="text-gray-500 text-center mt-10">No article found.</div>
     ) : (

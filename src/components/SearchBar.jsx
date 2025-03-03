@@ -34,7 +34,7 @@ const SearchBar = ({ isDesktop }) => {
         type="submit"
         className={`${
           isDesktop
-            ? "bg-blue-600 text-xs text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            ? "bg-[#1E3A8A] text-xs text-white px-4 py-2 rounded-md hover:bg-blue-700"
             : ""
         }`}
         aria-label="Search"
