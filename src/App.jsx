@@ -33,6 +33,8 @@ import AllServicesSection from "./components/servicescomponents/AllServicesSecti
 
 import ContactSection from "./components/servicescomponents/ContactSection";
 import MainPage from "./components/servicescomponents/MainPage";
+import AboutUsPage from "./components/servicescomponents/AboutUsPage";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 function App() {
   return (
@@ -72,6 +74,9 @@ function App() {
             <Route path="products" element={<MainPage />} />
             <Route path="contact-us" element={<ContactSection />} />
             <Route path="services" element={<AllServicesSection />} />
+            <Route path="about-us" element={<AboutUsPage />} />
+            <Route path="privacy" element={<PrivacyPolicy />} />
+
             {/* Uncomment if needed */}
             {/* <Route path="careers" element={<CareersSection />} /> */}
             {/* <Route path="services/:id" element={<ServiceDetailsSection />} /> */}

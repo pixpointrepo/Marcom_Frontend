@@ -1,16 +1,11 @@
-import React, { useState } from "react";
-import Select from "react-select";
+import React from 'react';
 import useFetchMetadata from "../../components/hooks/useFetchMetadata";
 import useFetchArticles from "../../components/hooks/useFetchArticles";
 
-const DashBoardHomePage = () => {
-  const [categoryFilter, setCategoryFilter] = useState(null);
-  const [tagsFilter, setTagsFilter] = useState([]);
-  const [page, setPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
-  
 
-  
+
+function DashboardHomePage() {
+  const currentDate = "March 03, 2025"; // Static date for placeholder
   const {
     categories,
     tags,
@@ -18,71 +13,55 @@ const DashBoardHomePage = () => {
     error: metadataError,
   } = useFetchMetadata();
 
-  // Use the custom hook to fetch articles
   const {
+    totalFetchedPages,
     articles,
+    totalArticle,
     loading: articlesLoading,
     error: articlesError,
   } = useFetchArticles({
-    page,
-    categoryFilter,
-    tagsFilter,
-    searchQuery
+    page:1,
+   
+
   });
+  console.log("pages",totalArticle)
 
   return (
-    <div>
-      <h1>Articles</h1>
+    <div className="w-full min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="bg-[#111827] text-white p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold"> Admin</h1>
+        <div className="flex items-center space-x-4">
+          <span>{currentDate}</span>
+          
+        </div>
+      </header>
 
-      {/* Category Filter Select */}
-      <Select
-        options={categories}
-        value={categoryFilter}
-        onChange={(selectedOption) => setCategoryFilter(selectedOption || null)}
-        placeholder="Filter by Category"
-        isClearable
-      />
-
-      {/* Tags Filter Select */}
-      <Select
-        options={tags}
-        value={tagsFilter} // Make sure the format is [{ value, label }]
-        onChange={(selectedOptions) => setTagsFilter(selectedOptions || [])}
-        isMulti
-        placeholder="Filter by Tags"
-      />
-
-      <input
-        type="text"
-        placeholder="Search articles by title"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on input change
-      />
-
-      {/* Loading and Error Handling for Metadata */}
-      {metadataLoading && <p>Loading metadata...</p>}
-      {metadataError && <p style={{ color: "red" }}>{metadataError}</p>}
-
-      {/* Loading and Error Handling for Articles */}
-      {articlesLoading && <p>Loading articles...</p>}
-      {articlesError && <p style={{ color: "red" }}>{articlesError}</p>}
-
-      {/* Articles List */}
-      <ul>
-        {articles.length > 0 ? (
-          articles.map((article) => <li key={article._id}>{article.title}</li>)
-        ) : (
-          <p>No articles found.</p>
-        )}
-      </ul>
-
-      {/* Pagination Controls */}
-      <button onClick={() => setPage(page - 1)} disabled={page === 1}>
-        Previous
-      </button>
-      <button onClick={() => setPage(page + 1)}>Next</button>
+      {/* Main Dashboard Content */}
+      <main className="flex-1 p-6 flex flex-col items-center justify-center bg-gray-100">
+        <h2 className="text-3xl font-semibold text-gray-800 mb-4">
+          Welcome to the Marcom Admin Dashboard
+        </h2>
+        <p className="text-gray-600 mb-6">
+          This is a dashboard for managing content
+        </p>
+        <div className="flex space-x-6">
+          <div className="bg-white p-6 rounded-lg shadow-md w-40 text-center">
+            <h3 className="text-lg font-medium text-gray-700">Total Articles</h3>
+            <p className="text-gray-500">0{totalArticle}</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md w-40 text-center">
+            <h3 className="text-lg font-medium text-gray-700">Users</h3>
+            <p className="text-gray-500">0 (Placeholder)</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-md w-40 text-center">
+            <h3 className="text-lg font-medium text-gray-700">Views</h3>
+            <p className="text-gray-500">0 (Placeholder)</p>
+          </div>
+        </div>
+      </main>
     </div>
   );
-};
+}
 
-export default DashBoardHomePage;
+export default DashboardHomePage;

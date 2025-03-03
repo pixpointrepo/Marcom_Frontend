@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 const menuItems = [
   { label: "Home", path: "#home" }, // Optional: Scrolls to a home section
   { label: "Services", path: "#services", },
-  { label: "Strategies", path: "#strategy", }, // Scrolls to services section
+  { label: "Strategy", path: "#strategy", }, // Scrolls to services section
 ];
 
 const Navbar = () => {
