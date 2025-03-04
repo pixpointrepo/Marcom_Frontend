@@ -15,9 +15,6 @@ const useFetchArticles = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  console.log("categoryFilter", categoryFilter);
-  console.log("tagsFilter", tagsFilter);
-
   const loadArticles =  useCallback(async () => {
     setLoading(true);
     setError(null);

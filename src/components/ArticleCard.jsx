@@ -77,6 +77,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
               ></path>
             </svg>{" "}
             {article.readTime}
+            
           </span>{" "}
           · <span>{article.author}</span>
         </div>

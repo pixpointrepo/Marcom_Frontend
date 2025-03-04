@@ -9,24 +9,14 @@ const TopLevelNavbar = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
   const navigate = useNavigate();
   const location = useLocation();
-  const handleNavigation = (id) => {
-    if (location.pathname !== "/") {
-      // Navigate to MainPage and scroll after the page loads
-      navigate("/products");
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 100); // Delay to ensure MainPage renders
-    } else {
-      // Scroll directly if already on MainPage
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+
+  const handleNavigation = () => {
+    navigate("/"); // Navigate first
+    setTimeout(() => {
+      window.location.reload(); // Reload after navigation
+    }, 100); // Small delay to ensure navigation happens first
   };
+
     useEffect(() => {
       const handleScroll = () => {
         const currentScrollPos = window.scrollY;
@@ -49,7 +39,7 @@ const TopLevelNavbar = () => {
     >
       <div className="flex flex-col items-center sm:flex-col md:flex-row lg:flex-row md:items-center w-full md:gap-4">
         {/* Logo */}
-        <div className="md:absolute">
+        <div onClick={()=> handleNavigation()} className="cursor-pointer md:absolute">
         <img
           src="/marcom.jpg"
           alt="Logo"
@@ -62,19 +52,19 @@ const TopLevelNavbar = () => {
         <div className="flex items-center justify-center w-full ">
           <Link
             to="/"
-            className="h-fit mx-3  text-base transition-colors duration-300 hover:text-black font-semibold bg-gradient-to-r from-main to-purple-700 bg-clip-text text-transparent"
+            className="h-fit mx-3  text-base transition-colors duration-300 hover:text-[#1E3A8A] font-semibold bg-gradient-to-r from-main to-purple-700 bg-clip-text text-transparent"
           >
             News
           </Link>
           <Link
             to="/products"
-            className="h-fit mx-3  text-base transition-colors duration-300 hover:text-black font-semibold bg-gradient-to-r from-main to-purple-700 bg-clip-text text-transparent"
+            className="h-fit mx-3  text-base transition-colors duration-300 hover:text-[#1E3A8A] font-semibold bg-gradient-to-r from-main to-purple-700 bg-clip-text text-transparent"
           >
             Products
           </Link>
           <Link
             to="/contact-us"
-            className="h-fit mx-3  text-base transition-colors duration-300 hover:text-black font-semibold bg-gradient-to-r from-main to-purple-700 bg-clip-text text-transparent"
+            className="h-fit mx-3  text-base transition-colors duration-300 hover:text-[#1E3A8A] font-semibold bg-gradient-to-r from-main to-purple-700 bg-clip-text text-transparent"
           >
             Contact Us
           </Link>

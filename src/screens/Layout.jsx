@@ -94,6 +94,10 @@ const Layout = () => {
                             src={`http://localhost:5000${story.thumbnail}`}
                             alt=""
                             className="h-20 w-28 object-cover rounded-md shadow-sm"
+                            onError={(e) => {
+                              e.target.onerror = null; // Prevent infinite loop
+                              e.target.src = "/placeholder-2.png"; // Fallback image path
+                            }}
                           />
 
                           <div className="flex flex-col gap-1">

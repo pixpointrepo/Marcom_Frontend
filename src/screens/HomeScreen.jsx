@@ -11,9 +11,9 @@ import ErrorScreen from "./ErrorScreen";
 
 const HomeScreen = () => {
   const navigate = useNavigate();
-  const { articles, loading, error } = useFetchHomepage(5); // Limit of 5 articles per category
+  // const { articles, loading, error } = useFetchHomepage(5); // Limit of 5 articles per category
+  const { data: articles, isLoading: loading, error } = useFetchHomepage(5);
 
-  
   if (error) return <ErrorScreen  />;
 
   return (

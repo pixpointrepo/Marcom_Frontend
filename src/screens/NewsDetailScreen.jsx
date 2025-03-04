@@ -50,85 +50,101 @@ const NewsDetailScreen = () => {
 
   return (
     <div className="px-4 md:p-6">
-    {/* Article Tags */}
-    <div className="flex gap-3 mb-2">
-      {article?.tags.map((tag) => (
-        <div onClick={() => navigate(`/tags/${nameToUrl(tag)}`)} key={tag} className="py-0.5 px-2 bg-amber-300 rounded-md text-sm cursor-pointer">
-          <h2>{tag}</h2>
-        </div>
-      ))}
-    </div>
+      {/* Article Tags */}
+      <div className="flex gap-3 mb-2">
+        {article?.tags.map((tag) => (
+          <div
+            onClick={() => navigate(`/tags/${nameToUrl(tag)}`)}
+            key={tag}
+            className="py-0.5 px-2 bg-amber-300 rounded-md text-sm cursor-pointer"
+          >
+            <h2>{tag}</h2>
+          </div>
+        ))}
+      </div>
 
-    {/* Main Article Content */}
-    {loading ? (
-      <ArticleSkeleton />
-    ) : error ? (
-      <ErrorScreen/>
-    ) : !article ? (
-      <div className="text-gray-500 text-center mt-10">No article found.</div>
-    ) : (
-      <>
-        <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
-        <p className="text-sm text-gray-500 flex space-x--">
-          {new Date(article.date).toLocaleString("en-US", {
-            weekday: "short",
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          })}
-          <span className="mx-2">·</span>
-          <span>
-            <svg
-              className="h-4 w-4 text-gray-400 inline"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+      {/* Main Article Content */}
+      {loading ? (
+        <ArticleSkeleton />
+      ) : error ? (
+        <ErrorScreen />
+      ) : !article ? (
+        <div className="text-gray-500 text-center mt-10">No article found.</div>
+      ) : (
+        <>
+          <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
+          <p className="text-sm text-gray-500 flex space-x--">
+            {new Date(article.date).toLocaleString("en-US", {
+              weekday: "short",
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })}
+            <span className="mx-2">·</span>
+            <span>
+              <svg
+                className="h-4 w-4 text-gray-400 inline"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 7V12L14.5 10.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+              </svg>{" "}
+              {article.readTime}
+            </span>
+            <span className="mx-2">·</span>
+            <span>{article.author}</span>
+          </p>
+
+          <img
+            src={`http://localhost:5000${article.thumbnail}`}
+            alt={article.title}
+            className="w-full h-64 object-cover rounded-md mt-4 mb-6"
+            onError={(e) => {
+              e.target.onerror = null; // Prevent infinite loop
+              e.target.src = "/placeholder-2.png"; // Fallback image path
+            }}
+          />
+          <p
+            className="pr-2 mb-4 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600"
+            dangerouslySetInnerHTML={{
+              __html: article.description,
+            }}
+          />
+          <div className="flex justify-center">
+            <a
+              type="button"
+              href={article.mainArticleUrl}
+              target="_blank"
+              className="bg-gradient-to-tr from-main to-purple-700 text-xs text-white px-4 py-2 rounded-md 
+           hover:from-blue-600 hover:to-blue-700"
+              aria-label="Read more"
             >
-              <path
-                d="M12 7V12L14.5 10.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>{" "}
-            {article.readTime}
-          </span>
-          <span className="mx-2">·</span>
-          <span>{article.author}</span>
-        </p>
-
-        <img
-          src={`http://localhost:5000${article.thumbnail}`}
-          alt={article.title}
-          className="w-full h-64 object-cover rounded-md mt-4 mb-6"
-          onError={(e) => {
-            e.target.onerror = null; // Prevent infinite loop
-            e.target.src = "/placeholder-2.png"; // Fallback image path
-          }}
-        />
-        <p
-          className="pr-2 prose max-w-full prose-lg prose-ul:list-disc prose-ol:list-decimal text-sm text-gray-600"
-          dangerouslySetInnerHTML={{
-            __html: article.description,
-          }}
-        />
-      </>
-    )}
+              Read More
+            </a>
+          </div>
+        </>
+      )}
       {/* Divider */}
       <hr className="my-6" />
-      
+
       {/* Related Articles */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold mb-4">Similar Articles</h2>
         {loadingSimilarArticles || loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[...Array(4)].map((_, index) => (
-                   <RelatedArticlesSkeleton key={index} />
-                ))}
+            {[...Array(4)].map((_, index) => (
+              <RelatedArticlesSkeleton key={index} />
+            ))}
           </div>
         ) : errorSimilarArticles ? (
           <div className="text-red-500 text-center mt-10">
