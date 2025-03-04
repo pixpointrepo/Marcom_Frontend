@@ -13,13 +13,21 @@ const menuItems = [
   {
     label: "Categories",
     path: "/categories",
-    items: [],
+    items: [{
+      label: "",
+      path: "/",
+      items: [""],
+    },],
   },
 
   {
     label: "Tags",
     path: "/tags",
-    items: [],
+    items: [{
+      label: "",
+      path: "/",
+      items: [""],
+    },],
   },
 
   // {
