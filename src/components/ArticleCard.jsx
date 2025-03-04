@@ -5,13 +5,53 @@ import { useNavigate } from "react-router-dom";
 
 import htmlToPlainText from "../utils/htmlToPlainText";
 
+// Helper function to calculate time difference or show future date
+const formatDate = (date) => {
+  const now = new Date();
+  const articleDate = new Date(date);
+
+  // If the article date is in the future, show the full formatted date
+  if (articleDate > now) {
+    return articleDate.toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  // Otherwise, calculate time ago for past dates
+  const seconds = Math.floor((now - articleDate) / 1000);
+
+  const intervals = [
+    { label: "year", seconds: 31536000 },
+    { label: "month", seconds: 2592000 }, // Approx 30 days
+    { label: "week", seconds: 604800 },
+    { label: "day", seconds: 86400 },
+    { label: "hour", seconds: 3600 },
+    { label: "min", seconds: 60 },
+    { label: "sec", seconds: 1 },
+  ];
+
+  for (const interval of intervals) {
+    const count = Math.floor(seconds / interval.seconds);
+    if (count >= 1) {
+      return `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
+    }
+  }
+  return "just now"; // Fallback for very recent posts
+};
+
 const ArticleCard = ({ article, index, isHomeScreen }) => {
   const navigate = useNavigate();
 
   return (
     <div
       key={article.id}
-      className={` bg-white p-2 border  rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition  ${
+      className={`flex flex-col bg-white p-2 border rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition ${
         isHomeScreen && index === 0 ? "md:col-span-2 " : "bg-[#EAEAEA]"
       }`}
       onClick={() => {
@@ -27,7 +67,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
         src={`http://localhost:5000${article.thumbnail}`}
         alt={article.title}
         className={`${
-          isHomeScreen && index === 0 ? "h-64" : "h-48"
+          isHomeScreen && index === 0 ? "h-80" : "aspect-[16/9]"
         } w-full object-cover`}
         onError={(e) => {
           e.target.onerror = null;
@@ -36,31 +76,23 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
       />
 
       {/* article content */}
-      <div className="p-4">
-        <h3
-          className={`${
-            isHomeScreen && index === 0 ? "text-2xl" : "text-lg"
-          } font-semibold hover:text-blue-500`}
-        >
-          {article.title}
-        </h3>
-        <p className="text-sm text-gray-600 mt-2 line-clamp-2">
-          {htmlToPlainText(article.description)}
-        </p>
+      <div className="p-4 h-full flex flex-col justify-between">
+        <div>
+          <h3
+            className={`${
+              isHomeScreen && index === 0 ? "text-2xl" : "text-lg"
+            } font-semibold hover:text-blue-500`}
+          >
+            {article.title}
+          </h3>
+          <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+            {htmlToPlainText(article.description)}
+          </p>
+        </div>
         {/* article metadata */}
         <div className="mt-3 text-sm text-gray-500">
-          
-            {new Date(article.date).toLocaleString("en-US", {
-              weekday: "short", // Optional: display day of the week (e.g., Mon, Tue)
-              year: "numeric",
-              month: "short", // Optional: display abbreviated month (e.g., Jan, Feb)
-              day: "numeric",
-              hour: "2-digit", // 12-hour clock
-              minute: "2-digit", // 2-digit minute
-              hour12: true, // Use 12-hour format
-            })}
-          {" "}
-          ·{" "}
+          <span>{formatDate(article.date)}</span>
+          {" "}·{" "}
           <span>
             <svg
               className="h-4 w-4 text-gray-400 inline"
@@ -76,7 +108,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
                 strokeLinejoin="round"
               ></path>
             </svg>{" "}
-            {article.readTime}
+            {article.readTime} min
           </span>{" "}
           · <span>{article.author}</span>
         </div>
