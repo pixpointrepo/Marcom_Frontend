@@ -81,21 +81,21 @@ export default function Sidebar() {
                 icon={<FolderCog size={20} />}
                 label="Manage Contents"
               />
-              <SidebarItem
+              {/* <SidebarItem
                 setSidebarOpen={setIsOpen}
                 to="/users"
                 icon={<Users size={20} />}
                 label="Users"
-              />
+              /> */}
             </nav>
           </div>
           <div>
-            <Link
+            {/* <Link
               to="/dashboard/settings"
               className="mt-6 flex items-center text-white hover:text-blue-400"
             >
               <Settings size={20} className="mr-2" /> Settings
-            </Link>
+            </Link> */}
             <button
               onClick={openLogoutDialog}
               className="mt-6 flex items-center text-red-500 hover:text-red-400"

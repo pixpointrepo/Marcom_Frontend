@@ -116,7 +116,7 @@ const menuItems = [
         ]
       },
       { label: "Authors", path: "/authors", items: [] },
-      { label: "Contact Us", path: "/contact-us", items: [] }
+      // { label: "Contact Us", path: "/contact-us", items: [] }
     ]
   }
 ];

@@ -12,6 +12,7 @@ const useFetchArticles = ({
 }) => {
   const [articles, setArticles] = useState([]);
   const [totalFetchedPages, setTotalFetchedPages] = useState(0);
+  const[totalArticle,setTotalArticles]= useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -34,6 +35,7 @@ const useFetchArticles = ({
       });
       setArticles(data.articles);
       setTotalFetchedPages(data.totalPages);
+      setTotalArticles(data.totalArticles)
     } catch (err) {
       setError("Failed to load articles");
     } finally {
@@ -51,7 +53,7 @@ const useFetchArticles = ({
     loadArticles();
   };
 
-  return { totalFetchedPages, articles, loading, error, refetch };
+  return { totalFetchedPages, totalArticle, articles, loading, error, refetch };
 };
 
 export default useFetchArticles;

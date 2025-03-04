@@ -20,7 +20,7 @@ const Layout = () => {
     <>
       <Navbar />
       <div className="container mt-4 md:mt-0 mx-auto py-4 px-2">
-        <div className="flex flex-col md:flex-row gap-2">
+        <div className="flex flex-col lg:flex-row gap-2">
           {/* Left Sidebar or Ads */}
           <div className="hidden md:block bg-gray-100 w-32 mx-2"></div>
 
@@ -31,7 +31,7 @@ const Layout = () => {
           </div>
 
           {/* Right Sidebar */}
-          <div className="w-full md:w-1/4 flex flex-col gap-4">
+          <div className="w-full lg:w-1/4 flex flex-col gap-4">
             {/* Ad Section */}
             <div className="flex items-center justify-center bg-white shadow-md h-72 rounded-md p-4">
               <h1 className="text-2xl text-gray-400">Ad Here</h1>
