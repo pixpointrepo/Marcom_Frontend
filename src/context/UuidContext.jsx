@@ -2,10 +2,10 @@
 import React, { createContext, useContext } from 'react';
 import useUserUuid from '../components/hooks/useUserUuid';
 
-// Create the context
+
+
 const UuidContext = createContext();
 
-// Provider component
 export const UuidProvider = ({ children }) => {
   const [userUuid, handleAccept] = useUserUuid();
 
@@ -16,7 +16,6 @@ export const UuidProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use the context
 export const useUuid = () => {
   const context = useContext(UuidContext);
   if (context === undefined) {

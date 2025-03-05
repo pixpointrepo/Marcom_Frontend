@@ -1,10 +1,9 @@
-// src/screens/NewsDetailScreen.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useFetchArticleByUrl from "../components/hooks/useFetchArticleByUrl";
 import { fetchArticles } from "../services/api";
 import { logPageView } from "../services/api";
-import { useUuid } from "../context/UuidContext"; // Import context hook
+import { useUuid } from "../context/UuidContext";
 import ArticleSkeleton from "../components/skeletons/ArticleDetailsSkeleton";
 import RelatedArticlesSkeleton from "../components/skeletons/RelatedArticleSkeleton";
 import nameToUrl from "../utils/nameToUrl";
@@ -13,7 +12,7 @@ import ErrorScreen from "./ErrorScreen";
 const NewsDetailScreen = () => {
   const navigate = useNavigate();
   const { url } = useParams();
-  const { userUuid } = useUuid(); // Get userUuid from context
+  const { userUuid } = useUuid();
 
   const { article, loading, error } = useFetchArticleByUrl(url);
   const [relatedArticles, setRelatedArticles] = useState([]);
@@ -24,7 +23,7 @@ const NewsDetailScreen = () => {
     if (article?._id && userUuid) {
       const trackPageView = async () => {
         try {
-          await logPageView(window.location.pathname, userUuid);
+          await logPageView(window.location.pathname, userUuid, article._id);
         } catch (err) {
           console.error("Failed to log page view:", err);
         }
@@ -61,7 +60,6 @@ const NewsDetailScreen = () => {
 
   return (
     <div className="px-4 md:p-6">
-      {/* Article Tags */}
       <div className="flex gap-3 mb-2">
         {article?.tags.map((tag) => (
           <div
@@ -74,7 +72,6 @@ const NewsDetailScreen = () => {
         ))}
       </div>
 
-      {/* Main Article Content */}
       {loading ? (
         <ArticleSkeleton />
       ) : error ? (
@@ -145,10 +142,8 @@ const NewsDetailScreen = () => {
           </div>
         </>
       )}
-      {/* Divider */}
       <hr className="my-6" />
 
-      {/* Related Articles */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold mb-4">Similar Articles</h2>
         {loadingSimilarArticles || loading ? (

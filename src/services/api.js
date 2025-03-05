@@ -220,7 +220,7 @@ export const deleteFeaturedCategory = async (categoryId) => {
 };
 
 // src/services/api.js
-export const logPageView = async (pageUrl, userUuid, articleId) => {
+export const logPageView = async ( pageUrl,userUuid, articleId) => {
   try {
     const response = await api.post(`/analytics/pageview`, { // Changed to /analytics/pageview
       pageUrl,

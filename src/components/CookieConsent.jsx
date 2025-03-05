@@ -1,4 +1,3 @@
-// src/components/CookieConsent.js
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
@@ -6,20 +5,21 @@ const CookieConsent = ({ onAccept }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Show the popup immediately if no consent has been given yet
-    if (!Cookies.get('cookie_consent')) {
+    const consent = Cookies.get('cookie_consent');
+    if (!consent) { // Show popup only if no consent (neither accepted nor declined)
       setIsVisible(true);
     }
-  }, []); // Runs once on mount
+  }, []);
 
   const handleAccept = () => {
-    Cookies.set('cookie_consent', 'accepted', { expires: 365 });
+    Cookies.set('cookie_consent', 'accepted', { expires: 90 }); // 90-day expiry
     setIsVisible(false);
-    onAccept(); // Trigger UUID generation/storage
+    onAccept(); // Save UUID to cookies
   };
 
   const handleDecline = () => {
-    setIsVisible(false); // Hide popup, no consent stored
+    Cookies.set('cookie_consent', 'declined', { expires: 1 }); // 1-day expiry
+    setIsVisible(false); // Hide popup, tracking still happens
   };
 
   if (!isVisible) return null;

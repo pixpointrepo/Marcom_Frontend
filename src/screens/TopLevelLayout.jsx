@@ -1,4 +1,3 @@
-// src/layouts/TopLevelLayout.jsx
 import React from 'react';
 import { Outlet } from "react-router-dom";
 import Footer from '../components/Footer';
@@ -8,7 +7,7 @@ import CookieConsent from '../components/CookieConsent';
 import { useUuid } from '../context/UuidContext';
 
 const TopLevelLayout = () => {
-  const { handleAccept } = useUuid(); // Get handleAccept from context
+  const { handleAccept } = useUuid();
 
   return (
     <>
