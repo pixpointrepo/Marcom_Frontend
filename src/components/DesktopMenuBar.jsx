@@ -10,6 +10,12 @@ const DropdownItem = ({ label, items }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
+  
+  if (label=="") {
+    return null
+  }
+
+
   return (
     <li
       className="relative group"
@@ -139,7 +145,7 @@ const DesktopMenuBar = ({ menuItems }) => {
   return (
     <ul className="hidden md:flex justify-center w-full text-xs md:text-sm md:space-x-10 bg-blue-900">
       {menuItems.map((menu, index) =>
-        menu.items.length ? (
+        menu.items.length?  (
           <Dropdown key={index} label={menu.label} items={menu.items} />
         ) : (
           <li
