@@ -219,6 +219,30 @@ export const deleteFeaturedCategory = async (categoryId) => {
   }
 };
 
+// Upload article
+export const submitForm = async (postData) => {
+  try {
+    const response = await api.post("/form/submit", postData);
+    console.log("Success:", response.data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+// Get all submitted forms
+export const getFormData = async () => {
+  try {
+    const response = await api.get("/form");
+    return response.data; // Array of category objects
+  } catch (error) {
+    console.error("Error fetching formdata:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to load form data");
+  }
+};
+
+
 // Update a category by ID (placeholder since not provided)
 // export const updateCategory = async (categoryId, categoryData) => {
 //   try {

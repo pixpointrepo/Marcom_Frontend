@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Form } from "react-router-dom";
 import Layout from "./screens/Layout";
 import Navbar from "./components/Navbar";
 import HomeSection from "./screens/HomeScreen";
@@ -24,6 +24,7 @@ import ArticlesPage from "./sections/adminsections/ArticlesPage";
 import ArticlePage from "./sections/adminsections/ArticlePage";
 import EditArticlePage from "./sections/adminsections/EditPage";
 import ContentManage from "./sections/adminsections/ContentManage";
+import FormSubmissionsPage from "./sections/adminsections/FormEntries";
 import ScrollToTop from "./utils/ScrollToTop";
 
 import NewsTagsScreen from "./screens/NewsTagsScreen";
@@ -95,6 +96,7 @@ function App() {
               path="edit-article/:articleId"
               element={<EditArticlePage />}
             />
+            <Route path="entries" element={<FormSubmissionsPage />} />
             <Route path="manage-content" element={<ContentManage />} />
           </Route>
           
