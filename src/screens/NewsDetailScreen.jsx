@@ -1,8 +1,10 @@
+// src/screens/NewsDetailScreen.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
 import useFetchArticleByUrl from "../components/hooks/useFetchArticleByUrl";
 import { fetchArticles } from "../services/api";
+import { logPageView } from "../services/api";
+import { useUuid } from "../context/UuidContext"; // Import context hook
 import ArticleSkeleton from "../components/skeletons/ArticleDetailsSkeleton";
 import RelatedArticlesSkeleton from "../components/skeletons/RelatedArticleSkeleton";
 import nameToUrl from "../utils/nameToUrl";
@@ -11,14 +13,25 @@ import ErrorScreen from "./ErrorScreen";
 const NewsDetailScreen = () => {
   const navigate = useNavigate();
   const { url } = useParams();
+  const { userUuid } = useUuid(); // Get userUuid from context
 
-  // Fetch main article
   const { article, loading, error } = useFetchArticleByUrl(url);
-
-  // State for related articles
   const [relatedArticles, setRelatedArticles] = useState([]);
   const [loadingSimilarArticles, setLoadingSimilarArticles] = useState(false);
   const [errorSimilarArticles, setErrorSimilarArticles] = useState(null);
+
+  useEffect(() => {
+    if (article?._id && userUuid) {
+      const trackPageView = async () => {
+        try {
+          await logPageView(window.location.pathname, userUuid);
+        } catch (err) {
+          console.error("Failed to log page view:", err);
+        }
+      };
+      trackPageView();
+    }
+  }, [article?._id, userUuid]);
 
   useEffect(() => {
     if (!article?.category) return;
@@ -31,11 +44,9 @@ const NewsDetailScreen = () => {
           limit: 4,
           categoryFilter: article.category,
         });
-        // Exclude the current article from the related articles
         const filteredArticles = data.articles.filter(
           (relatedArticle) => relatedArticle._id !== article._id
         );
-
         setRelatedArticles(filteredArticles);
       } catch (err) {
         setErrorSimilarArticles("Failed to load related articles");
@@ -110,8 +121,8 @@ const NewsDetailScreen = () => {
             alt={article.title}
             className="w-full h-64 object-cover rounded-md mt-4 mb-6"
             onError={(e) => {
-              e.target.onerror = null; // Prevent infinite loop
-              e.target.src = "/placeholder-2.png"; // Fallback image path
+              e.target.onerror = null;
+              e.target.src = "/placeholder-2.png";
             }}
           />
           <p
@@ -166,8 +177,8 @@ const NewsDetailScreen = () => {
                   alt={related.title}
                   className="h-48 w-full object-cover rounded-md"
                   onError={(e) => {
-                    e.target.onerror = null; // Prevent infinite loop
-                    e.target.src = "/placeholder-2.png"; // Fallback image path
+                    e.target.onerror = null;
+                    e.target.src = "/placeholder-2.png";
                   }}
                 />
                 <div className="p-4">

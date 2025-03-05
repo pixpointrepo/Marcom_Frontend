@@ -219,6 +219,21 @@ export const deleteFeaturedCategory = async (categoryId) => {
   }
 };
 
+// src/services/api.js
+export const logPageView = async (pageUrl, userUuid, articleId) => {
+  try {
+    const response = await api.post(`/analytics/pageview`, { // Changed to /analytics/pageview
+      pageUrl,
+      userUuid,
+      articleId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error logging page view:', error);
+    throw error;
+  }
+};
+
 // Update a category by ID (placeholder since not provided)
 // export const updateCategory = async (categoryId, categoryData) => {
 //   try {

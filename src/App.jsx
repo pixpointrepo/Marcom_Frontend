@@ -35,9 +35,11 @@ import ContactSection from "./components/servicescomponents/ContactSection";
 import MainPage from "./components/servicescomponents/MainPage";
 import AboutUsPage from "./components/servicescomponents/AboutUsPage";
 import PrivacyPolicy from "./components/PrivacyPolicy";
+import { UuidProvider } from "./context/UuidContext";
 
 function App() {
   return (
+    <UuidProvider>
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
@@ -101,6 +103,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </UuidProvider>
   );
 }
 
