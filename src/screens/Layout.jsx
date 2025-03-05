@@ -145,8 +145,7 @@ const Layout = () => {
                 />
                 <button
                   type="submit"
-                  className="w-fit text-center bg-blue-900 text-white rounded-lg m-4 px-8 py-2 hover:bg-blue-600 transition"
-                >
+                  className = "bg-gradient-to-tr from-main to-purple-700 text-xs text-white px-4 py-2 rounded-md hover:from-blue-600 hover:to-blue-700">
                   Subscribe Now
                 </button>
               </form>

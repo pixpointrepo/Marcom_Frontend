@@ -10,6 +10,7 @@ import {
   BookOpenText,
   Settings,
   FolderCog,
+  Inbox 
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
@@ -80,6 +81,12 @@ export default function Sidebar() {
                 to="/dashboard/manage-content"
                 icon={<FolderCog size={20} />}
                 label="Manage Contents"
+              />
+               <SidebarItem
+                setSidebarOpen={setIsOpen}
+                to="/dashboard/entries"
+                icon={<Inbox size={20} />}
+                label="View Form Entries"
               />
               {/* <SidebarItem
                 setSidebarOpen={setIsOpen}

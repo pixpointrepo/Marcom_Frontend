@@ -5,7 +5,7 @@ const useFetchHomepage = (limit = 5) => {
   return useQuery({
     queryKey: ["homepageArticles", limit], // Cache based on limit
     queryFn: () => fetchHomepageArticles(limit),
-    staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
+    staleTime: 1000 * 60 * 3, // Cache data for 3 minutes
     refetchOnWindowFocus: false, // Prevent refetching when switching tabs
   });
 };

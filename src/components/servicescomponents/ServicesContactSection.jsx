@@ -9,10 +9,7 @@ import LeafletMap from "./LeafletMap";
 import SuccessModal from "./SuccessModal";
 // E:\lrn\X course\Website DX\Project class\react-practice\pixpoint\src\components\LeafletMap.jsx
 
-
-
-
-
+import { submitForm } from "../../services/api";
 
 
 const SlidingImages = ({ imageSrcs }) => {
@@ -81,7 +78,7 @@ const FormComponent = () => {
     fullName: '',
     email: '',
     subject: '',
-    projectDescription: ''
+    description: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -98,6 +95,7 @@ const FormComponent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
 
     if(!isChecked){
       setSuccessMessage("Please agree to the terms and conditions before proceeding.");
@@ -109,24 +107,11 @@ const FormComponent = () => {
 
     try {
       // Send form data to PHP backend using fetch
-      const response = await fetch('http://127.0.0.1:8000/submit/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          'full-name': formData.fullName,
-          'email': formData.email,
-          'subject': formData.subject,
-          'project-description': formData.projectDescription
-        }),
-      });
+      const response = await submitForm(formData);
 
-      if (!response.ok) {
+      if (response.status !== 201) {
         throw new Error('Form submission failed');
       }
-
-      const result = await response.text();
 
       setSuccessMessage("Your inquiry has been successfully delivered. Thank you!");
       setIsModalVisible(true);
@@ -136,7 +121,7 @@ const FormComponent = () => {
         fullName: '',
         email: '',
         subject: '',
-        projectDescription: ''
+        description: ''
       });
     } catch (error) {
       setIsSubmitting(false);
@@ -192,13 +177,13 @@ const FormComponent = () => {
       />
       <div className="flex flex-col">
         <label htmlFor="project-description" className="text-md font-medium text-gray-600">
-          Tell us more about your project *
+          Tell us more about your content *
         </label>
         <textarea
           id="project-description"
-          name="projectDescription" 
+          name="description" 
           required
-          value={formData.projectDescription} 
+          value={formData.description} 
           rows={3}
           onChange={handleInputChange} 
           className={`w-full mt-3 p-3 border rounded-lg focus:ring-2 ${
@@ -206,7 +191,7 @@ const FormComponent = () => {
               ? "border-gray-600 bg-gray-700 focus:ring-gray-500 text-white"
               : "border-gray-300 focus:ring-blue-500"
           }`}
-          placeholder="Please provide details about your project..."
+          placeholder="Please provide details about your idea..."
         ></textarea>
       </div>
       <div className="flex items-center">
@@ -221,7 +206,7 @@ const FormComponent = () => {
           </label>
 
       </div>
-      <button className=" text-md px-4 py-2 bg-black text-white rounded-full hover:bg-blue-500  hover:ring-2  focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" type="submit" disabled={isSubmitting}>
+      <button className=" text-md px-4 py-2 bg-[#1E3A8A] text-white rounded-full hover:bg-blue-600  focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300" type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'Send Message'}
       </button>
 
