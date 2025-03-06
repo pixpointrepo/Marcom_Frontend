@@ -37,6 +37,7 @@ import MainPage from "./components/servicescomponents/MainPage";
 import AboutUsPage from "./components/servicescomponents/AboutUsPage";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import { UuidProvider } from "./context/UuidContext";
+import AnalyticsPage from "./sections/adminsections/AnalyticsPage";
 
 function App() {
   return (
@@ -100,6 +101,7 @@ function App() {
             />
             <Route path="entries" element={<FormSubmissionsPage />} />
             <Route path="manage-content" element={<ContentManage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
           </Route>
           
         </Routes>
