@@ -107,7 +107,7 @@ const NewsDetailScreen = () => {
                   strokeLinejoin="round"
                 ></path>
               </svg>{" "}
-              {article.readTime}
+              {article.readTime} {" min "}
             </span>
             <span className="mx-2">·</span>
             <span>{article.author}</span>

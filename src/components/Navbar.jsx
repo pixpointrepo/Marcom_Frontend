@@ -150,7 +150,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Sliding Menu */}
-        <MobileMenu isOpen={isMobileMenuOpen} onClose={toggleMobileMenu} />
+        <MobileMenu menuItems={menuItems} isOpen={isMobileMenuOpen} onClose={toggleMobileMenu} />
       </div>
     </nav>
   );
