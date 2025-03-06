@@ -10,7 +10,8 @@ import {
   BookOpenText,
   Settings,
   FolderCog,
-  Inbox 
+  Inbox, 
+  ChartColumnIncreasing ,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
@@ -87,6 +88,13 @@ export default function Sidebar() {
                 to="/dashboard/entries"
                 icon={<Inbox size={20} />}
                 label="View Form Entries"
+              />
+
+<SidebarItem
+                setSidebarOpen={setIsOpen}
+                to="/dashboard/analytics"
+                icon={<ChartColumnIncreasing size={20} />}
+                label="Analytics"
               />
               {/* <SidebarItem
                 setSidebarOpen={setIsOpen}

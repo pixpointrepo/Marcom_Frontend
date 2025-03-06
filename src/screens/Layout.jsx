@@ -5,6 +5,8 @@ import allArticles from "../data/articles";
 
 import htmlToPlainText from "../utils/htmlToPlainText";
 import useFetchArticles from "../components/hooks/useFetchArticles";
+import WeatherDisplay from "../components/WeatherDisplay";
+import WeatherTimeDisplay from "../components/WeatherDisplay";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -33,8 +35,9 @@ const Layout = () => {
           {/* Right Sidebar */}
           <div className="w-full lg:w-1/4 flex flex-col gap-4">
             {/* Ad Section */}
-            <div className="flex items-center justify-center bg-white shadow-md h-72 rounded-md p-4">
-              <h1 className="text-2xl text-gray-400">Ad Here</h1>
+            <div className="flex items-center justify-center bg-white shadow-md h-28 rounded-md p-4">
+             
+             <WeatherTimeDisplay/>
             </div>
 
             {/* Latest Stories */}

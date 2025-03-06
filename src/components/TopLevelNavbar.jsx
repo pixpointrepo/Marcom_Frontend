@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
+import WeatherTimeDisplay from "./WeatherDisplay";
 
 const TopLevelNavbar = () => {
 
@@ -76,6 +77,8 @@ const TopLevelNavbar = () => {
           </button> */}
           
         </div>
+
+       
         </div>
      
     </nav>
