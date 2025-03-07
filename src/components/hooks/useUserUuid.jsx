@@ -1,25 +1,32 @@
-import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
-import { generateUUID } from '../../utils/uuid';
+import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { generateUUID } from "../../utils/uuid";
 
 const useUserUuid = () => {
   const [uuid, setUuid] = useState(null);
 
-  // Generate or retrieve UUID on mount
   useEffect(() => {
-    let userUuid = Cookies.get('user_uuid');
-    if (!userUuid || Cookies.get('cookie_consent') !== 'accepted') {
-      // Generate a new UUID for new users or if consent isn’t given
+    // Check for existing UUID in cookies
+    let userUuid = Cookies.get("user_uuid");
+
+    if (!userUuid) {
+      // Generate a new UUID if none exists
       userUuid = generateUUID();
+      // Set it in cookies immediately (no consent required per your request)
+      Cookies.set("user_uuid", userUuid, { expires: 365 });
     }
-    setUuid(userUuid); // Set UUID regardless of consent
+
+    // Set the UUID in state
+    setUuid(userUuid);
   }, []);
 
-  // Handle consent acceptance
+  // Optional: Keep handleAccept for future use, but it’s not needed now
   const handleAccept = () => {
-    let userUuid = uuid; // Use the existing in-memory UUID
-    Cookies.set('user_uuid', userUuid, { expires: 365 }); // Save to cookies
-    Cookies.set('cookie_consent', 'accepted', { expires: 365 });
+    // Already set in cookies, so this could be a no-op or removed
+    if (uuid) {
+      Cookies.set("user_uuid", uuid, { expires: 365 });
+      Cookies.set("cookie_consent", "accepted", { expires: 365 });
+    }
   };
 
   return [uuid, handleAccept];
