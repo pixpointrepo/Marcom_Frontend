@@ -6,6 +6,8 @@ import { deleteArticle } from "../../services/api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
+const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN;
+
 const ArticlePage = () => {
   const { id } = useParams();
   const { article, loading, error } = useFetchArticleById(id);
@@ -96,7 +98,7 @@ const ArticlePage = () => {
             {/* Thumbnail */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <img
-                src={`http://localhost:5000${article.thumbnail}`}
+                src={`${domain}${article.thumbnail}`}
                 alt={article.title}
                 className="w-full h-[400px] object-cover rounded-t-xl transition-transform duration-300 hover:scale-[1.02]"
               />
