@@ -60,7 +60,7 @@ const NewsDetailScreen = () => {
 
   return (
     <div className="px-4 md:p-6">
-      <div className="flex gap-3 mb-2">
+      <div className="flex flex-wrap gap-3 mb-2">
         {article?.tags.map((tag) => (
           <div
             onClick={() => navigate(`/tags/${nameToUrl(tag)}`)}

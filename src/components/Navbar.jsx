@@ -102,14 +102,14 @@ const Navbar = () => {
       {/* mobile navbar */}
       <div className="md:hidden flex flex-col">
         {/* Ads */}
-        <div className="flex justify-center items-center h-10 bg-green-500 text-center">
+        {/* <div className="flex justify-center items-center h-10 bg-green-500 text-center">
           <div className="text-xs text-white font-semibold">
             Get the hottest news updates instantly! Follow us on WhatsApp.
           </div>
         </div>
         <div className="flex justify-center items-center h-16 bg-gray-200">
           <h1 className="text-gray-400 text-center">Ad Here</h1>
-        </div>
+        </div> */}
 
         {/* Sticky Wrapper */}
         {/* Placeholder (approximately wrapper's height) to prevent content jump when navbar is fixed */}
