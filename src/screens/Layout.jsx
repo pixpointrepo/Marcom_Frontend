@@ -35,7 +35,7 @@ const Layout = () => {
           {/* Right Sidebar */}
           <div className="w-full lg:w-1/4 flex flex-col gap-4">
             {/* Ad Section */}
-            <div className="flex items-center justify-center bg-white shadow-md h-28 rounded-md p-4">
+            <div className="flex items-center justify-center bg-white shadow-md  h-28 md:h-32 rounded-md ">
              
              <WeatherTimeDisplay/>
             </div>
