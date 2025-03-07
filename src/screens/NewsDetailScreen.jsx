@@ -9,6 +9,8 @@ import RelatedArticlesSkeleton from "../components/skeletons/RelatedArticleSkele
 import nameToUrl from "../utils/nameToUrl";
 import ErrorScreen from "./ErrorScreen";
 
+const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN;
+
 const NewsDetailScreen = () => {
   const navigate = useNavigate();
   const { url } = useParams();
@@ -115,7 +117,7 @@ const NewsDetailScreen = () => {
           </p>
 
           <img
-            src={`http://localhost:5000${article.thumbnail}`}
+            src={`${domain}${article.thumbnail}`}
             alt={article.title}
             className="w-full h-64 object-cover rounded-md mt-4 mb-6"
             onError={(e) => {
@@ -169,7 +171,7 @@ const NewsDetailScreen = () => {
                 }}
               >
                 <img
-                  src={`http://localhost:5000${related.thumbnail}`}
+                  src={`${domain}${article.thumbnail}`}
                   alt={related.title}
                   className="h-48 w-full object-cover rounded-md"
                   onError={(e) => {

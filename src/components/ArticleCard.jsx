@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import htmlToPlainText from "../utils/htmlToPlainText";
 
+const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN;
+
 // Helper function to calculate time difference or show future date
 const formatDate = (date) => {
   const now = new Date();
@@ -64,7 +66,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
     >
       {/* image */}
       <img
-        src={`http://localhost:5000${article.thumbnail}`}
+        src={`${domain}${article.thumbnail}`}
         alt={article.title}
         className={`${
           isHomeScreen && index === 0 ? "h-80" : "aspect-[16/9]"

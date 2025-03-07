@@ -6,6 +6,8 @@ import { Link } from "react-router-dom"; // Import Link from React Router
 import { useNavigate } from "react-router-dom";
 import htmlToPlainText from "../../utils/htmlToPlainText";
 
+const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN;
+
 import {
   SlidersHorizontal,
   TableProperties,
@@ -405,7 +407,7 @@ useEffect(() => {
                   >
                     <div className="p-2 ">
                       <img
-                        src={`http://localhost:5000${article.thumbnail}`}
+                        src={`${domain}${article.thumbnail}`}
                         alt={article.title}
                         className={`bg-red-50  ${
                           viewMode === "tile" ? "w-20" : "w-full h-full"

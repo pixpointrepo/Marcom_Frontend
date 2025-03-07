@@ -107,26 +107,26 @@ const menuItems = [
       }
     ]
   },
-  {
-    label: "More",
-    path: "/more",
-    items: [
-      {
-        label: "Creative Showcase",
-        path: "/more/creative-showcase",
-        items: [
-          // { label: "Television", path: "/more/creative-showcase/television", items: [] },
-          // { label: "Digital", path: "/more/creative-showcase/digital", items: [] },
-          // { label: "OOH", path: "/more/creative-showcase/ooh", items: [] },
-          // { label: "Print", path: "/more/creative-showcase/print", items: [] },
-          // { label: "Radio", path: "/more/creative-showcase/radio", items: [] },
-          // { label: "International", path: "/more/creative-showcase/international", items: [] }
-        ]
-      },
-      { label: "Authors", path: "/authors", items: [] },
-      // { label: "Contact Us", path: "/contact-us", items: [] }
-    ]
-  }
+  // {
+  //   label: "More",
+  //   path: "/more",
+  //   items: [
+  //     {
+  //       label: "Creative Showcase",
+  //       path: "/more/creative-showcase",
+  //       items: [
+  //         // { label: "Television", path: "/more/creative-showcase/television", items: [] },
+  //         // { label: "Digital", path: "/more/creative-showcase/digital", items: [] },
+  //         // { label: "OOH", path: "/more/creative-showcase/ooh", items: [] },
+  //         // { label: "Print", path: "/more/creative-showcase/print", items: [] },
+  //         // { label: "Radio", path: "/more/creative-showcase/radio", items: [] },
+  //         // { label: "International", path: "/more/creative-showcase/international", items: [] }
+  //       ]
+  //     },
+  //     { label: "Authors", path: "/authors", items: [] },
+  //     // { label: "Contact Us", path: "/contact-us", items: [] }
+  //   ]
+  // }
 ];
 
 
