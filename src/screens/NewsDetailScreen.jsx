@@ -24,6 +24,7 @@ const NewsDetailScreen = () => {
       const trackPageView = async () => {
         try {
           await logPageView(window.location.pathname, userUuid, article._id);
+          console.log('Logged page view with UUID:', userUuid);
         } catch (err) {
           console.error("Failed to log page view:", err);
         }

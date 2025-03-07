@@ -1,8 +1,5 @@
-// src/context/UuidContext.js
 import React, { createContext, useContext } from 'react';
 import useUserUuid from '../components/hooks/useUserUuid';
-
-
 
 const UuidContext = createContext();
 

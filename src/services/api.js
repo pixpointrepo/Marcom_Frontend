@@ -268,3 +268,72 @@ export const getFormData = async () => {
 //     throw new Error(error.response?.data?.message || "Failed to update category");
 //   }
 // };
+
+
+
+export const fetchViewsOverTime = async (startDate, endDate) => {
+  try {
+    const url = startDate && endDate 
+      ? `/analytics/views-over-time?startDate=${startDate}&endDate=${endDate}`
+      : '/analytics/views-over-time';
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching views over time:", error);
+    throw error;
+  }
+};
+export const fetchViewsByCategory = async (startDate, endDate) => {
+  try {
+    const url = startDate && endDate 
+      ? `analytics/views-by-category?startDate=${startDate}&endDate=${endDate}`
+      : 'analytics/views-by-category';
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching views by category:", error);
+    throw error;
+  }
+};
+
+export const fetchAnalyticsOverview = async (startDate, endDate) => {
+  try {
+    // If no dates provided, fetch all data; otherwise fetch filtered data
+    const url = startDate && endDate 
+      ? `/analytics/overview?startDate=${startDate}&endDate=${endDate}`
+      : '/analytics/overview';
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching analytics overview:", error);
+    throw error;
+  }
+};
+
+export const fetchArticleAnalytics = async (startDate, endDate, limit = 5, sortOrder = 'desc',category) => {
+  try {
+    let url = `/analytics/article-analytics?limit=${limit}&sortOrder=${sortOrder}&category=${category}`;
+    if (startDate && endDate) {
+      url += `&startDate=${startDate}&endDate=${endDate}`;
+    }
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching article analytics:", error);
+    throw error;
+  }
+};
+
+export const fetchTrends = async (startDate, endDate, granularity = 'day', category) => {
+  try {
+    let url = `/analytics/trends?granularity=${granularity}`;
+    if (startDate && endDate) url += `&startDate=${startDate}&endDate=${endDate}`;
+    if (category) url += `&category=${category}`;
+    const response = await api.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching trends:", error);
+    throw error;
+  }
+};
+

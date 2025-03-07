@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Footer from '../components/Footer';
 import TopLevelNavbar from '../components/TopLevelNavbar';
 import ScrollToTopButton from '../components/ScrollToTopButton';
-import CookieConsent from '../components/CookieConsent';
+// import CookieConsent from '../components/CookieConsent';
 import { useUuid } from '../context/UuidContext';
 
 const TopLevelLayout = () => {
@@ -14,7 +14,7 @@ const TopLevelLayout = () => {
       <TopLevelNavbar />
       <Outlet />
       <Footer />
-      <CookieConsent onAccept={handleAccept} />
+      {/* <CookieConsent onAccept={handleAccept} /> */}
       <ScrollToTopButton />
     </>
   );
