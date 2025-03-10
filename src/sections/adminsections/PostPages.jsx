@@ -169,7 +169,7 @@ export default function PostPages() {
 
   return (
     <div className="w-full p-6 mx-auto">
-      <h2 className="text-2xl font-bold mb-4 pl-20 md:pl-0">Create New Post</h2>
+      <h2 className="text-3xl font-bold mb-4 pl-20 md:pl-0">Create New Post</h2>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col lg:flex-row mb-4">
           <div className="w-full lg:w-[65%] lg:shadow-md lg:p-2 2xl:p-4">

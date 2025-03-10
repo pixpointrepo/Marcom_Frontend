@@ -265,7 +265,7 @@ useEffect(() => {
   return (
     <div className="container mx-auto p-4">
       <div className="mb-6 flex flex-col relative  gap-2 lg:flex-row lg:items-center lg:gap-8">
-        <h1 className="text-center text-2xl font-bold mb-2 order-1">
+        <h1 className="text-center text-3xl font-bold mb-2 order-1">
           Articles
         </h1>
         <div className="relative mt-2  w-full xl:w-[60%] 3xl:w-[60%] order-2">
@@ -416,7 +416,7 @@ useEffect(() => {
                     </div>
                   </Link>
                   {/* title desc and buttons */}
-                  <div className="relative w-full">
+                  <div className="relative w-full p-4">
                     <Link
                       to={`/dashboard/article/${encodeURIComponent(
                         article.title

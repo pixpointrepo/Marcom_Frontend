@@ -94,7 +94,7 @@ const WeatherTimeDisplay = () => {
   };
 
   return (
-    <div className="flex flex-row lg:flex-col xl:flex-row items-center justify-between w-full   px-8 font-semibold text-gray-500 ">
+    <div className="flex flex-row lg:flex-col xl:flex-row items-center justify-between w-full   px-6 font-semibold text-gray-500 ">
       {weather && (
         <div className="flex flex-col  justify-center items-center ">
           <div className="flex items-center justify-center">

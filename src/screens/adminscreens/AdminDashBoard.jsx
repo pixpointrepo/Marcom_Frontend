@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom'
 
 const AdminDashBoard = () => {
   return (
-    <div className='flex  '>
+    <div className='flex font-quicksand '>
       <Sidebar/>
       <Outlet/>
     </div>

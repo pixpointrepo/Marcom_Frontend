@@ -53,7 +53,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
   return (
     <div
       key={article.id}
-      className={`flex flex-col bg-white p-2 border rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition ${
+      className={`flex flex-col font-roboto bg-white p-2 border rounded-md cursor-pointer overflow-hidden text-left hover:shadow-lg transition ${
         isHomeScreen && index === 0 ? "md:col-span-2 " : "bg-[#EAEAEA]"
       }`}
       onClick={() => {
@@ -83,7 +83,7 @@ const ArticleCard = ({ article, index, isHomeScreen }) => {
           <h3
             className={`${
               isHomeScreen && index === 0 ? "text-2xl" : "text-lg"
-            } font-semibold hover:text-blue-500`}
+            } font-medium hover:text-blue-500`}
           >
             {article.title}
           </h3>

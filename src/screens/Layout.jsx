@@ -129,11 +129,11 @@ const Layout = () => {
             </div>
 
             {/* Newsletter Form */}
-            <div className=" bg-white shadow-md rounded-md p-8 sticky top-4 -z-10">
+            <div className=" bg-white shadow-md rounded-md p-8 sticky top-4 z-10">
               <h2 className="text-2xl font-semibold mb-4 text-left">
                 Subscribe to our Newsletter!
               </h2>
-              <form className="flex flex-col items-center">
+              <form  className="flex flex-col items-center">
                 <input
                   type="text"
                   name="username"
@@ -147,7 +147,8 @@ const Layout = () => {
                   className="w-full border rounded-md p-2 mb-4 focus:ring-2 focus:ring-blue-500"
                 />
                 <button
-                  type="submit"
+                  // type="submit"
+                  type="button"
                   className = "bg-gradient-to-tr from-main to-purple-700 text-xs text-white px-4 py-2 rounded-md hover:from-blue-600 hover:to-blue-700">
                   Subscribe Now
                 </button>

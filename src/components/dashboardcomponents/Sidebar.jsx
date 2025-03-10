@@ -10,12 +10,12 @@ import {
   BookOpenText,
   Settings,
   FolderCog,
-  Inbox, 
-  ChartColumnIncreasing ,
+  Inbox,
+  ChartColumnIncreasing,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
-import ConfirmDialog from "../../components/ui/ConformDialog"
+import ConfirmDialog from "../../components/ui/ConformDialog";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,22 +38,33 @@ export default function Sidebar() {
       {/* Sidebar */}
       <div
         className={`fixed md:sticky left-0 top-0 z-50 bg-gray-900 text-white w-64 h-screen p-5 transition-transform ${
-          isOpen ? "translate-x-0 z-50 " : "-translate-x-full"
-        } transition-transform  md:translate-x-0 md:w-64 `}
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform md:translate-x-0 md:w-64 overflow-hidden`}
       >
-        <div className="flex flex-col h-full justify-between">
-          <div className="">
-            <div className="flex w-full mb-6">
-              <div className="flex flex-col md:flex-row w-full items-start md:space-x-4 md:items-end ">
-                <img
-                  src="/marcom.jpg"
-                  className="aspect-[3/2] md:h-14 h-10 md:w-full w-[65%] mb-2 md:mb-0 ml-10  md:ml-0 rounded-lg "
-                />
-                {/* <h1 className="text-2xl font-bold ">Marcom</h1> */}
-              </div>
+        {/* Background Image (Blurred) */}
+        <div
+          className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
+          style={{
+            backgroundImage: 'url("/bg.jpg")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "blur(85px)", // Apply blur only to the background
+            zIndex: -1, // Ensure the background stays behind the content
+          }}
+        />
+
+        {/* Sidebar Contenit */}
+        <div className="flex flex-col h-full justify-between relative z-10">
+          <div>
+            <div className="flex flex-col mb-4 md:flex-row w-full items-start md:space-x-4 md:items-center justify-center">
+              <img
+                src="/marcom.jpg"
+                className=" md:w-34 md:h-auto h-10 w-[65%] mb-2 md:mb-0 ml-10 md:ml-0 rounded-lg"
+              />
             </div>
+
             <button
-              className="md:hidden fixed top-6 right-4"
+              className="md:hidden fixed top-6 right-4 z-50"
               onClick={() => setIsOpen(false)}
             >
               <X size={24} />
@@ -65,6 +76,13 @@ export default function Sidebar() {
                 icon={<Home size={20} />}
                 label="Dashboard"
               />
+              <SidebarItem
+                setSidebarOpen={setIsOpen}
+                to="/dashboard/analytics"
+                icon={<ChartColumnIncreasing size={20} />}
+                label="Analytics"
+              />
+
               <SidebarItem
                 setSidebarOpen={setIsOpen}
                 to="/dashboard/articles"
@@ -83,39 +101,20 @@ export default function Sidebar() {
                 icon={<FolderCog size={20} />}
                 label="Manage Contents"
               />
-               <SidebarItem
+              <SidebarItem
                 setSidebarOpen={setIsOpen}
                 to="/dashboard/entries"
                 icon={<Inbox size={20} />}
                 label="View Form Entries"
               />
-
-<SidebarItem
-                setSidebarOpen={setIsOpen}
-                to="/dashboard/analytics"
-                icon={<ChartColumnIncreasing size={20} />}
-                label="Analytics"
-              />
-              {/* <SidebarItem
-                setSidebarOpen={setIsOpen}
-                to="/users"
-                icon={<Users size={20} />}
-                label="Users"
-              /> */}
             </nav>
           </div>
           <div>
-            {/* <Link
-              to="/dashboard/settings"
-              className="mt-6 flex items-center text-white hover:text-blue-400"
-            >
-              <Settings size={20} className="mr-2" /> Settings
-            </Link> */}
             <button
               onClick={openLogoutDialog}
-              className="mt-6 flex items-center text-red-500 hover:text-red-400"
+              className="mt-6 flex items-center font-semibold bg-gray-800 hover:bg-gray-700 text-white px-2 py-1 rounded-md  "
             >
-              <LogOut size={20} className="mr-2" /> Logout
+              <LogOut size={20} className="mr-2 " /> Logout
             </button>
           </div>
         </div>
@@ -153,7 +152,7 @@ function SidebarItem({ to, icon, label, setSidebarOpen }) {
     <Link
       to={to}
       onClick={handleClick}
-      className="flex items-center py-2 px-3 rounded hover:bg-gray-800"
+      className="flex items-center py-2 px-3 rounded hover:bg-gray-800 hover:shadow-[1px_1px_10px_3px_rgba(255,255,255,0.1)] transition"
     >
       {icon}
       <span className="ml-3">{label}</span>

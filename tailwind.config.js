@@ -21,6 +21,7 @@ export default {
         quicksand: ['Quicksand', 'sans-serif'],
         playfair: ['Playfair Display', 'sans-serif'],
         tinos : ['Tinos', 'sans-serif'],
+        roboto: ['Roboto Flex', 'sans-serif'],
 
         // custom: ['CustomFont', 'sans-serif'], // For Local Fonts
       },

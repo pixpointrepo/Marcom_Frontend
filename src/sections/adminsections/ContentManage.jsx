@@ -89,7 +89,7 @@ const ContentManage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 w-full p-3">
+    <div className="min-h-screen bg-gray-100 w-full py-6 px-3">
       <div className="w-full">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
           Content Management

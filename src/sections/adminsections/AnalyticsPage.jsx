@@ -1,5 +1,6 @@
 // src/pages/Analytics.js
 import React, { useState, useEffect } from "react";
+import {ChartColumnIncreasing}  from "lucide-react"; 
 import {
   fetchAnalyticsOverview,
   fetchViewsOverTime,
@@ -20,6 +21,8 @@ import {
   Legend,
 } from "chart.js";
 import useFetchMetadata from "../../components/hooks/useFetchMetadata"; // Adjust path as needed
+
+import formatDate from "../../utils/formatDate";
 
 // Register ChartJS components
 ChartJS.register(
@@ -128,13 +131,15 @@ const AnalyticsPage = () => {
     return dataArray.map((data, index) => ({
       date:
         data.date ||
-        (startDate && endDate ? `${startDate} to ${endDate}` : "Total"),
+        (startDate && endDate ? `${formatDate(startDate)} to ${endDate}` : "All Time"),
       totalViews: data.totalViews,
       uniqueUsers: data.uniqueUsers,
       avgViewsPerUser: parseFloat(data.avgViewsPerUser).toFixed(2),
       articlesViewed: data.articlesViewed,
     }));
   };
+
+  
 
   // Views Over Time Line Chart
   const viewsOverTimeChartData = {
@@ -209,9 +214,10 @@ const AnalyticsPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 ">
-        Analytics
-      </h1>
+      <div className=" text-3xl flex items-center a font-bold text-gray-800 mb-6 ">
+        <h1 className="mr-4">Analytics</h1>
+        <ChartColumnIncreasing  size={26}  />
+      </div>
 
       {/* Filter Section */}
       <form

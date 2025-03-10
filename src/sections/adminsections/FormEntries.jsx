@@ -26,7 +26,7 @@ const FormSubmissionsPage = () => {
 
   return (
     <div className="container mx-auto p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-      <h1 className="text-4xl font-bold text-gray-900 mb-8 drop-shadow-md">
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">
         Form Submissions
       </h1>
 

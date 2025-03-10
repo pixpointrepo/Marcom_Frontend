@@ -64,8 +64,8 @@ function App() {
                 element={<EventsDashboardScreen />}
               />
               <Route path="events/webinar" element={<WebinarScreen />} />
-              <Route path="authors" element={<AllAuthorsScreen />} />
-              <Route path="authors/:authorName" element={<AuthorScreen />} />
+              {/* <Route path="authors" element={<AllAuthorsScreen />} />
+              <Route path="authors/:authorName" element={<AuthorScreen />} /> */}
               <Route
                 path="events/roundtable/pixpoint"
                 element={<RoundTableScreen />}
@@ -90,7 +90,7 @@ function App() {
           <Route path="/pixadmin" element={<AdminLoginPage />} />
 
           {/* Protected Admin Routes */}
-          <Route path="/dashboard" element={<ProtectedRoute />}>
+          <Route   path="/dashboard" element={<ProtectedRoute />}>
             <Route index element={<DashboardHomePage />} />
             <Route path="posts" element={<PostPages />} />
             <Route path="articles" element={<ArticlesPage />} />
