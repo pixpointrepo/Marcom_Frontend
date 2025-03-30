@@ -22,6 +22,8 @@ const useFetchArticles = ({
     try {
       const category = categoryFilter ? categoryFilter : "";
       const tags = tagsFilter ? tagsFilter : "";
+      console.log("tagsFilter", tagsFilter);
+      // console.log("categoryFilter", categoryFilter);
 
       // console.log(tags);
 

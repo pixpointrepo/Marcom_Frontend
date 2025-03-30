@@ -355,7 +355,7 @@ useEffect(() => {
             onChange={(selectedOptions) => {
               setMobileFilter(false);
               setTagsFilter(selectedOptions || []);
-              console.log("selecredTags", selectedOptions);
+              console.log("selectedTags", selectedOptions);
             }}
             placeholder="Tags"
             className="w-full xl:w-1/3 z-30 "

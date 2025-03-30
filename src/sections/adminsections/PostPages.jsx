@@ -9,6 +9,10 @@ import { X } from "lucide-react";
 import { uploadArticle } from "../../services/api";
 import ResultModal from "../../components/ui/ResultModal";
 import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
+import useFetchMetadata from "../../components/hooks/useFetchMetadata";
+import Select from "react-select";
+import { useCallback, useEffect } from "react";
+import { set } from "react-hook-form";
 
 export default function PostPages() {
   const [isBeingSubmitted, setIsBeingSubmitted] = useState(false);
@@ -24,6 +28,12 @@ export default function PostPages() {
     isFeatured: false,
   });
 
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [newCategory, setNewCategory] = useState(""); // State to manage new category input
+  const [tagsFilter, setTagsFilter] = useState([]);
+  const [inputs, setInputs] = useState([]); // Array to manage multiple inputs, starting with one empty input
+  const [tagsMapped, setMappedTags] = useState("");
+
   const resetForm = () => {
     setFormData({
       title: "",
@@ -38,8 +48,69 @@ export default function PostPages() {
     });
     setDescription("");
     setImage(null);
+    setNewCategory("");
     setErrors({});
   };
+  const {
+    categories,
+    tags,
+    loading: metadataLoading,
+    error: metadataError,
+  } = useFetchMetadata();
+  const mapTagsWithComma = useCallback(() => {
+    let allTags = [];
+
+    // Add tags from Select
+    if (tagsFilter.length > 0) {
+      allTags = allTags.concat(tagsFilter.map((tag) => tag.value));
+    }
+
+    // Add tags from inputs
+    allTags = allTags.concat(
+      inputs.map((input) => input.value.trim()).filter(Boolean)
+    );
+
+    // Join all tags with commas
+    const tags = allTags.join(",");
+    setMappedTags(tags);
+    setFormData((prev) => ({
+      ...prev,
+      tags: tags,
+    }));
+  }, [tagsFilter, inputs, setFormData]);
+
+  useEffect(() => {
+    mapTagsWithComma();
+  }, [mapTagsWithComma]);
+
+  const handleInputChange = (index, value) => {
+    const newInputs = [...inputs];
+    newInputs[index].value = value;
+    setInputs(newInputs);
+  };
+
+  const handleInputBlur = (index) => {
+    mapTagsWithComma(); // Update mapped tags when an input loses focus
+  };
+
+  const handleAddNewInput = () => {
+    // Check if the last input is not empty
+    if (inputs.length > 0) {
+      const lastInput = inputs[inputs.length - 1];
+      if (!lastInput.value.trim()) {
+        return; // Do nothing if the last input is empty
+      }
+    }
+    // Add a new empty input
+    setInputs([...inputs, { value: "" }]);
+  };
+  const handleRemoveInput = (index) => {
+    const newInputs = inputs.filter((_, i) => i !== index); // Remove the input at the specified index
+    setInputs(newInputs);
+    mapTagsWithComma(); // Update mapped tags after removal
+  };
+  // console.log("Categories:", categories);
+  // console.log("Tags:", tags);
 
   // Custom toolbar configuration
   const modules = {
@@ -81,12 +152,21 @@ export default function PostPages() {
     multiple: false,
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+  const handleChange = (nameOrEvent, value) => {
+    // If it's an event (from inputs, checkboxes, etc.)
+    if (nameOrEvent && nameOrEvent.target) {
+      const { name, value: val, type, checked } = nameOrEvent.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : val,
+      }));
+    } else {
+      // If it's from react-select (name and value are passed separately)
+      setFormData((prev) => ({
+        ...prev,
+        [nameOrEvent]: value !== null ? value.label || value : "", // For react-select, use label or value
+      }));
+    }
   };
 
   const validateForm = () => {
@@ -141,7 +221,7 @@ export default function PostPages() {
       if (response && response.message) {
         console.log("Success:", response);
         resetForm();
-       
+
         setIsResultModalOpen(true);
         setSubmitStatus("Article Uploaded successfully!");
       } else {
@@ -265,7 +345,7 @@ export default function PostPages() {
               </div>
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <Label className="mb-2 font-medium" htmlFor="category">
                 Category
               </Label>
@@ -278,9 +358,78 @@ export default function PostPages() {
               {errors.category && (
                 <p className="text-red-500 text-sm">{errors.category}</p>
               )}
-            </div>
+            </div> */}
 
             <div className="mb-4">
+              <Label className="mb-2 font-medium" htmlFor="category">
+                Category
+              </Label>
+              {metadataLoading ? (
+                <p>Loading...</p>
+              ) : metadataError ? (
+                <p className="text-red-500">{metadataError}</p>
+              ) : !isAddingNew ? ( // Only show Select if not adding new
+                <Select
+                  id="category"
+                  name="category"
+                  value={
+                    categories.find(
+                      (option) => option.label === formData.category
+                    ) || null
+                  }
+                  onChange={(selectedOption) => {
+                    if (selectedOption && selectedOption.__isNew__) {
+                      setIsAddingNew(true);
+                      setNewCategory(""); // Reset new category input
+                    } else {
+                      handleChange(
+                        "category",
+                        selectedOption ? selectedOption.label : ""
+                      );
+                    }
+                  }}
+                  options={[
+                    ...categories,
+                    { value: "add-new", label: "Add New", __isNew__: true }, // Custom option for adding new
+                  ]}
+                  placeholder="Select a category "
+                  isClearable
+                  isSearchable
+                  className="react-select-container z-40"
+                  classNamePrefix="react-select"
+                />
+              ) : (
+                <div className="mt-2 flex items-center space-x-2">
+                  <Input
+                    id="newCategory"
+                    name="category"
+                    value={newCategory}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setNewCategory(value); // Update local state
+                      handleChange("category", value); // Automatically save to formData as you type
+                    }}
+                    autoFocus
+                    placeholder="Enter new category"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingNew(false);
+                      setNewCategory("");
+                      handleChange("category", formData.category || ""); // Revert to previous value or empty
+                    }}
+                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+              {errors.category && (
+                <p className="text-red-500 text-sm">{errors.category}</p>
+              )}
+            </div>
+            {/* <div className="mb-4">
               <Label className="mb-2 font-medium" htmlFor="tags">
                 Tags
               </Label>
@@ -293,6 +442,76 @@ export default function PostPages() {
               {errors.tags && (
                 <p className="text-red-500 text-sm">{errors.tags}</p>
               )}
+            </div> */}
+            <div className="mb-4">
+              <Label className="mb-2 font-medium" htmlFor="tags">
+                Tags
+              </Label>
+              <div className="flex flex-col gap-4">
+                <Select
+                  id="tags"
+                  name="tags"
+                  isMulti
+                  options={tags}
+                  value={tagsFilter} // Make sure the format is [{ value, label }]
+                  onChange={(selectedOptions) => {
+                    setTagsFilter(selectedOptions || []);
+                    console.log("selectedTags", selectedOptions);
+                    mapTagsWithComma(); // Update mapped tags when selection changes
+                  }}
+                  placeholder="Select Tags"
+                  className="w-full  z-30"
+                  classNamePrefix="select"
+                />
+
+{inputs.map((input, index) => (
+  <div key={index} className="mt-4 flex items-center gap-2">
+    <Input
+      value={input.value}
+      placeholder={`New tag ${index + 1}`}
+      onChange={(e) => handleInputChange(index, e.target.value)}
+      onBlur={() => handleInputBlur(index)}
+      onKeyPress={(e) => {
+        if (e.key === "Enter") e.preventDefault(); // Prevent form submission on Enter
+      }}
+    />
+    <button
+      type="button"
+      onClick={() => handleRemoveInput(index)}
+      className="bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+      aria-label={`Remove tag ${index + 1}`}
+    >
+      <X size={16} />
+    </button>
+    {errors.tags && (
+      <p className="text-red-500 text-sm">{errors.tags}</p>
+    )}
+  </div>
+))}
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent any form submission
+                    handleAddNewInput();
+                  }}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full xl:w-1/3"
+                  disabled={
+                    inputs.length > 0 && !inputs[inputs.length - 1].value.trim()
+                  }
+                >
+                  Add New
+                </button>
+                {inputs.length > 0 &&
+                  !inputs[inputs.length - 1].value.trim() && (
+                    <span className="ml-2 text-red-500">
+                      Fill input above to add more new tags 
+                    </span>
+                  )}
+
+                {errors.tags && inputs.length === 0 && (
+                  <p className="text-red-500 text-sm">{errors.tags}</p>
+                )}
+              </div>
             </div>
 
             <div className="mb-4">
