@@ -18,7 +18,7 @@ jobs:
       - name: Create .env file
         run: |
           echo "VITE_API_URL=\"https://marcom.pixpoint.com.np/api\"" > .env
-          echo "VITE_APP_BACKEND_DOMAIN=\"https://marcom.pixpoint.com.np\"" >> .env
+          echo "VITE_APP_BACKEND_DOMAIN=\"https://marcom.pixpoint.com.np/api\"" >> .env
       - name: Install and Build
         run: |
           npm ci
