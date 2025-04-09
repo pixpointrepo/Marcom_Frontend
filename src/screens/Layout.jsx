@@ -37,7 +37,7 @@ const Layout = () => {
             {/* Ad Section */}
             <div className="flex items-center justify-center bg-white shadow-md  h-28 md:h-32 rounded-md ">
              
-             <WeatherTimeDisplay/>
+             {/* <WeatherTimeDisplay/> */}
             </div>
 
             {/* Latest Stories */}

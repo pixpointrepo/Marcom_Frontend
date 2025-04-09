@@ -3,7 +3,7 @@ import axios from "axios";
 // Function to get the user's current location using ip-api (IP Geolocation API)
 export const getLocation = async () => {
   try {
-    const response = await axios.get("https://ip-api.com/json");
+    const response = await axios.get("http://ip-api.com/json");
     if (response.data && response.data.status === "fail") {
       throw new Error("Failed to retrieve location.");
     }
