@@ -6,7 +6,7 @@ import { deleteArticle } from "../../services/api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ActionsLoader from "../../components/dashboardcomponents/ActionsLoader";
 
-const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN;
+const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN || "http://localhost:5000";
 
 const ArticlePage = () => {
   const { id } = useParams();

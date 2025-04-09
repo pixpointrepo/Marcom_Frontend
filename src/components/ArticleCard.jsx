@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import htmlToPlainText from "../utils/htmlToPlainText";
 
-const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN;
+const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN || "http://localhost:5000";
 
 // Helper function to calculate time difference or show future date
 const formatDate = (date) => {

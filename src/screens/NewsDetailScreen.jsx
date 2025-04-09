@@ -9,7 +9,7 @@ import RelatedArticlesSkeleton from "../components/skeletons/RelatedArticleSkele
 import nameToUrl from "../utils/nameToUrl";
 import ErrorScreen from "./ErrorScreen";
 
-const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN;
+const domain = import.meta.env.VITE_APP_BACKEND_DOMAIN || "http://localhost:5000";
 
 const NewsDetailScreen = () => {
   const navigate = useNavigate();
