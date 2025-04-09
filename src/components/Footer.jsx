@@ -97,7 +97,7 @@ const Footer = () => {
           </div>
         </div>
         <p className="text-md self-center mt-10 mb-2">
-          © 2024 Pixpoint Solutions Pvt. Ltd. All rights reserved.
+          © 2025 Marcom. All rights reserved.
         </p>
       </div>
     </footer>

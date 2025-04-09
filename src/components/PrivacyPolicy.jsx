@@ -204,7 +204,7 @@ const PrivacyPolicy = () => {
 
       {/* Footer */}
       <footer className="bg-gray-200 py-4 text-center text-sm text-gray-600">
-        <p>© 2025 [News Website Name]. All rights reserved.</p>
+        <p>© 2025 Marcom. All rights reserved.</p>
       </footer>
     </div>
   );
