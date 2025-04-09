@@ -6,13 +6,13 @@ import { useNavigate } from "react-router-dom";
 import ArticleCard from "../components/ArticleCard";
 import ArticleCardSkeleton from "../components/skeletons/ArticleCardSkeleton";
 
-import useFetchHomepage from "../components/hooks/useFetchHomepage";
+import useFetchHomePage from "../components/hooks/useFetchHomePage";
 import ErrorScreen from "./ErrorScreen";
 
 const HomeScreen = () => {
   const navigate = useNavigate();
-  // const { articles, loading, error } = useFetchHomepage(5); // Limit of 5 articles per category
-  const { data: articles, isLoading: loading, error } = useFetchHomepage(5);
+  // const { articles, loading, error } = useFetchHomePage(5); // Limit of 5 articles per category
+  const { data: articles, isLoading: loading, error } = useFetchHomePage(5);
 
   if (error) return <ErrorScreen  />;
 
