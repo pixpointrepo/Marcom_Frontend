@@ -42,7 +42,7 @@ export default function EditArticlePage() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({});
-
+  const IMG_URL = import.meta.env.VITE_APP_BACKEND_DOMAIN || "http://localhost:5000";
   const {
     categories,
     tags,
@@ -84,7 +84,7 @@ export default function EditArticlePage() {
       });
       setDescription(article.description || "");
       setImage(
-        article.thumbnail ? `http://localhost:5000${article.thumbnail}` : null
+        article.thumbnail ? `${IMG_URL}${article.thumbnail}` : null
       );
       setTagsFilter(
         article.tags.map((tag) => {
@@ -132,12 +132,12 @@ export default function EditArticlePage() {
 
   const handleAddNewInput = () => {
     // Check if the last input is not empty
-    if(inputs.length > 0) {
-    const lastInput = inputs[inputs.length - 1];
-    if (!lastInput.value.trim()) {
-      return; // Do nothing if the last input is empty
+    if (inputs.length > 0) {
+      const lastInput = inputs[inputs.length - 1];
+      if (!lastInput.value.trim()) {
+        return; // Do nothing if the last input is empty
+      }
     }
-  }
     // Add a new empty input
     setInputs([...inputs, { value: "" }]);
   };
@@ -454,30 +454,30 @@ export default function EditArticlePage() {
                   classNamePrefix="select"
                 />
 
-{inputs.map((input, index) => (
-  <div key={index} className="mt-4 flex items-center gap-2">
-    <Input
-      value={input.value}
-      placeholder={`New tag ${index + 1}`}
-      onChange={(e) => handleInputChange(index, e.target.value)}
-      onBlur={() => handleInputBlur(index)}
-      onKeyPress={(e) => {
-        if (e.key === "Enter") e.preventDefault(); // Prevent form submission on Enter
-      }}
-    />
-    <button
-      type="button"
-      onClick={() => handleRemoveInput(index)}
-      className="bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-      aria-label={`Remove tag ${index + 1}`}
-    >
-      <X size={16} />
-    </button>
-    {errors.tags && (
-      <p className="text-red-500 text-sm">{errors.tags}</p>
-    )}
-  </div>
-))}
+                {inputs.map((input, index) => (
+                  <div key={index} className="mt-4 flex items-center gap-2">
+                    <Input
+                      value={input.value}
+                      placeholder={`New tag ${index + 1}`}
+                      onChange={(e) => handleInputChange(index, e.target.value)}
+                      onBlur={() => handleInputBlur(index)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") e.preventDefault(); // Prevent form submission on Enter
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveInput(index)}
+                      className="bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                      aria-label={`Remove tag ${index + 1}`}
+                    >
+                      <X size={16} />
+                    </button>
+                    {errors.tags && (
+                      <p className="text-red-500 text-sm">{errors.tags}</p>
+                    )}
+                  </div>
+                ))}
 
                 <button
                   onClick={(e) => {
@@ -494,7 +494,7 @@ export default function EditArticlePage() {
                 {inputs.length > 0 &&
                   !inputs[inputs.length - 1].value.trim() && (
                     <span className="ml-2 text-red-500">
-                      Fill input above to add more new tags 
+                      Fill input above to add more new tags
                     </span>
                   )}
 
