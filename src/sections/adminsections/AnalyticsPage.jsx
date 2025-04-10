@@ -56,7 +56,6 @@ const AnalyticsPage = () => {
   const [articlesSortOrder, setArticlesSortOrder] = useState("desc");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-localhost
   const IMG_URL = import.meta.env.VITE_APP_BACKEND_DOMAIN || "http://localhost:5000";
 
   const {
