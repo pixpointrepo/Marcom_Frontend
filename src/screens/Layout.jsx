@@ -10,6 +10,7 @@ import WeatherTimeDisplay from "../components/WeatherDisplay";
 
 const Layout = () => {
   const navigate = useNavigate();
+  const IMG_URL = import.meta.env.VITE_APP_BACKEND_DOMAIN || "http://localhost:5000";
 
   // fetch 3 latest articles to display in the sidebar
   const {
@@ -94,7 +95,7 @@ const Layout = () => {
                           }}
                         >
                           <img
-                            src={`http://localhost:5000${story.thumbnail}`}
+                            src={`${IMG_URL}${story.thumbnail}`}
                             alt=""
                             className="h-20 w-28 object-cover rounded-md shadow-sm"
                             onError={(e) => {
