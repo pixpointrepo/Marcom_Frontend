@@ -56,6 +56,8 @@ const AnalyticsPage = () => {
   const [articlesSortOrder, setArticlesSortOrder] = useState("desc");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+localhost
+  const IMG_URL = import.meta.env.VITE_APP_BACKEND_DOMAIN || "http://localhost:5000";
 
   const {
     categories,
@@ -528,7 +530,7 @@ const AnalyticsPage = () => {
                   <div className="col-span-2">
                     {item.thumbnail ? (
                       <img
-                        src={`http://localhost:5000${item.thumbnail}`}
+                        src={`${IMG_URL}${item.thumbnail}`}
                         alt={item.title}
                         className="w-12 h-12 object-cover rounded-md border border-gray-200"
                       />
