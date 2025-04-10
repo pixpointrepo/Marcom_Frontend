@@ -40,7 +40,7 @@ const TopLevelNavbar = () => {
     >
       <div className="flex flex-col items-center sm:flex-col md:flex-row lg:flex-row md:items-center w-full md:gap-4">
         {/* Logo */}
-        <div onClick={()=> handleNavigation()} className="cursor-pointer md:absolute">
+        <div onClick={()=> handleNavigation()} className="cursor-pointer  hidden md:block  md:absolute">
         <img
           src="/marcom.jpg"
           alt="Logo"
